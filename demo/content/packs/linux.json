@@ -1,0 +1,426 @@
+{
+  "schemaVersion": 2,
+  "id": "linux",
+  "title": "Linux 命令行基础",
+  "tagline": "一个黑窗口，掌控整个服务器",
+  "description": "服务器上没有鼠标点选，全靠命令行沟通。掌握目录导航、文件操作、权限管理和管道组合这四件套，你就能读懂常见的命令序列，遇到 Permission denied 这类报错也知道下一步该查什么。",
+  "level": "入门",
+  "estimatedMinutes": 50,
+  "accent": "#b25f1f",
+  "icon": "linux",
+  "objectives": [
+    "能用 pwd / cd / ls 在目录树中定位并切换工作目录",
+    "能用 touch / cp / mv / rm 完成文件增删改，并用 grep 和 find 找到目标",
+    "能读懂 ls -l 的权限位，会用 chmod 修改权限并区分 chown 的分工",
+    "能读懂通配符加管道的命令组合，例如 ls *.txt | wc -l"
+  ],
+  "cards": [
+    {
+      "id": "linux-card-01",
+      "title": "目录导航",
+      "summary": "所有文件都挂在一棵从根 / 出发的树上，先学会在树上准确移动和定位。",
+      "points": [
+        "pwd 显示当前目录的绝对路径，cd 用来切换目录",
+        "cd .. 回上一级，cd - 回上一次所在的目录，cd ~ 回用户主目录",
+        "ls 列出内容：-l 长格式看权限大小时间，-a 才能看到隐藏文件",
+        "绝对路径从根 / 写起，相对路径从当前目录写起，两者起点不同",
+        "Tab 键可以自动补全路径，既省事又能减少手打错误"
+      ],
+      "example": {
+        "language": "bash",
+        "caption": "在目录树里游走",
+        "code": "pwd              # /home/user\ncd documents     # 进入子目录\nmkdir notes && cd notes\ncd ..            # 回到 documents\ncd -             # 回到 notes"
+      },
+      "pitfalls": [
+        "把 cd documents 写成 cd /documents，绝对路径从根出发，去的地方完全不同",
+        "ls 看不到以 . 开头的隐藏文件，误以为文件不存在",
+        "在错误的目录里执行删除或覆盖操作，命令行不会替你确认上下文"
+      ]
+    },
+    {
+      "id": "linux-card-02",
+      "title": "文件操作与搜索",
+      "summary": "创建、查看、删除文件是日常操作；grep 在内容里找行，find 按名字找文件，分工不能弄反。",
+      "points": [
+        "touch 新建空文件，mkdir 新建目录，cp 复制，mv 移动或重命名",
+        "cat 一次输出整个小文件，less 分页翻看大文件，按 q 退出",
+        "grep \"关键词\" 文件名 会输出所有包含关键词的行",
+        "find 目录 -name \"模式\" 按文件名查找文件本身，和 grep 分工不同",
+        "rm 删除的文件不进回收站；删除目录还要加 -r 参数"
+      ],
+      "example": {
+        "language": "bash",
+        "caption": "找到文件里的报错行",
+        "code": "$ cat app.log\nstart\nerror: disk full\nok\n$ grep \"error\" app.log\nerror: disk full\n$ find . -name \"*.log\"\n./app.log"
+      },
+      "pitfalls": [
+        "用 find 去搜文件内容、用 grep 按名字找文件，两个命令的分工正好弄反",
+        "用 cat 看几万行的大文件，屏幕瞬间刷满，应该改用 less",
+        "习惯性 rm -rf，路径稍有笔误就会造成不可恢复的删除"
+      ]
+    },
+    {
+      "id": "linux-card-03",
+      "title": "权限与超级用户",
+      "summary": "Linux 是多用户系统，每个文件都明确规定了谁能读、谁能写、谁能执行。",
+      "points": [
+        "权限分属主、属组、其他人三组，每组用 rwx 表示读、写、执行",
+        "ls -l 开头的 -rwxr-x--- 依次描述这三组权限，第一位 - 表示普通文件",
+        "chmod 修改权限，既可以用 +x 这种符号方式，也可以用 644 这种数字方式",
+        "数字规则：r=4、w=2、x=1，相加后三组各一位，chmod 644 就是 rw- r-- r--",
+        "chown 改的是文件的属主和属组，不是权限位，别和 chmod 混用",
+        "sudo 让单条命令以管理员身份执行，权限大、误操作代价也大"
+      ],
+      "example": {
+        "language": "bash",
+        "caption": "读懂并修改权限",
+        "code": "$ ls -l run.sh\n-rw-r--r-- 1 user dev 53 Jun 1 10:00 run.sh\n$ ./run.sh          # Permission denied\n$ chmod +x run.sh\n$ ls -l run.sh\n-rwxr-xr-x 1 user dev 53 Jun 1 10:00 run.sh"
+      },
+      "pitfalls": [
+        "脚本内容明明正确，却因为没有 x 权限而 Permission denied",
+        "想改权限却用了 chown，想改属主却用了 chmod，两个命令互相混淆",
+        "全程用 sudo 干活，一旦手滑执行了危险命令，系统可能直接受损"
+      ]
+    },
+    {
+      "id": "linux-card-04",
+      "title": "通配符与管道",
+      "summary": "通配符负责批量选中文件，管道把一条命令的输出交给下一条继续处理，组合起来威力翻倍。",
+      "points": [
+        "通配符 * 匹配任意多个字符，*.txt 代表所有以 .txt 结尾的文件",
+        "管道 | 把前一个命令的输出交给后一个命令继续处理",
+        "ls *.txt | wc -l 先列出匹配的文件名，再统计行数，得到文件数量",
+        "wc -l 统计的是送进来的行数，不是「文件个数」这种抽象概念",
+        "man 命令名 可以查看某条命令的说明书，忘了参数先问 man"
+      ],
+      "example": {
+        "language": "bash",
+        "caption": "用管道组合命令",
+        "code": "$ ls\na.txt  b.txt  c.log  notes.md\n$ ls *.txt\na.txt  b.txt\n$ ls *.txt | wc -l\n2"
+      },
+      "pitfalls": [
+        "以为 wc -l 能直接数出任何东西，其实它统计的是送进来的行数",
+        "把管道 | 误写成双竖线 ||，后者是逻辑「或」，含义完全不同",
+        "在错误的目录里用 *.txt，什么也匹配不到，命令还可能报 No such file"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "linux-001",
+      "question": "想知道自己当前处在哪个目录下，应该输入哪条命令？",
+      "options": [
+        "ls",
+        "pwd",
+        "whoami",
+        "mkdir"
+      ],
+      "answerIndex": 1,
+      "explanation": "pwd 是 print working directory 的缩写，专门显示当前目录的绝对路径。ls 列出目录内容，whoami 显示当前用户，mkdir 用来新建目录。",
+      "optionNotes": [
+        "ls 列出的是目录里的内容，并不告诉你自己站在哪",
+        "正确。pwd 就是「打印工作目录」，路径一目了然",
+        "whoami 回答的是「我是谁」，显示当前登录的用户名",
+        "mkdir 用于创建新目录，和定位当前位置无关"
+      ],
+      "difficulty": "基础",
+      "tags": ["pwd", "目录导航"]
+    },
+    {
+      "id": "linux-002",
+      "question": "你正在 /home/user/docs/projects 目录里，想回到上一级目录 /home/user/docs，最直接的命令是？",
+      "options": [
+        "cd ..",
+        "cd .",
+        "cd /",
+        "cd docs"
+      ],
+      "answerIndex": 0,
+      "explanation": "两个点「..」代表上一级目录，cd .. 就是返回上级。单个点代表当前目录本身，cd / 则会一路跳到整棵目录树的根。",
+      "optionNotes": [
+        "正确。两个点就是上级目录的代称，cd .. 直达上级",
+        "单个点代表当前目录本身，cd . 执行完还留在原地",
+        "cd / 会回到根目录，跳得太远了",
+        "docs 是当前目录下的子目录，cd docs 反而往更深处走"
+      ],
+      "difficulty": "基础",
+      "tags": ["cd", "相对路径"]
+    },
+    {
+      "id": "linux-003",
+      "question": "依次执行下面四条命令后，最后一条 pwd 输出的是哪个路径？",
+      "code": {
+        "language": "bash",
+        "content": "$ cd /home/user\n$ mkdir demo\n$ cd demo\n$ pwd"
+      },
+      "options": [
+        "/home/user",
+        "/home",
+        "/home/demo",
+        "/home/user/demo"
+      ],
+      "answerIndex": 3,
+      "explanation": "mkdir demo 在 /home/user 下创建了 demo 子目录，cd demo 进入的就是 /home/user/demo。pwd 显示的正是这个新路径。",
+      "optionNotes": [
+        "/home/user 是进入 demo 之前的位置，cd 已经改变了它",
+        "/home 是 user 的上一级，全程没有到过这里",
+        "/home/demo 意味着 demo 建在 /home 下，但它是建在 /home/user 下",
+        "正确。demo 建在 /home/user 里，进入后 pwd 自然显示 /home/user/demo"
+      ],
+      "difficulty": "基础",
+      "tags": ["mkdir", "cd"]
+    },
+    {
+      "id": "linux-004",
+      "question": "想在当前目录新建一个名为 notes.txt 的空文件，正确的命令是？",
+      "options": [
+        "mkdir notes.txt",
+        "cat notes.txt",
+        "touch notes.txt",
+        "mv notes.txt"
+      ],
+      "answerIndex": 2,
+      "explanation": "touch 的作用之一就是创建空文件。mkdir 创建的是目录，cat 是查看内容，mv 是移动或重命名，都不能用来新建空文件。",
+      "optionNotes": [
+        "mkdir 建出来的会是一个叫 notes.txt 的目录，不是文件",
+        "cat 用来查看文件内容，文件不存在时只会报错",
+        "正确。touch 一个不存在的文件名，就会创建这个空文件",
+        "mv 需要已有文件作为操作对象，无法凭空创建新文件"
+      ],
+      "difficulty": "基础",
+      "tags": ["touch", "文件操作"]
+    },
+    {
+      "id": "linux-005",
+      "question": "关于 rm 命令，下面哪个说法是正确的？",
+      "options": [
+        "rm 删除的文件不会进回收站，执行前务必确认路径",
+        "rm 删除的文件会先在回收站保留 30 天",
+        "rm 只能删除空文件，碰到目录就报错",
+        "rm 前面不加任何参数也能直接删除整个目录"
+      ],
+      "answerIndex": 0,
+      "explanation": "命令行的 rm 是永久删除，没有回收站兜底。删除目录还需要 -r 参数，不带参数的 rm 删不掉目录。",
+      "optionNotes": [
+        "正确。rm 直接抹掉文件，路径写错就没有后悔药",
+        "回收站是图形界面的机制，命令行 rm 并不走这一套",
+        "rm 删普通文件完全没问题，删目录才需要 -r",
+        "不带 -r 的 rm 无法删除目录，会提示 cannot remove"
+      ],
+      "difficulty": "基础",
+      "tags": ["rm", "安全"]
+    },
+    {
+      "id": "linux-006",
+      "question": "想在 /var/log 目录下找出所有以 .log 结尾的文件，应该用哪条命令？",
+      "options": [
+        "grep \"*.log\" /var/log",
+        "find /var/log -name \"*.log\"",
+        "cat /var/log/*.log",
+        "find \"*.log\" /var/log"
+      ],
+      "answerIndex": 1,
+      "explanation": "find 负责按文件名等条件查找文件本身，-name 用来指定文件名模式，目录要写在 -name 前面。grep 是在文件内容里搜关键词，cat 则是把内容整个打印出来。",
+      "optionNotes": [
+        "grep 搜索的是文件内容里的行，不是按文件名找文件",
+        "正确。find 负责按名字找文件，目录在前，-name 模式在后",
+        "cat 会把匹配到的日志内容全部打印，而不是列出文件",
+        "find 的目录参数要写在 -name 前面，顺序反了找不到目标"
+      ],
+      "difficulty": "进阶",
+      "tags": ["find", "grep"]
+    },
+    {
+      "id": "linux-007",
+      "question": "grep 命令会输出哪几行？",
+      "code": {
+        "language": "bash",
+        "content": "$ cat teams.txt\ndev\ndesign\ndevops\ndata\n$ grep \"dev\" teams.txt"
+      },
+      "options": [
+        "只有 dev 这一行",
+        "teams.txt 里的全部四行",
+        "没有任何输出，因为没加 -i 参数",
+        "dev 和 devops 两行"
+      ],
+      "answerIndex": 3,
+      "explanation": "grep 逐行检查文件，输出所有包含关键词 dev 的行。design 和 data 不含 dev，所以只有第 1 行和第 3 行被选中。",
+      "optionNotes": [
+        "devops 这一行同样包含 dev，会被一起匹配出来",
+        "design、data 两行不含 dev，不会被输出",
+        "不加 -i 只是区分大小写，并不是决定有没有输出的开关",
+        "正确。凡是包含 dev 的行都会被打印，共两行"
+      ],
+      "difficulty": "进阶",
+      "tags": ["grep", "命令阅读"]
+    },
+    {
+      "id": "linux-008",
+      "question": "cd - 这条命令的作用是？",
+      "options": [
+        "回到文件系统的根目录",
+        "回到当前用户的主目录",
+        "回到上一次所在的目录",
+        "回到上一级目录"
+      ],
+      "answerIndex": 2,
+      "explanation": "cd - 会在当前目录和上一次工作过的目录之间切换，非常适合在两个目录间来回跳。回到上级用 cd ..，回主目录用 cd ~。",
+      "optionNotes": [
+        "回根目录是 cd /，不是 cd -",
+        "回主目录是 cd ~ 或不带参数的 cd",
+        "正确。cd - 记住了上一个目录，直接带你回去",
+        "回上一级是 cd ..，两个点和减号很容易混"
+      ],
+      "difficulty": "进阶",
+      "tags": ["cd", "对比"]
+    },
+    {
+      "id": "linux-009",
+      "question": "执行 ./run.sh 提示 Permission denied，用 ls -l 查看显示 -rw-r--r--。下一步最合理的做法是？",
+      "options": [
+        "执行 chmod +x run.sh 给属主加上执行权限",
+        "执行 chown +x run.sh 修改文件权限",
+        "把文件重命名为 run.bat 就能直接运行",
+        "执行 cat run.sh 确认内容后，文件就自动可以运行了"
+      ],
+      "answerIndex": 0,
+      "explanation": "报 Permission denied 且权限三组里都没有 x，说明脚本缺少执行权限。chmod 才是改权限的命令，补上 x 之后就能用 ./run.sh 运行。",
+      "optionNotes": [
+        "正确。缺的就是 x 权限，chmod +x 一补上就能运行",
+        "chown 改的是属主属组，没有改权限的功能，+x 也不是它的参数",
+        "改名字解决不了权限问题，run.bat 也照样跑不起来",
+        "cat 只是查看内容，看再多遍权限位也不会变"
+      ],
+      "difficulty": "进阶",
+      "tags": ["chmod", "权限", "排错"]
+    },
+    {
+      "id": "linux-010",
+      "question": "根据这行输出，下面哪个说法是正确的？",
+      "code": {
+        "language": "bash",
+        "content": "$ ls -l report.sh\n-rwxr-x--- 1 user dev 120 Jun 1 10:00 report.sh"
+      },
+      "options": [
+        "系统上的所有用户都能执行这个脚本",
+        "属主 user 可以读写执行，dev 组成员可以读和执行，其他人毫无权限",
+        "其他人（others）可以读取内容，但不能执行",
+        "dev 组的成员只能查看权限信息，无法运行这个脚本"
+      ],
+      "answerIndex": 1,
+      "explanation": "权限串 rwxr-x--- 分三组：属主 rwx 全有，属组 r-x 可读可执行，其他人 --- 什么都没有。所以组内成员能运行脚本，组外用户完全碰不到。",
+      "optionNotes": [
+        "others 对应的三位是 ---，连读权限都没有",
+        "正确。rwx / r-x / --- 分别对应属主、属组、其他人",
+        "others 三位是三个减号，读权限也不存在",
+        "dev 组对应 r-x，其中的 x 表示可以执行，说法恰好相反"
+      ],
+      "difficulty": "进阶",
+      "tags": ["权限", "ls -l"]
+    },
+    {
+      "id": "linux-011",
+      "question": "最后这条命令输出的数字是多少？",
+      "code": {
+        "language": "bash",
+        "content": "$ ls\na.txt  b.txt  c.log  notes.md\n$ ls *.txt | wc -l"
+      },
+      "options": [
+        "3",
+        "4",
+        "2",
+        "1"
+      ],
+      "answerIndex": 2,
+      "explanation": "通配符 *.txt 先被展开成 a.txt 和 b.txt，ls 输出这两行，管道把结果交给 wc -l 统计行数，得到 2。c.log 和 notes.md 不匹配模式，不会出现。",
+      "optionNotes": [
+        "3 是把 c.log 也算了进去，但它不匹配 *.txt",
+        "4 是整个目录的文件数，没有经过通配符筛选",
+        "正确。匹配到的两个文件名占两行，wc -l 数出 2",
+        "1 少算了一个文件，a.txt 和 b.txt 都匹配 *.txt"
+      ],
+      "difficulty": "挑战",
+      "tags": ["管道", "通配符"]
+    },
+    {
+      "id": "linux-012",
+      "question": "执行 chmod 644 notes.txt 之后，这个文件的权限位会显示为？",
+      "options": [
+        "-rwxr-xr-x",
+        "-rw-rw-r--",
+        "-r--r--r--",
+        "-rw-r--r--"
+      ],
+      "answerIndex": 3,
+      "explanation": "数字权限按 r=4、w=2、x=1 相加：6 是 rw-，4 是 r--。644 依次对应属主、属组、其他人，得到 -rw-r--r--。",
+      "optionNotes": [
+        "rwxr-xr-x 对应数字 755，比 644 多出了执行权限",
+        "rw-rw-r-- 对应 664，属组多了一个写权限",
+        "r--r--r-- 对应 444，把属主的写权限也丢了",
+        "正确。6=rw-、4=r--、4=r--，拼起来正是 -rw-r--r--"
+      ],
+      "difficulty": "挑战",
+      "tags": ["chmod", "权限"]
+    },
+    {
+      "id": "linux-013",
+      "question": "下面哪种情况才真正需要用到 sudo？",
+      "options": [
+        "要修改 /etc 目录下的系统配置文件，普通用户没有写权限",
+        "想查看自己家目录里某个文件的内容",
+        "希望某条命令执行得更快一些",
+        "当前登录的用户不是 root，就一律先加 sudo"
+      ],
+      "answerIndex": 0,
+      "explanation": "sudo 是以管理员身份执行单条命令，只在权限不足时才需要。系统目录通常只有管理员能写，而查看自己的文件、普通脚本执行都不必动用 sudo。",
+      "optionNotes": [
+        "正确。/etc 属于系统目录，普通用户写入必须借助管理员权限",
+        "读自己家目录的文件本来就是允许的，加 sudo 多此一举",
+        "sudo 只改变执行身份，不会让命令跑得更快",
+        "日常操作大多不需要管理员权限，滥用 sudo 反而放大误操作风险"
+      ],
+      "difficulty": "基础",
+      "tags": ["sudo", "权限"]
+    },
+    {
+      "id": "linux-014",
+      "question": "clear 这条命令的作用是？",
+      "options": [
+        "删除当前目录下的所有文件",
+        "清空指定文件的内容",
+        "清除终端屏幕上已有的显示",
+        "注销当前登录的用户"
+      ],
+      "answerIndex": 2,
+      "explanation": "clear 只是把屏幕刷新干净，方便看清新输出，不会动任何文件，也不会结束会话。文件内容和系统状态都保持原样。",
+      "optionNotes": [
+        "删文件是 rm 的工作，clear 碰不到文件系统",
+        "清空文件内容要用重定向等方式，clear 只作用于屏幕",
+        "正确。clear 只刷屏，是终端里最安全的命令之一",
+        "注销是 exit 或 logout 干的事，clear 之后命令行照常可用"
+      ],
+      "difficulty": "基础",
+      "tags": ["clear", "终端"]
+    },
+    {
+      "id": "linux-015",
+      "question": "想给 notes.txt 留一份备份、同时保留原文件，正确的命令是？",
+      "options": [
+        "mv notes.txt notes.txt.bak",
+        "cp notes.txt notes.txt.bak",
+        "cat notes.txt notes.txt.bak",
+        "touch notes.txt.bak"
+      ],
+      "answerIndex": 1,
+      "explanation": "cp 是复制，执行后原文件和新备份同时存在。mv 是移动或重命名，原位置的 notes.txt 会消失；touch 只能新建空文件，并不会复制内容。",
+      "optionNotes": [
+        "mv 会把原文件挪走，notes.txt 本体就不在了，不算备份",
+        "正确。cp 复制出 notes.txt.bak，原文件原封不动",
+        "cat 是查看内容，两个参数也只是依次打印，不会产生备份文件",
+        "touch 新建的是一个空文件，里面不会有 notes.txt 的内容"
+      ],
+      "difficulty": "进阶",
+      "tags": ["cp", "mv"]
+    }
+  ]
+}

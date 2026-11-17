@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 2,
+  "contentVersion": "2.0.0",
+  "releasedAt": "2026-11-17",
+  "notes": [
+    "题库扩充为 8 个主题、120 道题，新增计算机网络、SQL、数据结构",
+    "新增进阶与挑战题，覆盖代码阅读、命令输出、场景排错与方案权衡",
+    "每道题提供逐选项解析，错题可回炉重练",
+    "新增知识点掌握度、全局错题本与多种练习模式",
+    "题库支持独立更新：内容包重新构建后无需改动应用代码"
+  ],
+  "packs": [
+    "packs/python.json",
+    "packs/docker.json",
+    "packs/k8s.json",
+    "packs/linux.json",
+    "packs/git.json",
+    "packs/network.json",
+    "packs/sql.json",
+    "packs/data-structures.json"
+  ]
+}

@@ -1,0 +1,474 @@
+{
+  "schemaVersion": 2,
+  "id": "sql",
+  "title": "SQL 与数据库入门",
+  "tagline": "用结构化查询，把数据变成答案",
+  "description": "SQL 是访问关系型数据库的通用语言，几乎所有后端系统都离不开它。这一课从表结构讲起，带你写 SELECT、JOIN 和聚合，并理解索引与事务为什么能决定查询快不快、数据稳不稳。",
+  "level": "入门",
+  "estimatedMinutes": 50,
+  "accent": "#8a6d1f",
+  "icon": "sql",
+  "objectives": [
+    "理解：表、主键、外键与 NULL 的含义",
+    "写出：带 WHERE、ORDER BY、LIMIT 的查询",
+    "区分：INNER JOIN 与 LEFT JOIN、WHERE 与 HAVING",
+    "判断：索引失效的常见原因与事务的原子性"
+  ],
+  "cards": [
+    {
+      "id": "sql-card-01",
+      "title": "表与关系模型",
+      "summary": "关系表用行存一条记录、用列定义字段，主键保证唯一，外键把两张表连起来。",
+      "points": [
+        "一张表就是一张二维表：每一行是一条记录，每一列是一个字段（属性）",
+        "主键（PRIMARY KEY）唯一标识一行，必须唯一且不能为 NULL",
+        "外键（FOREIGN KEY）指向另一张表的主键，用来表达「这条记录属于谁」",
+        "字段要选择合适的类型，比如金额用数值类型，不要把数字存成文本再比较",
+        "NULL 表示「未知或缺失」，它不等于 0，也不等于空字符串"
+      ],
+      "example": {
+        "language": "sql",
+        "caption": "主键与外键：一张表如何引用另一张表",
+        "code": "CREATE TABLE students (\n  id INTEGER PRIMARY KEY,\n  name VARCHAR(50) NOT NULL,\n  class_id INTEGER\n);\n\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  student_id INTEGER REFERENCES students(id),\n  amount NUMERIC NOT NULL\n);"
+      },
+      "pitfalls": [
+        "用姓名或手机号当主键：信息会变且可能重复，后续修改会牵连很多表",
+        "把多个值塞进一个字段（如把「数学,英语」存成一列），查询和统计都会变得困难"
+      ]
+    },
+    {
+      "id": "sql-card-02",
+      "title": "SELECT、WHERE 与 ORDER BY",
+      "summary": "SELECT 决定取哪些列，WHERE 过滤行，ORDER BY 排序，三者按固定顺序生效。",
+      "points": [
+        "逻辑执行顺序大致是 FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT",
+        "WHERE 过滤的是原始行，不能直接引用 SELECT 里起的别名（多数数据库如此）",
+        "判断 NULL 要用 IS NULL 或 IS NOT NULL，不能用 = NULL",
+        "ORDER BY 默认升序，DESC 表示降序；多个排序键用逗号分隔，先按第一个排",
+        "LIMIT n 在排序之后截取前 n 行，没有 ORDER BY 时「前几行」没有稳定含义"
+      ],
+      "example": {
+        "language": "sql",
+        "caption": "筛选、排序、截取：一条查询的完整顺序",
+        "code": "SELECT name, score\nFROM students\nWHERE score >= 60\nORDER BY score DESC, name ASC\nLIMIT 3;"
+      },
+      "pitfalls": [
+        "用 WHERE name = NULL 查空值，结果永远为空，应该写 IS NULL",
+        "以为 ORDER BY 会顺便去重；去重要用 DISTINCT，而且它作用于整行组合"
+      ]
+    },
+    {
+      "id": "sql-card-03",
+      "title": "JOIN 与聚合",
+      "summary": "JOIN 按关联条件把多张表拼在一起，聚合把多行压成一组一行，分组过滤要用 HAVING。",
+      "points": [
+        "INNER JOIN 只保留两表都匹配的行；LEFT JOIN 保留左表全部行，右表缺失时补 NULL",
+        "一对多连接会放大行数，统计父表数量要用 COUNT(DISTINCT 父表主键)",
+        "GROUP BY 把指定列相同的行归为一组，SELECT 里只能出现分组列或聚合函数",
+        "COUNT(*) 数行数，COUNT(列) 只数该列非 NULL 的值",
+        "WHERE 在分组前过滤行，HAVING 在分组后过滤组"
+      ],
+      "example": {
+        "language": "sql",
+        "caption": "先分组，再对每组算聚合，最后筛选分组",
+        "code": "SELECT s.class_id, COUNT(*) AS student_count, AVG(s.score) AS avg_score\nFROM students s\nGROUP BY s.class_id\nHAVING COUNT(*) >= 3;"
+      },
+      "pitfalls": [
+        "在 LEFT JOIN 的 WHERE 里过滤右表列，会把外连接悄悄变成内连接",
+        "先连接明细表再用 COUNT(*) 统计订单数，结果会被明细行放大"
+      ]
+    },
+    {
+      "id": "sql-card-04",
+      "title": "索引与事务",
+      "summary": "索引让查找不必扫全表，事务让多条写操作要么全成功、要么全回滚。",
+      "points": [
+        "索引本质是有序的辅助结构（常见为 B-tree），用空间和写入开销换查询速度",
+        "联合索引遵循最左前缀：条件要从索引最左列开始才容易命中",
+        "在索引列上套函数或做隐式类型转换，可能让索引失效",
+        "事务用 BEGIN、COMMIT、ROLLBACK 控制，具备原子性：中间失败可整体撤销",
+        "隔离级别决定并发事务能看到什么，级别越高越安全，但并发度通常越低"
+      ],
+      "example": {
+        "language": "sql",
+        "caption": "转账：两条更新必须一起提交",
+        "code": "BEGIN;\nUPDATE accounts SET balance = balance - 100 WHERE id = 1;\nUPDATE accounts SET balance = balance + 100 WHERE id = 2;\nCOMMIT;"
+      },
+      "pitfalls": [
+        "给每一列都建索引：写入变慢、占用空间，优化器也未必选用",
+        "只执行了 BEGIN 却忘记 COMMIT，改动没有真正提交，连接断开后还可能回滚"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "sql-001",
+      "question": "设计学生表时，下面哪一列最适合作为主键？",
+      "options": [
+        "学生姓名",
+        "入学年份",
+        "学号",
+        "班级名称"
+      ],
+      "answerIndex": 2,
+      "explanation": "主键要唯一标识一行，且不能为 NULL。学号一人一号、不会重复；姓名可能重名，班级和入学年份都会对应多个人，无法唯一确定一行。",
+      "optionNotes": [
+        "姓名可能重名，无法唯一标识学生",
+        "同一年入学的学生很多，会大量重复",
+        "学号一人一号，唯一且稳定，适合做主键",
+        "一个班级有多名学生，不能唯一标识"
+      ],
+      "difficulty": "基础",
+      "tags": [
+        "表设计",
+        "主键"
+      ]
+    },
+    {
+      "id": "sql-002",
+      "question": "students 表的 score 列允许为 NULL。下面这条查询会返回什么？",
+      "code": {
+        "language": "sql",
+        "content": "SELECT name\nFROM students\nWHERE score = NULL;"
+      },
+      "options": [
+        "score 为 NULL 的所有学生",
+        "score 不为 NULL 的所有学生",
+        "一行也不返回，因为 = NULL 不成立",
+        "students 表的全部学生"
+      ],
+      "answerIndex": 2,
+      "explanation": "SQL 里的 NULL 表示「未知」，任何值与 NULL 用 = 比较，结果都是 UNKNOWN 而不是 TRUE，WHERE 只保留结果为 TRUE 的行。要查空值必须写 IS NULL。",
+      "optionNotes": [
+        "= NULL 不会匹配空值，这是最常见的误解",
+        "它同样不会匹配非空值，条件整体不成立",
+        "NULL 参与 = 比较结果为 UNKNOWN，没有行满足",
+        "WHERE 已过滤掉所有行，不会返回全部学生"
+      ],
+      "difficulty": "基础",
+      "tags": [
+        "NULL",
+        "WHERE"
+      ]
+    },
+    {
+      "id": "sql-003",
+      "question": "students 表的数据如注释所示，这条查询返回什么？",
+      "code": {
+        "language": "sql",
+        "content": "-- (name, score): 小明 90, 小红 85, 小刚 90, 小美 70\nSELECT name, score\nFROM students\nORDER BY score DESC\nLIMIT 2;"
+      },
+      "options": [
+        "2 行，小明一定排在小刚前面",
+        "3 行，两个 90 分都要算上",
+        "1 行，并列第一只保留一行",
+        "2 行，是小明和小刚，但先后顺序不确定"
+      ],
+      "answerIndex": 3,
+      "explanation": "两个最高分都是 90，LIMIT 2 会把这两行都取出来，所以结果是小明和小刚。ORDER BY 只规定按 score 降序，同分之间没有默认顺序，想知道谁在前要再加第二个排序键。",
+      "optionNotes": [
+        "同分之间没有规定顺序，不能保证小明在前",
+        "LIMIT 2 最多返回两行，不会因为并列变成三行",
+        "并列不会合并成一行，两行 90 分都会保留",
+        "两人都会被选中，但同分顺序确实不保证"
+      ],
+      "difficulty": "进阶",
+      "tags": [
+        "ORDER BY",
+        "LIMIT"
+      ]
+    },
+    {
+      "id": "sql-004",
+      "question": "users 表共 5 行，其中 email 有 2 行为 NULL。下面查询的两个计数分别是多少？",
+      "code": {
+        "language": "sql",
+        "content": "SELECT COUNT(*), COUNT(email)\nFROM users;"
+      },
+      "options": [
+        "5 和 2",
+        "5 和 3",
+        "3 和 3",
+        "5 和 5"
+      ],
+      "answerIndex": 1,
+      "explanation": "COUNT(*) 统计结果行数，5 行全部计入；COUNT(email) 只统计该列非 NULL 的值，5 行里去掉 2 个 NULL 剩 3 个。",
+      "optionNotes": [
+        "COUNT(email) 不会把 NULL 算进去，2 是 NULL 的个数",
+        "5 是总行数，3 是非 NULL 的 email 数，正确",
+        "COUNT(*) 不会跳过任何行，第一个数应是 5",
+        "COUNT(email) 会跳过 NULL，不可能也是 5"
+      ],
+      "difficulty": "基础",
+      "tags": [
+        "聚合",
+        "COUNT"
+      ]
+    },
+    {
+      "id": "sql-005",
+      "question": "要查询 1 班中分数在 60 到 80 之间（含 60 和 80）的学生，哪个 WHERE 条件正确？",
+      "options": [
+        "WHERE class_id = 1 AND score BETWEEN 60 AND 80",
+        "WHERE class_id = 1 OR score BETWEEN 60 AND 80",
+        "WHERE class_id = 1 AND score > 60 OR score < 80",
+        "WHERE class_id = 1 AND score BETWEEN 80 AND 60"
+      ],
+      "answerIndex": 0,
+      "explanation": "BETWEEN 60 AND 80 等价于 score >= 60 AND score <= 80，包含两个端点；再用 AND 与班级条件组合，才能同时限定班级和分数。",
+      "optionNotes": [
+        "AND 连接两个条件，BETWEEN 含端点，正确",
+        "OR 会把其他班 60–80 分的学生也带进来",
+        "OR 优先级低于 AND，条件几乎覆盖所有行",
+        "下界 80 大于上界 60，条件永远不成立"
+      ],
+      "difficulty": "基础",
+      "tags": [
+        "WHERE",
+        "BETWEEN"
+      ]
+    },
+    {
+      "id": "sql-006",
+      "question": "orders 表在 created_at 上有索引，但下面这条查询仍然很慢，最可能的原因是什么？",
+      "code": {
+        "language": "sql",
+        "content": "SELECT id, amount\nFROM orders\nWHERE CAST(created_at AS DATE) = DATE '2026-01-01';"
+      },
+      "options": [
+        "表没有主键，数据库无法定位数据",
+        "索引列上套了 CAST 函数，普通索引无法直接使用",
+        "应该把 WHERE 改成 HAVING",
+        "缺少 ORDER BY，数据库无法利用索引排序"
+      ],
+      "answerIndex": 1,
+      "explanation": "索引按 created_at 的原始值排序，外面再套 CAST(... AS DATE) 后，数据库必须先对每行求值才能比较，通常只能全表扫描。改成 created_at >= '2026-01-01' AND created_at < '2026-01-02' 这样的范围条件，索引才有机会生效。",
+      "optionNotes": [
+        "主键影响定位单行，不是这里用不上索引的原因",
+        "对索引列做函数运算会让索引失效，正确",
+        "HAVING 用于分组后过滤，和这里的过滤无关",
+        "ORDER BY 影响排序，不是过滤慢的根本原因"
+      ],
+      "difficulty": "进阶",
+      "tags": [
+        "索引",
+        "慢查询"
+      ]
+    },
+    {
+      "id": "sql-007",
+      "question": "按班级统计平均分，并且只保留平均分大于 80 的班级。过滤条件应该写在哪里？",
+      "options": [
+        "WHERE 子句，先过滤掉低分学生",
+        "HAVING 子句，因为它过滤分组后的聚合结果",
+        "ORDER BY 子句，按平均分排序即可",
+        "SELECT 列表里用 CASE WHEN 判断"
+      ],
+      "answerIndex": 1,
+      "explanation": "WHERE 在 GROUP BY 之前执行，此时还没有 AVG(score)，不能用来过滤聚合结果。HAVING 在分组之后执行，专门用于筛选分组，因此 AVG(score) > 80 要写在 HAVING 里。",
+      "optionNotes": [
+        "WHERE 执行时还没分组，无法引用 AVG(score)",
+        "HAVING 在分组后过滤，正好用于聚合结果",
+        "ORDER BY 只排序，不会删除不满足条件的组",
+        "CASE WHEN 生成列，不能直接过滤分组"
+      ],
+      "difficulty": "进阶",
+      "tags": [
+        "GROUP BY",
+        "HAVING"
+      ]
+    },
+    {
+      "id": "sql-008",
+      "question": "执行 SELECT DISTINCT class_id, gender FROM students 时，DISTINCT 按什么去重？",
+      "options": [
+        "只按 class_id 去重，gender 取第一行的值",
+        "只按 gender 去重，class_id 取第一行的值",
+        "按 (class_id, gender) 组合去重，保留所有不同组合",
+        "随机保留一行，每次结果都可能不同"
+      ],
+      "answerIndex": 2,
+      "explanation": "DISTINCT 作用在 SELECT 列表的整行组合上，只有 class_id 和 gender 都相同才算重复。它不是对某一列单独去重，也不会随机丢行。",
+      "optionNotes": [
+        "两列都会参与比较，不是只看 class_id",
+        "gender 不是唯一去重依据，两列都要相同",
+        "两列都相同才算重复，整行组合去重正确",
+        "DISTINCT 结果确定，不会随机保留"
+      ],
+      "difficulty": "基础",
+      "tags": [
+        "DISTINCT",
+        "去重"
+      ]
+    },
+    {
+      "id": "sql-009",
+      "question": "订单表一个订单一行，明细表一个商品一行。统计订单数时连接两表后 COUNT(*)，结果偏大，原因是什么？",
+      "code": {
+        "language": "sql",
+        "content": "SELECT COUNT(*)\nFROM orders o\nJOIN order_items i ON i.order_id = o.id;"
+      },
+      "options": [
+        "一对多连接把每个订单复制成多行，COUNT(*) 数的是放大后的行",
+        "LEFT JOIN 会丢失没有明细的订单",
+        "orders 表的主键出现了重复值",
+        "COUNT(*) 会自动跳过值为 NULL 的订单"
+      ],
+      "answerIndex": 0,
+      "explanation": "一个订单有多条明细时，JOIN 会为每条明细生成一行，父表记录被重复计数。要统计订单数应写 COUNT(DISTINCT o.id)，或先在子查询里按订单聚合再连接。",
+      "optionNotes": [
+        "连接放大行数是根因，COUNT(*) 统计了明细行",
+        "这里用的是 INNER JOIN，且丢失行不会导致偏大",
+        "主键约束保证不重复，问题不在这里",
+        "COUNT(*) 统计所有行，不会跳过 NULL"
+      ],
+      "difficulty": "进阶",
+      "tags": [
+        "JOIN",
+        "COUNT"
+      ]
+    },
+    {
+      "id": "sql-010",
+      "question": "要列出所有学生及他们选的课，没有选课的学生也要显示。应该用哪种连接？",
+      "options": [
+        "INNER JOIN，只保留两表都匹配的行",
+        "LEFT JOIN，把 students 放在左表",
+        "LEFT JOIN，把 courses 放在左表",
+        "CROSS JOIN，生成所有可能的组合"
+      ],
+      "answerIndex": 1,
+      "explanation": "LEFT JOIN 保留左表的全部行，右表没有匹配时补 NULL。把 students 放左边，没选课的学生才会以课程为 NULL 的形式保留下来。",
+      "optionNotes": [
+        "INNER JOIN 会丢掉没选课的学生，不满足需求",
+        "左表全保留，正好覆盖没选课的学生",
+        "这样保留的是全部课程，不是全部学生",
+        "CROSS JOIN 产生笛卡尔积，行数和语义都不对"
+      ],
+      "difficulty": "基础",
+      "tags": [
+        "JOIN",
+        "LEFT JOIN"
+      ]
+    },
+    {
+      "id": "sql-011",
+      "question": "执行 SELECT name FROM students WHERE class_id <> 1 后，发现 class_id 为 NULL 的学生没有出现。原因是什么？",
+      "options": [
+        "数据库把 NULL 当成空字符串，比较结果不成立",
+        "NULL 参与比较得到 UNKNOWN，WHERE 只保留结果为 TRUE 的行",
+        "SQL 不允许使用 <>，应该改成 !=",
+        "没有写 ORDER BY，NULL 行不会显示"
+      ],
+      "answerIndex": 1,
+      "explanation": "SQL 使用三值逻辑：NULL 表示未知，NULL <> 1 的结果是 UNKNOWN 而不是 TRUE，因此这些行被 WHERE 过滤掉。要把它们包含进来，需要显式写 class_id <> 1 OR class_id IS NULL。",
+      "optionNotes": [
+        "NULL 不是空字符串，两者含义不同",
+        "比较结果为 UNKNOWN，不满足 WHERE 条件",
+        "标准 SQL 同时支持 <> 和 !=，写法没问题",
+        "ORDER BY 只影响顺序，不会隐藏行"
+      ],
+      "difficulty": "进阶",
+      "tags": [
+        "NULL",
+        "三值逻辑"
+      ]
+    },
+    {
+      "id": "sql-012",
+      "question": "students 表上有联合索引 (class_id, score)。下面哪条查询最可能用上这个索引？",
+      "options": [
+        "WHERE class_id = 2",
+        "WHERE score > 80",
+        "ORDER BY score",
+        "SELECT * FROM students"
+      ],
+      "answerIndex": 0,
+      "explanation": "B-tree 联合索引先按最左列 class_id 排序，条件从最左列开始才能快速定位。只用 score 无法利用这个索引的前缀，除非另外建索引或做覆盖扫描。",
+      "optionNotes": [
+        "条件命中联合索引最左列，可以使用索引",
+        "跳过了最左列 class_id，通常用不上该索引",
+        "只按 score 排序同样缺少最左列",
+        "没有过滤条件，只能全表或全索引扫描"
+      ],
+      "difficulty": "基础",
+      "tags": [
+        "索引",
+        "最左前缀"
+      ]
+    },
+    {
+      "id": "sql-013",
+      "question": "要从 users 表中找出重复的 email，并返回邮箱和出现次数，哪条查询正确？",
+      "options": [
+        "SELECT DISTINCT email FROM users;",
+        "SELECT email FROM users WHERE COUNT(*) > 1;",
+        "SELECT email, COUNT(*) FROM users GROUP BY email HAVING COUNT(*) > 1;",
+        "SELECT email, COUNT(*) FROM users;"
+      ],
+      "answerIndex": 2,
+      "explanation": "先按 email 分组，把相同邮箱聚成一组，再用 HAVING 过滤出现次数大于 1 的组。WHERE 在分组之前执行，不能直接对 COUNT(*) 做过滤。",
+      "optionNotes": [
+        "DISTINCT 只能去重，无法给出重复次数",
+        "WHERE 早于分组，不能直接使用 COUNT(*)",
+        "先 GROUP BY 再 HAVING，是标准写法",
+        "缺少分组和过滤，返回的是全表统计"
+      ],
+      "difficulty": "挑战",
+      "tags": [
+        "GROUP BY",
+        "HAVING"
+      ]
+    },
+    {
+      "id": "sql-014",
+      "question": "下面查询本想保留所有学生，但没下过单的学生消失了。正确的修改方式是什么？",
+      "code": {
+        "language": "sql",
+        "content": "SELECT s.name, o.id\nFROM students s\nLEFT JOIN orders o ON o.student_id = s.id\nWHERE o.amount > 100;"
+      },
+      "options": [
+        "把 LEFT JOIN 改成 INNER JOIN，语义更明确",
+        "给 o.amount 建索引，让过滤更快",
+        "把条件改成 o.amount > 100 OR o.amount IS NULL",
+        "把 o.amount > 100 移到 ON 子句，保留 LEFT JOIN"
+      ],
+      "answerIndex": 3,
+      "explanation": "LEFT JOIN 先保留所有学生，右表缺失补 NULL，随后 WHERE 里的 NULL > 100 得到 UNKNOWN，这些行被过滤，外连接就退化成了内连接。把条件放进 ON 只影响匹配哪些订单，左表学生仍然全部保留。",
+      "optionNotes": [
+        "改成 INNER JOIN 会继续丢掉没下单的学生",
+        "索引只能加速，不能改变 NULL 行被过滤的结果",
+        "这样会保留金额为 NULL 的订单，改变筛选含义",
+        "条件移入 ON，左表行全保留，正确"
+      ],
+      "difficulty": "挑战",
+      "tags": [
+        "LEFT JOIN",
+        "ON vs WHERE"
+      ]
+    },
+    {
+      "id": "sql-015",
+      "question": "从 A 账户扣 100 元、给 B 账户加 100 元，两条 UPDATE 必须一起成功或一起失败。正确做法是什么？",
+      "options": [
+        "两条 UPDATE 分别自动提交，失败后手工补一条",
+        "把两条 UPDATE 合并成一条 DELETE 语句",
+        "给余额列加索引，让更新更快",
+        "用 BEGIN 开启事务，两条 UPDATE 后 COMMIT，任一步失败则 ROLLBACK"
+      ],
+      "answerIndex": 3,
+      "explanation": "事务把多条写操作打包成一个原子单元：COMMIT 之前改动不会真正生效，中途失败可以 ROLLBACK 撤销已执行的扣款。否则第一条成功、第二条失败时，钱就会凭空消失。",
+      "optionNotes": [
+        "自动提交会让两条语句各自生效，无法整体回滚",
+        "DELETE 会删除账户记录，语义完全错误",
+        "索引只影响速度，不解决原子性问题",
+        "事务保证要么全提交、要么全回滚，正确"
+      ],
+      "difficulty": "挑战",
+      "tags": [
+        "事务",
+        "原子性"
+      ]
+    }
+  ]
+}

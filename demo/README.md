@@ -1,93 +1,100 @@
-# 起点编程 DevStart · 本地 Demo
+# 起点编程 DevStart · 正式版 v1.0
 
-面向零基础学习者的计算机基础学习与刷题演示。包含 5 个主题、15 张知识卡、40 道单选题，纯本地运行，无构建步骤、无后端、无外部依赖。
+面向零基础学习者的计算机基础学习与刷题网站。**本地优先、无账号、无后端**，支持内容包驱动的题库独立更新。
+
+- 8 个主题：Python、Docker、Kubernetes、Linux、Git、计算机网络、SQL、数据结构
+- 32 张知识卡、120 道题，覆盖基础 / 进阶 / 挑战，含代码阅读、命令输出、场景排错与方案权衡
+- 每题附逐选项解析；错题本、四级熟练度（生疏/熟悉/熟练/掌握）与薄弱知识点、快速练习 / 全部练习 / 错题重练
+- 题库版本化：HTTP 下自动加载最新 `content/bundle.json`，失败或 `file://` 时回退内置题库
 
 ## 快速开始
 
-**方式一：直接打开（最简单）**
+**方式一：直接打开**
 
-双击 `index.html`，或把它拖进浏览器即可。所有脚本均为传统脚本、使用相对路径，兼容 `file://` 协议。
+双击 `index.html`。使用内置题库与本地存储，完全离线可用。
 
-**方式二：本地静态服务器（推荐开发时使用）**
+**方式二：本地服务器（推荐，可验证题库在线更新）**
 
 在仓库根目录执行：
 
 ```bash
 python -m http.server 8000 -d demo
+# 或 npm run serve
 ```
 
-然后访问 <http://localhost:8000/>。
-
-## 已实现功能
-
-- 首页：产品介绍、5 个主题入口、三步学习法、学习进度摘要。
-- 主题详情：3 张知识卡、最佳成绩 / 练习次数 / 正确率、刷题入口。
-- 刷题：8 道单选，逐题作答；提交后锁定选项、即时判分并展示解析。
-- 键盘操作：`1`–`4` 选择选项，`Enter` 提交 / 下一题。
-- 结果页：得分环、分档评语、错题回顾（你的答案 / 正确答案 / 解析）、重新练习。
-- 本地进度：`localStorage` 保存最佳成绩（键：`devstart:progress:v1`），页脚可清除。
-- 响应式布局（375px 起）、键盘焦点可见、`aria-live` 反馈、正误不只靠颜色区分。
+访问 <http://localhost:8000/>。
 
 ## 路由
 
 | 路由 | 页面 |
 | --- | --- |
-| `#/` | 首页 |
-| `#/topic/:id` | 主题详情（`python` / `docker` / `k8s` / `linux` / `git`） |
-| `#/quiz/:id` | 刷题与结果页 |
+| `#/` | 首页：课程、掌握度、错题入口、三步学习法 |
+| `#/topic/:id` | 主题详情：目标、知识卡、进度、三种练习模式 |
+| `#/review` | 全局错题本：按主题汇总、全部错题重练 |
+| `#/quiz/:id?mode=quick\|all\|review` | 刷题与结果页 |
+| `#/quiz/all?mode=review` | 跨主题错题重练 |
 
-刷新、深链接和浏览器前进 / 后退均可用。
+`id` 取 `python` / `docker` / `k8s` / `linux` / `git` / `network` / `sql` / `data-structures`。
+
+## 功能细节
+
+- **练习模式**：快速练习（默认 8 题，优先未做 → 错题 → 只对一次 → 已掌握）、全部题目、错题重练。
+- **掌握度**：逐题记录作答次数、正确次数、连对次数、最近结果；连续答对 2 次计为掌握，只对一次计半掌握。
+- **熟练度**：在掌握度之外，再综合正确率（50%）、连对（30%）、作答新鲜度（20%），并以作答次数作置信度，得出 0–100 分与「生疏 / 熟悉 / 熟练 / 掌握」四级画像；久未练习会随时间降档，主题页还会列出最需要回炉的薄弱知识点（按题目标签聚合）。
+- **错题本**：最后作答错误的题目自动进入；按最久未练排序，可单主题或跨主题重练。
+- **逐选项解析**：提交后每个选项都会显示对/错原因；代码题展示代码块。
+- **进度迁移**：旧版 `devstart:progress:v1` 会自动迁移到 v2，不丢历史最佳成绩。
+- **题库更新**：页脚显示题库版本与发布日期，可查看更新说明；HTTP 下自动获取最新内容。
+- **无障碍**：键盘 `1–4` 选择、`Enter` 提交 / 下一题；真实按钮、可见焦点、`aria-live` 反馈；正误不只靠颜色。
 
 ## 目录结构
 
 ```text
 demo/
-├── index.html          # 页面骨架与脚本入口
-├── css/styles.css      # 设计系统与全部样式
+├── index.html
+├── css/styles.css
 ├── js/
-│   ├── data.js         # 课程与题库（浏览器 + Node 双端可读）
-│   ├── quiz-core.js    # 判分纯函数 gradeQuiz（UMD）
-│   └── app.js          # hash 路由、视图渲染、交互与进度存储
+│   ├── data.js            # 生成的内置题库（离线回退）
+│   ├── quiz-core.js       # 判分
+│   ├── content-loader.js  # 在线题库加载与回退
+│   ├── progress-core.js   # 进度/掌握度/熟练度/错题/组卷
+│   └── app.js             # 路由与视图
+├── content/
+│   ├── SCHEMA.md          # 题库规范
+│   ├── manifest.json      # 版本与内容包清单
+│   ├── bundle.json        # 生成的在线题库
+│   └── packs/*.json       # 题目源文件（唯一数据源）
 └── README.md
 ```
 
-内容与逻辑分离：新增课程只需按现有结构向 `js/data.js` 的 `topics` 中追加主题。
+## 题库更新
 
-## 数据约定
+不要手工编辑 `data.js` 或 `bundle.json`。修改 `content/packs/*.json`，更新 `manifest.json` 版本与说明，然后：
 
-```js
-{
-  version: 1,
-  topics: [{
-    id, title, tagline, description, level, estimatedMinutes, accent, icon,
-    cards: [{ title, summary, points: [] }],
-    questions: [{
-      id, question, options: [4 项], answerIndex, explanation, difficulty
-    }]
-  }]
-}
+```bash
+npm run content:validate
+npm run content:build
+npm run content:check
+npm test
 ```
+
+完整流程、版本规则与发布/回滚方式见 [`../docs/内容更新指南.md`](../docs/内容更新指南.md)。
 
 ## 测试
 
-在仓库根目录执行（Node 18+，无需安装依赖）：
+Node 18+，无需安装依赖：
 
 ```bash
-node --test
-node --check demo/js/data.js
-node --check demo/js/quiz-core.js
-node --check demo/js/app.js
+npm test
+# 等价于 node --test
 ```
 
-测试覆盖：
-
-- `tests/data.test.js`：主题 / 卡片 / 题目数量、ID 唯一性、选项与答案合法性、解析长度、中文内容。
-- `tests/quiz-core.test.js`：全对、全错、部分正确、空答案、缺省答案、百分比取整、空题库。
-- `tests/smoke.test.js`：关键文件、脚本加载顺序、无外部网络依赖、路由与存储键、README。
+覆盖：题库 schema/数量/难度/答案分布/ID 唯一/逐选项解析、构建物一致性、判分、题库加载与回退、进度迁移/掌握度/熟练度/薄弱知识点/组卷、静态资源与路由冒烟。
 
 ## 说明与边界
 
-- 这是学习产品 Demo，进度仅保存在当前浏览器；清理浏览器数据或点击「清除本地进度」会重置。
-- 刷新刷题页会重新开始当前主题的练习（路由会保留），答题中途状态不持久化。
-- Docker / Kubernetes 目前只做概念入门，不含真实容器或集群操作。
-- 产品规划、指标与后续路线见 [`../docs/产品计划书.md`](../docs/产品计划书.md)。
+- 进度保存在当前浏览器；清理数据或页脚「清除本地进度」会重置 v1/v2 记录。
+- 刷题中途刷新会重新开始当前练习（路由保留，答题中间态不持久化）。
+- Docker / Kubernetes 只做概念与配置入门，不含真实容器/集群操作。
+- 账号同步、云备份、AI 讲解、交互沙箱属于后续版本；当前版本不依赖服务器即可完整使用。
+- 产品规划见 [`../docs/产品计划书.md`](../docs/产品计划书.md)。

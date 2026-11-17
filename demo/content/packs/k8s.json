@@ -1,0 +1,425 @@
+{
+  "schemaVersion": 2,
+  "id": "k8s",
+  "title": "Kubernetes 入门",
+  "tagline": "让几十台机器像一台一样听你指挥",
+  "description": "当容器多到人管不过来，就需要 Kubernetes（K8s）来自动编排：扩缩容、故障自愈、滚动更新都交给集群自己完成。本主题从 Pod 与节点讲起，逐步理解 Deployment、Service 以及常见故障的排查方法。",
+  "level": "入门",
+  "estimatedMinutes": 50,
+  "accent": "#5a5fd0",
+  "icon": "k8s",
+  "objectives": [
+    "能说明控制平面、节点与声明式 API 的分工",
+    "能区分 Pod、Deployment、StatefulSet 与 Service 的职责",
+    "能读懂常见的 Pod、Deployment、Service YAML",
+    "能根据 Pending、CrashLoopBackOff 等状态定位问题"
+  ],
+  "cards": [
+    {
+      "id": "k8s-card-01",
+      "title": "集群、节点与声明式 API",
+      "summary": "控制平面保存期望状态，工作节点运行 Pod，kubectl 只是读写 API 的客户端。",
+      "points": [
+        "集群由控制平面和工作节点组成，控制平面负责调度、存储状态和提供 API",
+        "工作节点上的 kubelet 管理 Pod，容器运行时负责真正启动容器",
+        "你提交 YAML 声明「要什么」，控制器持续对比实际状态并不断收敛",
+        "kubectl apply 提交配置，get 查询，describe 看详情与事件，delete 删除资源",
+        "节点资源不足时 Pod 会停留在 Pending，而不是自动换一套定义继续运行"
+      ],
+      "example": {
+        "language": "text",
+        "caption": "用 kubectl 查看节点是否就绪",
+        "code": "$ kubectl get nodes\nNAME       STATUS   ROLES           AGE   VERSION\nmaster-1   Ready    control-plane   12d   v1.30.2\nworker-1   Ready    <none>          12d   v1.30.2\nworker-2   Ready    <none>          12d   v1.30.2"
+      },
+      "pitfalls": [
+        "把 kubectl 当成集群本身；它只是客户端，关闭终端不影响集群运行",
+        "直接修改节点上的容器绕过 API，控制器很快会按期望状态覆盖",
+        "看到 Pending 就反复删除重建，而不看 describe 里的调度事件"
+      ]
+    },
+    {
+      "id": "k8s-card-02",
+      "title": "Pod 与容器生命周期",
+      "summary": "Pod 是最小调度单元，容器在共享的网络与存储环境中运行，重建后 IP 会变化。",
+      "points": [
+        "Pod 是 Kubernetes 创建和调度的最小单位，可以包含一个或多个容器",
+        "同一 Pod 内的容器共享网络命名空间，可用 localhost 互访，端口不能重复",
+        "Pod 重建后 IP 和名称都可能变化，不能把它当作稳定的访问地址",
+        "restartPolicy 控制容器退出后的行为：Always（默认）、OnFailure、Never",
+        "需要独立扩缩容的多个服务应拆成不同 Pod，而不是塞进同一个 Pod"
+      ],
+      "example": {
+        "language": "yaml",
+        "caption": "一个最小可用的 Pod 定义",
+        "code": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: web\nspec:\n  containers:\n  - name: web\n    image: nginx:1.27\n    ports:\n    - containerPort: 80"
+      },
+      "pitfalls": [
+        "把多个无关服务塞进一个 Pod，导致无法分别扩缩容和发布",
+        "依赖 Pod IP 做服务发现，Pod 重建后连接会全部失效",
+        "认为 restartPolicy: Never 会让失败的 Pod 自动修复"
+      ]
+    },
+    {
+      "id": "k8s-card-03",
+      "title": "Deployment、Service 与发布",
+      "summary": "Deployment 管副本和滚动更新，Service 用标签选择器给 Pod 一个稳定入口。",
+      "points": [
+        "Deployment 通过 ReplicaSet 维持副本数，修改 Pod 模板会触发滚动更新并生成新 ReplicaSet",
+        "滚动更新按 maxSurge 和 maxUnavailable 控制新旧 Pod 的替换节奏，也可以随时回滚",
+        "Service 通过 selector 选中带对应标签的 Pod，并提供稳定的 ClusterIP 做负载均衡",
+        "ClusterIP 只在集群内可达；NodePort 在每个节点暴露端口；LoadBalancer 依赖云环境",
+        "Service 的 port 是访问入口端口，targetPort 是 Pod 内容器实际监听的端口"
+      ],
+      "example": {
+        "language": "yaml",
+        "caption": "把 80 端口的服务流量转发到容器的 8080",
+        "code": "apiVersion: v1\nkind: Service\nmetadata:\n  name: web\nspec:\n  type: ClusterIP\n  selector:\n    app: web\n  ports:\n  - port: 80\n    targetPort: 8080"
+      },
+      "pitfalls": [
+        "改了 Deployment 的 Pod 标签却忘了同步 Service selector，导致 Endpoints 为空",
+        "把 targetPort 写成 Service 的 port，流量被转发到容器未监听的端口",
+        "以为 Deployment 的 Pod 名称固定，实际名称带随机后缀且每次发布都会变化"
+      ]
+    },
+    {
+      "id": "k8s-card-04",
+      "title": "配置、存储与排错",
+      "summary": "配置与密钥用 ConfigMap/Secret 注入，持久数据用 PVC，排错先看 describe 事件和日志。",
+      "points": [
+        "ConfigMap 保存普通配置，Secret 保存敏感数据；Secret 默认只做 base64 编码，不是加密",
+        "emptyDir 随 Pod 删除而清空；PVC 绑定 PV 后，数据生命周期独立于 Pod",
+        "kubectl describe pod 末尾的 Events 常能直接指出调度、拉镜像或探针失败原因",
+        "Pending 多为资源不足或亲和性不满足；ImagePullBackOff 多为镜像名、权限或网络问题",
+        "CrashLoopBackOff 表示容器反复启动后退出，应结合 kubectl logs 和 --previous 查原因"
+      ],
+      "example": {
+        "language": "text",
+        "caption": "describe 事件直接给出调度失败原因",
+        "code": "Events:\n  Type     Reason            Age   From               Message\n  ----     ------            ----  ----               -------\n  Warning  FailedScheduling  40s   default-scheduler  0/3 nodes are available:\n           3 Insufficient cpu."
+      },
+      "pitfalls": [
+        "把 Secret 当成加密存储，直接把明文密钥提交进 Git",
+        "用 emptyDir 保存数据库数据，Pod 重建后数据全部丢失",
+        "只反复重启 Pod 不读 describe 事件，错过真正的失败原因"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "k8s-001",
+      "question": "在 Kubernetes 中，最小的可调度部署单元是什么？",
+      "options": [
+        "Node（节点）",
+        "Pod",
+        "Container（容器）",
+        "Deployment"
+      ],
+      "answerIndex": 1,
+      "explanation": "Kubernetes 不直接调度单个容器，而是把一个或多个容器组合成 Pod 后整体调度到节点上。Pod 是调度、网络和生命周期管理的最小单位。",
+      "optionNotes": [
+        "Node 是承载 Pod 的机器，不是被调度的最小单元",
+        "正确：Pod 是最小调度单元",
+        "容器运行在 Pod 内，本身不被单独调度",
+        "Deployment 管理 Pod 副本，粒度比 Pod 更大"
+      ],
+      "difficulty": "基础",
+      "tags": ["Pod", "调度"]
+    },
+    {
+      "id": "k8s-002",
+      "question": "Kubernetes 中的 Node 指的是什么？",
+      "options": [
+        "集群中运行 Pod 的工作机器",
+        "一种描述集群的编程语言",
+        "kubectl 使用的配置文件",
+        "存放镜像的公共仓库"
+      ],
+      "answerIndex": 0,
+      "explanation": "Node 是加入集群的一台机器（物理机或虚拟机），上面运行 kubelet 和容器运行时，负责执行控制平面调度过来的 Pod。控制平面组件也可以部署在节点上，但职责不同。",
+      "optionNotes": [
+        "正确：Node 是承载 Pod 的工作机器",
+        "Kubernetes 不使用某种专属编程语言描述节点",
+        "kubeconfig 是访问配置，不是节点",
+        "镜像仓库是存放镜像的服务，与 Node 无关"
+      ],
+      "difficulty": "基础",
+      "tags": ["Node", "集群"]
+    },
+    {
+      "id": "k8s-003",
+      "question": "kubectl get pods 的主要作用是什么？",
+      "options": [
+        "创建一个新的 Pod",
+        "删除集群中所有容器",
+        "把 Pod 日志导出到文件",
+        "列出 Pod 及其当前状态"
+      ],
+      "answerIndex": 3,
+      "explanation": "get 用于查询资源，kubectl get pods 会列出 Pod 名称、就绪数、状态、重启次数等信息，是日常巡检和排错的第一步。创建用 apply 或 create，看日志用 logs。",
+      "optionNotes": [
+        "创建资源应使用 kubectl apply 或 create",
+        "get 不会删除任何资源",
+        "导出日志应使用 kubectl logs 重定向",
+        "正确：它查询并展示 Pod 列表与状态"
+      ],
+      "difficulty": "基础",
+      "tags": ["kubectl", "Pod"]
+    },
+    {
+      "id": "k8s-004",
+      "question": "Deployment 最核心的能力是什么？",
+      "options": [
+        "为容器提供持久化存储",
+        "给每个 Pod 分配固定公网 IP",
+        "按期望副本数管理 Pod，并支持滚动更新与回滚",
+        "对容器镜像进行加密签名"
+      ],
+      "answerIndex": 2,
+      "explanation": "Deployment 声明副本数和 Pod 模板，由 ReplicaSet 保证实际副本数与期望一致；修改模板会触发滚动更新，并可回滚到历史版本。存储、IP 和镜像签名由其他资源或工具负责。",
+      "optionNotes": [
+        "持久化存储由 PV、PVC 等资源负责",
+        "Pod IP 由网络插件分配，且会随重建变化",
+        "正确：副本管理、滚动更新和回滚是核心能力",
+        "镜像签名属于供应链安全工具，不是 Deployment 的功能"
+      ],
+      "difficulty": "基础",
+      "tags": ["Deployment", "副本"]
+    },
+    {
+      "id": "k8s-005",
+      "question": "Kubernetes 的声明式 API 含义是什么？",
+      "options": [
+        "用户手动逐台创建 Pod 并配置网络",
+        "用户声明期望状态，控制器持续把实际状态调整到一致",
+        "集群只能通过图形界面操作",
+        "每次部署都必须重跑完整脚本"
+      ],
+      "answerIndex": 1,
+      "explanation": "声明式意味着你提交的是目标状态，例如「3 个副本、镜像 1.1」，而不是一步步的操作命令。控制器会反复比较实际与期望状态，并自动补齐或替换资源。",
+      "optionNotes": [
+        "逐台手动创建是命令式做法，不是声明式",
+        "正确：声明期望状态，由控制器负责收敛",
+        "kubectl、API 和图形界面都可以操作集群",
+        "声明式不要求每次重跑脚本，apply 会计算差异"
+      ],
+      "difficulty": "基础",
+      "tags": ["声明式", "控制器"]
+    },
+    {
+      "id": "k8s-006",
+      "question": "关于同一个 Pod 内的多个容器，下列哪项描述正确？",
+      "options": [
+        "共享网络命名空间，可以通过 localhost 互相访问",
+        "各自拥有独立的公网 IP 地址",
+        "必须通过 Service 才能互相通信",
+        "不能共享任何存储卷"
+      ],
+      "answerIndex": 0,
+      "explanation": "同一 Pod 内的容器共享网络命名空间和 Pod IP，因此能用 localhost 加端口互相访问，端口不能冲突。它们也可以挂载同一个 Volume 来共享文件。",
+      "optionNotes": [
+        "正确：共享网络命名空间，localhost 可直接互访",
+        "Pod 只有一组网络地址，容器不会各拿一个公网 IP",
+        "同 Pod 内容器直接用 localhost 通信，不需要 Service",
+        "多个容器可以挂载同一个 Volume 共享数据"
+      ],
+      "difficulty": "基础",
+      "tags": ["Pod", "网络"]
+    },
+    {
+      "id": "k8s-007",
+      "question": "Pod 的 IP 会随重建变化，要让一组 Pod 获得稳定访问入口，应该用什么？",
+      "options": [
+        "Dockerfile",
+        "某个 Node 的主机名",
+        "Service",
+        "ConfigMap"
+      ],
+      "answerIndex": 2,
+      "explanation": "Service 通过标签选择器关联一组 Pod，并提供一个稳定的 ClusterIP 和 DNS 名称，由 kube-proxy 把流量分发到当前健康的 Pod。Pod 重建后 Service 会自动更新后端。",
+      "optionNotes": [
+        "Dockerfile 用于构建镜像，不提供服务发现",
+        "Node 主机名不随 Pod 调度变化，无法代表一组 Pod",
+        "正确：Service 提供稳定入口和负载均衡",
+        "ConfigMap 用于注入配置，不负责网络访问"
+      ],
+      "difficulty": "基础",
+      "tags": ["Service", "服务发现"]
+    },
+    {
+      "id": "k8s-008",
+      "question": "容器反复启动失败。下一步最应该做什么？",
+      "code": {
+        "language": "text",
+        "content": "$ kubectl get pods\nNAME                   READY   STATUS             RESTARTS\nweb-7d9f8c6b5d-2xk4p   0/1     CrashLoopBackOff   5"
+      },
+      "options": [
+        "删除 Pod 后不再处理，等待它自己恢复",
+        "把 Deployment 的副本数缩到 0",
+        "查看该 Pod 的日志，必要时用 --previous 看上一次崩溃输出",
+        "重启整个集群的控制平面"
+      ],
+      "answerIndex": 2,
+      "explanation": "CrashLoopBackOff 表示容器启动后反复退出，kubelet 按退避策略延迟重启。日志能说明应用为什么退出；如果当前容器已经重启，--previous 可以查看上一个实例的输出。",
+      "optionNotes": [
+        "删除后控制器仍会重建，问题不会消失",
+        "缩容只是让 Pod 消失，掩盖了根因",
+        "正确：日志是定位崩溃原因的直接证据",
+        "单个 Pod 崩溃不需要重启控制平面，代价也过高"
+      ],
+      "difficulty": "进阶",
+      "tags": ["CrashLoopBackOff", "排错"]
+    },
+    {
+      "id": "k8s-009",
+      "question": "把镜像标签改成 1.1 后执行 kubectl apply，集群会发生什么？",
+      "code": {
+        "language": "yaml",
+        "content": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: web\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: web\n  template:\n    metadata:\n      labels:\n        app: web\n    spec:\n      containers:\n      - name: web\n        image: registry.example.com/web:1.0"
+      },
+      "options": [
+        "创建新的 ReplicaSet，并按滚动策略逐步替换旧 Pod",
+        "直接修改现有 Pod 内的镜像，容器原地重启",
+        "因为 Deployment 不支持更新，apply 会报错",
+        "只更新镜像仓库，现有 Pod 保持不变"
+      ],
+      "answerIndex": 0,
+      "explanation": "Pod 模板中的 image 变化会被视为新的模板版本，Deployment 创建新的 ReplicaSet，再按 maxSurge 和 maxUnavailable 逐步扩新缩旧。已有 Pod 不会被原地修改。",
+      "optionNotes": [
+        "正确：模板变更触发新 ReplicaSet 和滚动更新",
+        "Pod 模板不可原地改镜像，Kubernetes 会新建 Pod",
+        "Deployment 支持更新，apply 会正常提交",
+        "提交到集群的配置会驱动 Pod 替换，不只是改仓库"
+      ],
+      "difficulty": "进阶",
+      "tags": ["Deployment", "滚动更新"]
+    },
+    {
+      "id": "k8s-010",
+      "question": "集群内其他 Pod 访问该 Service 的 80 端口时，流量最终到达容器哪个端口？",
+      "code": {
+        "language": "yaml",
+        "content": "apiVersion: v1\nkind: Service\nmetadata:\n  name: web\nspec:\n  type: ClusterIP\n  selector:\n    app: web\n  ports:\n  - port: 80\n    targetPort: 8080"
+      },
+      "options": [
+        "80 端口",
+        "由 kube-proxy 随机选择的端口",
+        "Service 的 ClusterIP 所对应的端口",
+        "8080 端口"
+      ],
+      "answerIndex": 3,
+      "explanation": "Service 的 port 是对外暴露的服务端口，targetPort 指定后端容器监听的端口。kube-proxy 把发往 ClusterIP:80 的流量转发到 PodIP:8080。",
+      "optionNotes": [
+        "80 是 Service 端口，不是容器实际监听端口",
+        "转发目标由 targetPort 决定，不是随机端口",
+        "ClusterIP 是虚拟服务地址，不直接对应容器端口",
+        "正确：targetPort 8080 才是容器监听端口"
+      ],
+      "difficulty": "进阶",
+      "tags": ["Service", "targetPort"]
+    },
+    {
+      "id": "k8s-011",
+      "question": "Deployment 与 StatefulSet 的主要区别是什么？",
+      "options": [
+        "Deployment 只能运行无状态应用，StatefulSet 只能运行数据库",
+        "StatefulSet 为每个 Pod 提供稳定名称和独立存储，Deployment 的 Pod 可以互换",
+        "Deployment 不支持滚动更新，StatefulSet 才支持",
+        "StatefulSet 创建的 Pod 不能通过 Service 访问"
+      ],
+      "answerIndex": 1,
+      "explanation": "StatefulSet 为每个副本分配固定序号和稳定网络标识，通常配合 PVC 模板为每个 Pod 提供独立存储，适合数据库等有状态服务。Deployment 的 Pod 没有固定身份，可以随意替换。",
+      "optionNotes": [
+        "这是常见误解：是否适合有状态服务取决于需求，不是硬性限制",
+        "正确：稳定身份和独立存储是 StatefulSet 的关键差异",
+        "两者都支持滚动更新，只是策略细节不同",
+        "StatefulSet 同样可以通过 Service 暴露，常用 Headless Service"
+      ],
+      "difficulty": "进阶",
+      "tags": ["Deployment", "StatefulSet", "对比"]
+    },
+    {
+      "id": "k8s-012",
+      "question": "kubectl rollout status 长时间卡住，新 Pod 一直是 0/1。最合理的排查顺序是什么？",
+      "options": [
+        "直接删除 Deployment 后重新创建",
+        "把 Service 类型改成 NodePort 再观察",
+        "用 describe 查看新 Pod 的事件和探针失败原因，再结合日志定位",
+        "把 replicas 改成 0，让发布立即结束"
+      ],
+      "answerIndex": 2,
+      "explanation": "滚动更新会等待新 Pod 进入 Ready 才继续替换，0/1 说明就绪探针未通过或容器未正常启动。describe 的事件能看到探针失败、拉镜像失败等原因，日志则补充应用层信息。",
+      "optionNotes": [
+        "删除重建会丢失发布现场，问题可能再次出现",
+        "Service 类型不影响 Pod 是否就绪",
+        "正确：先看事件和探针，再看应用日志",
+        "缩容只是绕过发布，不是解决问题"
+      ],
+      "difficulty": "进阶",
+      "tags": ["滚动更新", "就绪探针"]
+    },
+    {
+      "id": "k8s-013",
+      "question": "Service 的 ClusterIP 为 10.96.0.15，集群内访问它超时，且 kubectl get endpoints web 显示为空。最可能的原因是什么？",
+      "options": [
+        "Service 没有分配到 ClusterIP",
+        "Service 的 selector 与后端 Pod 的标签不匹配",
+        "后端 Pod 没有设置 restartPolicy",
+        "必须把 Service 改成 LoadBalancer 才能访问"
+      ],
+      "answerIndex": 1,
+      "explanation": "Endpoints 为空说明 Service 没有选中任何就绪 Pod，最常见的是 selector 与 Pod 标签不一致，或 Pod 未通过就绪探针。先核对标签，再检查 Pod 的 Ready 状态。",
+      "optionNotes": [
+        "能拿到 ClusterIP 说明地址已分配，问题在后端",
+        "正确：selector 不匹配会导致没有后端 Endpoints",
+        "restartPolicy 不影响 Service 选择后端",
+        "ClusterIP 在集群内可直接访问，无需 LoadBalancer"
+      ],
+      "difficulty": "挑战",
+      "tags": ["Service", "Endpoints", "排错"]
+    },
+    {
+      "id": "k8s-014",
+      "question": "某 Pod 长时间处于 Pending。根据 describe 输出的事件，最可能的原因和正确做法是什么？",
+      "code": {
+        "language": "text",
+        "content": "Events:\n  Type     Reason            Age   From               Message\n  ----     ------            ----  ----               -------\n  Warning  FailedScheduling  40s   default-scheduler  0/3 nodes are available:\n           3 Insufficient cpu."
+      },
+      "options": [
+        "容器 requests.cpu 超出节点可分配资源；降低 requests 或扩容节点",
+        "镜像不存在；应修改镜像标签后重试",
+        "容器端口被占用；应修改 containerPort",
+        "缺少 Service；应创建 NodePort 类型的 Service"
+      ],
+      "answerIndex": 0,
+      "explanation": "调度器提示 3 个节点都 Insufficient cpu，说明没有节点能满足 Pod 的 CPU requests，所以 Pod 无法绑定到节点。应核对 requests 是否合理，降低请求或增加节点资源。",
+      "optionNotes": [
+        "正确：requests 过大导致调度失败，需调整资源或扩容",
+        "拉镜像失败会显示 ImagePullBackOff，不是 Pending",
+        "端口冲突发生在容器启动阶段，不会让 Pod 停在 Pending",
+        "Service 不参与 Pod 调度，创建它也不能解决"
+      ],
+      "difficulty": "挑战",
+      "tags": ["Pending", "调度", "资源"]
+    },
+    {
+      "id": "k8s-015",
+      "question": "livenessProbe 与 readinessProbe 的区别，下列哪项正确？",
+      "options": [
+        "liveness 失败会把 Pod 从 Service 摘除，readiness 失败会重启容器",
+        "两者失败都会立即删除 Pod 并重新调度",
+        "readiness 只在启动时执行一次，liveness 持续执行",
+        "readiness 失败会停止向该 Pod 转发流量，liveness 失败会重启容器"
+      ],
+      "answerIndex": 3,
+      "explanation": "readiness 决定 Pod 是否准备好接收流量，失败时 Endpoints 会移除该 Pod 但不重启它；liveness 判断容器是否还活着，连续失败会触发重启。两者的失败后果正好相反。",
+      "optionNotes": [
+        "说反了：摘流量是 readiness，重启是 liveness",
+        "探针失败不会删除 Pod，只会摘流量或重启容器",
+        "两者都会按 periodSeconds 周期性执行",
+        "正确：readiness 管流量，liveness 管重启"
+      ],
+      "difficulty": "进阶",
+      "tags": ["探针", "健康检查", "对比"]
+    }
+  ]
+}

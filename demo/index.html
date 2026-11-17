@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="起点编程 DevStart — 零基础计算机基础训练场，纯本地运行的编程学习与刷题演示。" />
+  <meta name="description" content="起点编程 DevStart — 零基础计算机基础训练场，纯本地运行的编程学习与刷题应用。" />
   <title>起点编程 DevStart · 零基础计算机基础训练场</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230c6b58'/%3E%3Cpath d='M10 12l-4 4 4 4M22 12l4 4-4 4M18 9l-4 14' stroke='%23f6f3ec' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="css/styles.css" />
@@ -22,7 +22,8 @@
       <nav class="site-nav" aria-label="主导航">
         <a href="#/" data-nav data-scroll="topics">课程</a>
         <a href="#/" data-nav data-scroll="how">学习路线</a>
-        <span class="nav-progress" id="nav-progress" aria-label="学习进度摘要">进度 0/5</span>
+        <a href="#/review" class="nav-review">错题本<span class="nav-badge" id="review-badge" hidden></span></a>
+        <span class="nav-progress" id="nav-progress" aria-label="学习进度摘要">进度 0/0</span>
       </nav>
     </div>
   </header>
@@ -30,14 +31,21 @@
   <main id="app" class="shell app-main" tabindex="-1">
     <!-- 路由视图由 app.js 渲染 -->
     <noscript>
-      <p style="padding:2rem">本演示需要启用 JavaScript 才能运行。</p>
+      <p style="padding:2rem">本应用需要启用 JavaScript 才能运行。</p>
     </noscript>
   </main>
 
   <footer class="site-footer">
     <div class="shell footer-inner">
       <p class="footer-title">起点编程 · DevStart</p>
-      <p>这是一个纯本地演示：所有课程、题目与学习进度都保存在你的浏览器 localStorage 中，不会上传任何数据。清除浏览器数据或点击下方按钮即可重置。</p>
+      <p>这是一个纯本地应用：所有课程、题目与学习进度都保存在你的浏览器 localStorage 中，不会上传任何数据。清除浏览器数据或点击下方按钮即可重置。</p>
+      <p class="footer-version">
+        <span id="content-version-label">题库加载中…</span>
+        <span aria-hidden="true">·</span>
+        <span id="content-source-label">—</span>
+        <span aria-hidden="true">·</span>
+        <button type="button" class="link-btn" id="update-notes">更新说明</button>
+      </p>
       <p class="footer-actions">
         <button type="button" class="link-btn" id="clear-progress">清除本地进度</button>
         <span aria-hidden="true">·</span>
@@ -46,8 +54,19 @@
     </div>
   </footer>
 
+  <dialog class="notes-dialog" id="notes-dialog" aria-labelledby="notes-title">
+    <h2 id="notes-title">题库更新说明</h2>
+    <p class="notes-meta" id="notes-meta"></p>
+    <ul id="notes-list"></ul>
+    <div class="notes-dialog-foot">
+      <button type="button" class="btn btn-ghost btn-sm" id="notes-close">关闭</button>
+    </div>
+  </dialog>
+
   <script src="js/data.js"></script>
   <script src="js/quiz-core.js"></script>
+  <script src="js/content-loader.js"></script>
+  <script src="js/progress-core.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

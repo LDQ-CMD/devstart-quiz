@@ -1,0 +1,421 @@
+{
+  "schemaVersion": 2,
+  "id": "git",
+  "title": "Git 版本控制",
+  "tagline": "给代码装上「时光机」和「后悔药」",
+  "description": "Git 记录项目的每一次改动，让你随时回退、随时开分支试验，搞砸了也有后悔药。学完本主题，你能独立完成提交、分支、合并与远程协作，并看懂常见报错该往哪一步排查。",
+  "level": "入门",
+  "estimatedMinutes": 50,
+  "accent": "#c2432b",
+  "icon": "git",
+  "objectives": [
+    "理解工作区、暂存区、仓库三个区域，能说出一条改动进入历史的完整路径",
+    "能区分 merge、reset、revert 各自的适用场景与风险",
+    "能读懂 git status、git log 的输出，判断当前仓库状态",
+    "能排查合并冲突、推送被拒、误删提交这三类常见故障",
+    "能独立完成 clone、pull、push 的远程协作流程"
+  ],
+  "cards": [
+    {
+      "id": "git-card-01",
+      "title": "仓库、提交与三个区域",
+      "summary": "改动从工作区经暂存区进入仓库，每一步都可查看、可撤销，这是理解一切 Git 操作的基础。",
+      "points": [
+        "仓库（Repository）是受 Git 管理的项目目录，隐藏文件夹 .git 里保存着完整历史",
+        "工作区是正在编辑的文件，git add 把改动送入暂存区，git commit 把暂存区内容记录成一次快照",
+        "git status 随时查看哪些文件被修改、已暂存或未被跟踪，是排错的第一条命令",
+        "每次提交都有唯一哈希 ID、作者和说明，git log 可翻看完整历史",
+        "commit 只作用于本地仓库，与远程无关；要让别人看到还得执行 git push"
+      ],
+      "example": {
+        "language": "bash",
+        "caption": "三个区域之间的移动",
+        "code": "git status                  # 查看三个区域的状态\ngit add app.py              # 工作区 → 暂存区\ngit commit -m \"修复登录校验\"  # 暂存区 → 仓库\ngit log --oneline -3        # 翻看最近 3 次提交"
+      },
+      "pitfalls": [
+        "只改文件不 git add 就执行 commit，结果这次提交里什么都没有，还误以为 Git 坏了",
+        "提交说明随手写 111 或 123，回头查找某次改动时完全无法定位",
+        "把 commit 和 push 混为一谈，以为提交了同事就能看到，其实代码还没上传"
+      ]
+    },
+    {
+      "id": "git-card-02",
+      "title": "分支与合并",
+      "summary": "分支只是指向某次提交的可移动指针，成本低到随开随删；合并则把两条开发线汇回一起。",
+      "points": [
+        "分支是指向某次提交的指针，git branch 创建它几乎瞬间完成，不复制任何文件",
+        "git switch 或 git checkout 切换分支，工作区会变成该分支的最新内容",
+        "在独立分支上开发新功能或修 Bug，主线 main 始终保持可用",
+        "git merge 把分支改动汇回主线；两边改到同一处会产生冲突，需手工解决后 add 并提交",
+        "git log --graph 能画出分支的分叉与合并历史，排查问题看图更直观"
+      ],
+      "example": {
+        "language": "bash",
+        "caption": "开一条功能分支并合回主线",
+        "code": "git switch -c feature-login   # 创建并切换到新分支\n# ……开发、git add、git commit……\ngit switch main\ngit merge feature-login       # 把功能分支合并回主线"
+      },
+      "pitfalls": [
+        "改动写到一半不提交就切分支去做新任务，两件事搅在同一个工作区里",
+        "解决冲突时直接删掉 <<<<<<< 标记之间的代码，把同事的改动弄丢",
+        "功能分支长期不合回主线，分叉越来越远，冲突越积越多"
+      ]
+    },
+    {
+      "id": "git-card-03",
+      "title": "远程协作",
+      "summary": "远程仓库是团队的同步点：clone 复制、pull 拉取、push 上传，推送前先拉取能少踩坑。",
+      "points": [
+        "git clone 把远程仓库连同全部历史完整复制到本地，是加入已有项目的第一步",
+        "git push 上传本地提交，git pull 拉取远程更新并合并到当前分支",
+        "远程包含你没有的新提交时 push 会被拒绝，先 pull 合并再推送即可",
+        "git fetch 只下载远程更新但不合并，适合先看一眼再决定怎么处理",
+        "推送前先 pull、勤提小提交，是减少冲突的标准习惯"
+      ],
+      "pitfalls": [
+        "多人共改一个文件却从不 pull，本地越走越偏，最后 push 被拒、冲突一大片",
+        "push 被拒后直接 --force 强推，把同事刚推上去的提交整个抹掉",
+        "以为 pull 会弄丢自己的修改而不敢拉取，结果分叉越来越深、更难合并"
+      ]
+    },
+    {
+      "id": "git-card-04",
+      "title": "撤销与回退",
+      "summary": "Git 的每一步都有后悔药：restore 丢弃工作区改动，reset 回退分支，revert 用反向提交安全撤销。",
+      "points": [
+        "git restore 文件名 丢弃工作区中未提交的修改，撤回的内容无法恢复，使用前想清楚",
+        "git reset --hard 提交号 把分支和文件一起退回去，被甩掉的提交仍能通过 git reflog 找回",
+        "git revert 提交号 生成一个内容相反的新提交来撤销旧提交，不改写任何已有历史",
+        "共享分支（如 main）上撤销要用 revert；reset 加强推会重写团队历史",
+        "git stash 能把未完成的改动临时收起来，处理完急事再 stash pop 恢复"
+      ],
+      "example": {
+        "language": "bash",
+        "caption": "三剂后悔药，各治一种情况",
+        "code": "git restore app.py        # 丢弃工作区改动（不可恢复）\ngit revert 8d27b4e        # 生成反向提交，安全撤销\ngit reset --hard HEAD~1   # 本地回退一次提交\ngit reflog                # 误操作后在这里找回提交号"
+      },
+      "pitfalls": [
+        "对已 push 的共享提交用 reset --hard 再强推，同事的本地历史全部错乱",
+        "分不清 restore、reset、revert 的作用范围，该用 revert 的场合用了 reset",
+        "以为 reset --hard 后提交就永久消失，其实 reflog 里还留着找回的线索"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "git-001",
+      "question": "git commit 这条命令的作用是？",
+      "options": [
+        "把代码上传到远程仓库",
+        "删除本地未提交的修改",
+        "把暂存区的改动记录成一次版本快照",
+        "自动创建一个新分支"
+      ],
+      "answerIndex": 2,
+      "explanation": "commit 会把暂存区里的内容连同提交说明一起写入本地仓库历史，生成一次快照。上传到远程是 git push 的职责，commit 本身只影响本地。",
+      "optionNotes": [
+        "上传到远程是 git push 的工作，commit 只作用于本地仓库",
+        "commit 不会删除任何改动，丢弃修改要用 git restore",
+        "正确：commit 把暂存区内容连同说明写进本地仓库历史",
+        "commit 只是记录快照，新建分支要用 git branch 或 switch -c"
+      ],
+      "difficulty": "基础",
+      "tags": ["提交", "基本概念"]
+    },
+    {
+      "id": "git-002",
+      "question": "想知道当前有哪些文件改了但还没提交，应该用哪条命令？",
+      "options": [
+        "git log",
+        "git status",
+        "git push",
+        "git init"
+      ],
+      "answerIndex": 1,
+      "explanation": "git status 专门展示工作区与暂存区的状态：哪些文件改了、哪些已暂存、哪些还未被跟踪。它是每次提交前最常查看的命令。",
+      "optionNotes": [
+        "git log 看的是已提交的历史记录，看不到未提交的工作区改动",
+        "正确：status 展示工作区与暂存区的实时状态",
+        "push 负责把本地提交上传到远程，与查看改动无关",
+        "init 用于把普通目录初始化成 Git 仓库，只需执行一次"
+      ],
+      "difficulty": "基础",
+      "tags": ["状态查看"]
+    },
+    {
+      "id": "git-003",
+      "question": "git add 这个命令的作用是？",
+      "options": [
+        "把文件改动放入暂存区，准备提交",
+        "自动修复所有合并冲突",
+        "把提交推送到远程仓库",
+        "回滚上一次提交"
+      ],
+      "answerIndex": 0,
+      "explanation": "git add 把指定文件的改动放进暂存区，下次 commit 只会包含暂存区里的内容。这个「先挑再存」的设计让你可以分批、有选择地提交。",
+      "optionNotes": [
+        "正确：add 把改动从工作区移入暂存区，等待提交",
+        "add 不会修改冲突，冲突标记要靠人工编辑解决",
+        "推送到远程是 git push 的职责，与 add 无关",
+        "回滚提交要用 reset 或 revert，add 只负责暂存改动"
+      ],
+      "difficulty": "基础",
+      "tags": ["暂存区", "基本概念"]
+    },
+    {
+      "id": "git-004",
+      "question": "在 Git 中，分支的主要用途是什么？",
+      "options": [
+        "给代码加密保护",
+        "统计项目的代码行数",
+        "压缩仓库的体积",
+        "让不同的开发线互不干扰地并行进行"
+      ],
+      "answerIndex": 3,
+      "explanation": "分支让你可以开一条独立的开发线去做新功能或修问题，主线不受影响，完成后再合并回去。团队协作和个人试验都依赖它。",
+      "optionNotes": [
+        "Git 不提供加密功能，分支与代码安全无关",
+        "统计行数需要专门工具，分支只负责标记提交位置",
+        "分支不改变仓库体积，它只是指向提交的指针",
+        "正确：分支即平行开发线，做完再合并回主线"
+      ],
+      "difficulty": "基础",
+      "tags": ["分支", "基本概念"]
+    },
+    {
+      "id": "git-005",
+      "question": "git push 的作用是？",
+      "options": [
+        "拉取远程的最新代码",
+        "合并两个分支",
+        "把本地的提交上传到远程仓库",
+        "查看提交历史"
+      ],
+      "answerIndex": 2,
+      "explanation": "push 把本地仓库的提交推送到远程仓库（如 GitHub），让别人能看到你的改动。拉取远程更新用的是 git pull。",
+      "optionNotes": [
+        "拉取远程更新是 git pull 的功能，方向正好相反",
+        "合并分支用 git merge，push 只负责上传提交",
+        "正确：push 把本地提交上传到远程仓库",
+        "查看历史用 git log，push 不展示任何记录"
+      ],
+      "difficulty": "基础",
+      "tags": ["远程", "基本概念"]
+    },
+    {
+      "id": "git-006",
+      "question": "git clone 这条命令会做什么？",
+      "options": [
+        "提交当前的所有改动",
+        "把远程仓库完整地复制一份到本地",
+        "切换到另一个分支",
+        "比较两个版本的差异"
+      ],
+      "answerIndex": 1,
+      "explanation": "git clone 会把远程仓库连同全部提交历史复制到本地，并自动建立远程连接，是加入一个已有项目时的第一步。",
+      "optionNotes": [
+        "提交用 git commit，clone 不改动任何文件",
+        "正确：clone 连历史一起完整复制远程仓库到本地",
+        "切换分支用 git switch 或 checkout，clone 不做这事",
+        "比较差异用 git diff，clone 只负责复制仓库"
+      ],
+      "difficulty": "基础",
+      "tags": ["远程", "基本概念"]
+    },
+    {
+      "id": "git-007",
+      "question": "你改好了一个 Bug，准备把它记入版本历史。从修改代码到进入仓库历史，正确的流程顺序是？",
+      "options": [
+        "工作区 → git commit → 暂存区 → git add → 仓库",
+        "暂存区 → git add → 工作区 → git commit → 仓库",
+        "仓库 → git add → 工作区 → git commit → 暂存区",
+        "工作区 → git add → 暂存区 → git commit → 仓库"
+      ],
+      "answerIndex": 3,
+      "explanation": "标准流程是：在工作区编辑文件，用 git add 把改动放入暂存区，再用 git commit 把暂存区内容记录进仓库历史。add 在前、commit 在后，顺序不能颠倒。",
+      "optionNotes": [
+        "顺序颠倒了：add 是把改动送入暂存区，发生在 commit 之前",
+        "方向反了：改动是从工作区流入暂存区，而不是从暂存区流回工作区",
+        "完全混乱：仓库是终点而不是起点，add 的对象是工作区改动",
+        "正确：工作区改动经 add 进入暂存区，再由 commit 写入仓库"
+      ],
+      "difficulty": "进阶",
+      "tags": ["暂存区", "工作流"]
+    },
+    {
+      "id": "git-008",
+      "question": "你和同事同时修改了 config.py 的同一行，执行 git merge 时提示 conflict，文件里出现了 <<<<<<< 标记。正确的处理方式是？",
+      "options": [
+        "手工编辑冲突文件，保留正确内容后 git add 并提交",
+        "放弃合并并删除其中一个分支",
+        "重新执行一次 git merge，Git 第二次会自动解决冲突",
+        "把标记之间的内容全部删掉，让文件变成空文件"
+      ],
+      "answerIndex": 0,
+      "explanation": "冲突标记之间分别是两个分支的代码，Git 不会替你做业务判断，必须由人决定保留哪部分或如何融合。编辑完成后 git add 标记冲突已解决，再完成合并提交。",
+      "optionNotes": [
+        "正确：冲突必须人工裁决，解决后 add 再提交完成合并",
+        "冲突只涉及个别文件，不需要也不会靠删分支来解决",
+        "重跑 merge 结果相同，Git 无法自动替你选择业务逻辑",
+        "清空文件等于把两边的改动都丢了，会产生新的错误"
+      ],
+      "difficulty": "进阶",
+      "tags": ["合并", "冲突", "排错"]
+    },
+    {
+      "id": "git-009",
+      "question": "小张查看仓库状态后直接执行了 git commit。根据下面的输出，哪些改动会进入这次提交？",
+      "code": {
+        "language": "text",
+        "content": "$ git status\nOn branch main\nChanges to be committed:\n  modified:   app.py\n\nChanges not staged for commit:\n  modified:   README.md\n\nUntracked files:\n  notes.txt"
+      },
+      "options": [
+        "app.py、README.md 和 notes.txt 全部",
+        "只有 app.py 的改动",
+        "只有 README.md 的改动",
+        "三者都不会，因为没有执行过 git add"
+      ],
+      "answerIndex": 1,
+      "explanation": "commit 只打包「Changes to be committed」也就是暂存区里的内容。README.md 的改动还在工作区，notes.txt 尚未被跟踪，都不会进入本次提交。",
+      "optionNotes": [
+        "只有 app.py 已暂存，另两者的状态根本不在提交范围内",
+        "正确：app.py 位于「待提交」区，是唯一会进入快照的改动",
+        "README.md 显示在「未暂存」区，还没被 add 过",
+        "app.py 已经暂存过了，commit 正常生效"
+      ],
+      "difficulty": "基础",
+      "tags": ["status", "暂存区"]
+    },
+    {
+      "id": "git-010",
+      "question": "小李推送自己的提交时被拒绝，看到如下提示。最恰当的下一步是？",
+      "code": {
+        "language": "text",
+        "content": "$ git push origin main\nTo github.com:team/project.git\n ! [rejected]  main -> main (fetch first)\nerror: failed to push some refs\nhint: Updates were rejected because the remote\nhint: contains work that you do not have locally."
+      },
+      "options": [
+        "执行 git push --force 强制覆盖远程",
+        "重新执行一次 git push，多试几次就能成功",
+        "执行 git init 重新初始化本地仓库",
+        "先 git pull 把远程的新提交合并下来，再 push"
+      ],
+      "answerIndex": 3,
+      "explanation": "提示说明远程有本地没有的提交，直接推送属于非快进更新所以被拒。先 pull 合并远程改动（必要时解决冲突），再推送即可，这也是多人协作的标准顺序。",
+      "optionNotes": [
+        "强推会抹掉同事刚推上去的提交，仅限确认无他人依赖时慎用",
+        "不合并远程提交，无论重试多少次都会被再次拒绝",
+        "init 只会把目录初始化成新仓库，反而会制造混乱",
+        "正确：先 pull 合并远程提交，历史接上后再正常推送"
+      ],
+      "difficulty": "进阶",
+      "tags": ["远程", "push", "排错"]
+    },
+    {
+      "id": "git-011",
+      "question": "根据下面这份分支历史图，哪种说法是正确的？",
+      "code": {
+        "language": "text",
+        "content": "$ git log --oneline --graph --all\n* e4f2a1b (feature-login) 添加登录表单\n| * 9c81d3f (main) 修复首页样式\n|/\n* d55e6f0 初始化项目"
+      },
+      "options": [
+        "feature-login 已经包含了「修复首页样式」这个提交",
+        "两个分支没有任何共同的祖先提交",
+        "两个分支从 d55e6f0 分叉，各自有一个独立的提交",
+        "main 的改动已经合并进了 feature-login"
+      ],
+      "answerIndex": 2,
+      "explanation": "图中两条线在 d55e6f0 处汇合，说明它是两个分支的共同祖先；此后 feature-login 与 main 各自前进了一个提交，互相都不包含对方的新改动。",
+      "optionNotes": [
+        "「修复首页样式」在 main 那条线上，feature-login 未包含它",
+        "两线在 d55e6f0 汇合，它就是共同的祖先提交",
+        "正确：分叉点是 d55e6f0，两边各多出一个提交",
+        "图中没有任何合并（分叉线未重新汇合），合并尚未发生"
+      ],
+      "difficulty": "进阶",
+      "tags": ["log", "分支", "图形化历史"]
+    },
+    {
+      "id": "git-012",
+      "question": "关于 git merge 和 git rebase 的区别，下列说法正确的是？",
+      "options": [
+        "merge 会改写已有提交的哈希，rebase 不会",
+        "rebase 把当前分支的提交搬到目标分支之后形成线性历史，merge 则保留分叉并产生合并提交",
+        "两者效果完全一样，在任何场景下都可以随意互换",
+        "rebase 只能操作远程分支，merge 只能操作本地分支"
+      ],
+      "answerIndex": 1,
+      "explanation": "merge 把两条历史合到一起并生成一个合并提交，原有提交不变；rebase 把提交复制后逐个重放到目标分支顶部，历史更线性，但提交哈希会改变。对别人已拉取的共享提交做 rebase 会造成历史混乱。",
+      "optionNotes": [
+        "恰好说反了：rebase 复制提交导致哈希改变，merge 不改写原有提交",
+        "正确：rebase 重放提交形成直线历史，merge 保留分叉并生成合并提交",
+        "共享分支上 rebase 会重写他人已有的历史，两者不能随意互换",
+        "两者都既能用于本地也能用于远程分支，限制不在本地远程"
+      ],
+      "difficulty": "进阶",
+      "tags": ["merge", "rebase", "对比"]
+    },
+    {
+      "id": "git-013",
+      "question": "小王执行 reset --hard 后发现「新增支付功能」的提交不见了。根据 reflog 输出，哪组操作能把它找回来？",
+      "code": {
+        "language": "text",
+        "content": "$ git reset --hard HEAD~1\n$ git log --oneline\nf3a9c12 (HEAD -> main) 修复登录校验\n\n$ git reflog\nf3a9c12 HEAD@{0}: reset: moving to HEAD~1\n8d27b4e HEAD@{1}: commit: 新增支付功能\nf3a9c12 HEAD@{2}: commit: 修复登录校验"
+      },
+      "options": [
+        "执行 git reset --hard 8d27b4e，把 main 重新指回该提交",
+        "执行 git commit --amend，把提交说明改回「新增支付功能」",
+        "执行 git push origin main，让远程把丢失的提交送回来",
+        "删除本地仓库，重新 clone 一份远程代码"
+      ],
+      "answerIndex": 0,
+      "explanation": "reset 并没有销毁提交对象，reflog 记录了 HEAD 的每一次移动，8d27b4e 正是那个「丢失」提交的哈希。把分支指针重新指回去，提交就回到历史中。",
+      "optionNotes": [
+        "正确：reflog 里 8d27b4e 就是丢失提交，reset 指回去即可恢复",
+        "amend 只能修改当前最新提交的内容说明，无法找回旧提交",
+        "push 是单向上传，远程仓库不会把提交反向送回本地",
+        "提交对象仍在本地 .git 中，clone 只会拿到远程已有的历史"
+      ],
+      "difficulty": "挑战",
+      "tags": ["reset", "reflog", "排错"]
+    },
+    {
+      "id": "git-014",
+      "question": "你把一个包含 Bug 的提交 push 到了团队共用的 main 分支，现在需要撤销它，且不能影响其他同事基于该提交的工作。下列做法正确的是？",
+      "options": [
+        "用 git revert 撤销该提交，生成一个内容相反的新提交后再正常 push",
+        "用 git reset --hard HEAD~1 抹掉该提交，再正常 push",
+        "用 git commit --amend 把这个已推送的提交改成修复后的内容",
+        "把该提交涉及的文件从工作区删除，远程会随之更新"
+      ],
+      "answerIndex": 0,
+      "explanation": "revert 通过新增一个内容相反的提交来抵消旧提交，不改动任何已有历史，因此对共享分支安全；其他同事拉取后即可同步这次撤销。reset 和 amend 都会改写已推送的历史，正常 push 会被拒绝，强推则会破坏协作。",
+      "optionNotes": [
+        "正确：revert 以新抵旧、不改历史，是共享分支上撤销的标准做法",
+        "本地回退后 push 会被拒绝，强推更会重写共享历史导致同事错乱",
+        "amend 只对本地最新提交有效，改动已推送的提交同样要强推",
+        "工作区的删除与远程历史无关，push 不会抹掉远程提交"
+      ],
+      "difficulty": "挑战",
+      "tags": ["revert", "协作", "回退"]
+    },
+    {
+      "id": "git-015",
+      "question": "你正开发一半的功能还没法提交，突然要切到 main 修复一个线上 Bug。既要保住手头改动又不污染主线，正确的操作顺序是？",
+      "options": [
+        "直接 git commit，把半成品先提交到 main 分支",
+        "手工把改动复制到记事本，checkout 之后再粘贴回来",
+        "git push 把未提交的改动先推到远程做备份",
+        "git stash 收起改动，切分支修完 Bug 回来后 git stash pop 恢复"
+      ],
+      "answerIndex": 3,
+      "explanation": "stash 会把工作区和暂存区的改动临时收起，工作区随之干净，可以安全切分支；修完 Bug 回来后 pop 能原样恢复改动。这样既不产生半成品提交，也不用手工搬运代码。",
+      "optionNotes": [
+        "半成品提交进 main 会污染主线，同事拉到的代码可能无法运行",
+        "手工搬运容易漏文件、出拼写错，Git 有现成机制没必要这么做",
+        "push 只上传已提交的内容，未提交的改动根本推不上去",
+        "正确：stash 收起、切换分支修复、回来 pop 恢复，一步不落"
+      ],
+      "difficulty": "挑战",
+      "tags": ["stash", "分支", "工作流"]
+    }
+  ]
+}

@@ -1,0 +1,437 @@
+{
+  "schemaVersion": 2,
+  "id": "python",
+  "title": "Python 编程基础",
+  "tagline": "从第一行代码开始，学会和计算机对话",
+  "description": "Python 语法简洁、上手友好，是零基础学编程最常见的起点。这一课带你打通变量、条件循环、函数和列表四个核心概念，学会读懂代码、预测输出，并能独立排查类型转换、越界和作用域这类典型报错。",
+  "level": "入门",
+  "estimatedMinutes": 50,
+  "accent": "#2f6fb2",
+  "icon": "python",
+  "objectives": [
+    "理解变量与常见数据类型，会用 type() 和类型转换解决实际报错",
+    "能读懂 if / for / while 代码块并正确预测程序输出",
+    "能定义带参数和返回值的函数，并解释 print 与 return 的区别",
+    "能区分列表与元组，避开越界访问和引用复制这两类典型坑"
+  ],
+  "cards": [
+    {
+      "id": "python-card-01",
+      "title": "变量与数据类型",
+      "summary": "变量是给数据贴的标签，而类型决定了这份数据能参与什么运算。",
+      "points": [
+        "用「变量名 = 值」赋值，赋了什么类型的值，变量当下就是什么类型",
+        "常见类型：int 整数、float 浮点数、str 字符串、bool 布尔值",
+        "type() 可以查看任意数据或变量当前的类型",
+        "input() 读到的永远是字符串，做算术前必须先用 int() 或 float() 转换",
+        "变量名只能用字母、数字和下划线，不能以数字开头，也不能占用关键字"
+      ],
+      "example": {
+        "language": "python",
+        "caption": "用 type() 看清数据类型",
+        "code": "age = 18            # int\nprice = 9.9         # float\nname = \"小明\"       # str\nok = True           # bool\nprint(type(price))  # <class 'float'>"
+      },
+      "pitfalls": [
+        "把 \"18\"（字符串）和 18（整数）混着做加法，会直接抛出 TypeError",
+        "变量名写成 2name 或 user-name，程序在语法检查这一关就过不去",
+        "以为 input() 能直接得到数字，结果两个字符串相加变成了拼接"
+      ]
+    },
+    {
+      "id": "python-card-02",
+      "title": "条件与循环",
+      "summary": "if 让程序看情况做事，for 和 while 让程序重复做事，缩进决定哪些行属于同一个代码块。",
+      "points": [
+        "if / elif / else 让程序按条件选择不同的执行路径",
+        "Python 用统一缩进表示代码块层级，缩进混乱会直接报 IndentationError",
+        "for 适合按序列逐个处理，while 适合次数不确定、只看条件的重复",
+        "range(1, 4) 依次产生 1、2、3，左闭右开，终点本身不会取到",
+        "循环体内别忘了缩进，循环外要处理的结果记得写在循环结束后"
+      ],
+      "example": {
+        "language": "python",
+        "caption": "缩进决定哪些行属于 if",
+        "code": "score = 75\nif score >= 60:\n    print(\"及格\")\nelse:\n    print(\"需要补考\")\n\nfor i in range(1, 4):\n    print(i)"
+      },
+      "pitfalls": [
+        "if 下的两行代码缩进不一致，程序直接报缩进错误",
+        "把 range(3) 当成会产出 1、2、3，实际是 0、1、2",
+        "该用 while 的场景硬用 for，比如「输对密码为止」这种次数未知的循环"
+      ]
+    },
+    {
+      "id": "python-card-03",
+      "title": "函数与代码复用",
+      "summary": "函数把一段逻辑打包命名，参数是入口，return 才是真正交出结果的出口。",
+      "points": [
+        "用 def 定义函数，调用时必须带上括号，例如 square(5)",
+        "没有写 return 的函数默认返回 None，这是最容易踩的坑之一",
+        "print 只把内容显示在屏幕上，并不会把值返回给调用者",
+        "函数内部赋值的变量是局部变量，函数外面拿不到",
+        "在函数里给变量赋值会让它变成局部变量，想改全局变量要先写 global"
+      ],
+      "example": {
+        "language": "python",
+        "caption": "print 与 return 的区别",
+        "code": "def square(x):\n    return x * x\n\nresult = square(5)\nprint(result)   # 25\nprint(square)   # 漏了括号，拿到的是函数本身"
+      },
+      "pitfalls": [
+        "函数里只用 print 展示结果却忘了 return，调用方拿到的永远是 None",
+        "在函数里给全局变量赋值，Python 把它当局部变量，报 UnboundLocalError",
+        "调用时漏写括号，y = double 拿到的是函数对象而不是计算结果"
+      ]
+    },
+    {
+      "id": "python-card-04",
+      "title": "列表、元组与引用",
+      "summary": "列表是最常用的容器，但赋值传的是同一个对象而不是副本，改一个等于改两个。",
+      "points": [
+        "用方括号创建列表，append() 在末尾追加元素，下标从 0 开始",
+        "负下标从末尾数起，nums[-1] 就是最后一个元素",
+        "长度为 3 的列表下标范围是 0 到 2，访问 nums[3] 会越界报 IndexError",
+        "b = a 只是让两个名字指向同一个列表，修改 b 会同时影响 a",
+        "想要独立副本要用 a.copy() 或切片 a[:]；元组（tuple）创建后不可修改"
+      ],
+      "example": {
+        "language": "python",
+        "caption": "赋值是别名，不是复制",
+        "code": "a = [1, 2, 3]\nb = a          # b 和 a 指向同一个列表\nb.append(4)\nprint(a)       # [1, 2, 3, 4]\nc = a.copy()   # 真正的副本\nc.append(5)\nprint(a)       # [1, 2, 3, 4]，c 的修改不影响 a"
+      },
+      "pitfalls": [
+        "以为 b = a 复制了列表，结果改 b 时 a 也跟着变了",
+        "访问 nums[len(nums)] 越界报 IndexError，最后一个下标是 len(nums) - 1",
+        "对元组调用 append 或给元素重新赋值，直接抛 TypeError"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "python-001",
+      "question": "在 Python 中运行 print(\"Hello\") 后会发生什么？",
+      "options": [
+        "创建一个名为 Hello 的变量",
+        "把 Hello 保存到当前文件夹里",
+        "在屏幕上输出 Hello",
+        "程序会立即结束运行"
+      ],
+      "answerIndex": 2,
+      "explanation": "print 是内置函数，作用是把括号里的内容显示到屏幕上。它既不创建变量，也不写文件。想把数据保存下来应该用赋值语句，而不是依赖 print。",
+      "optionNotes": [
+        "print 只负责输出显示，没有任何存储功能，所以不会创建变量",
+        "print 的输出只到屏幕为止，不会生成或修改任何文件",
+        "正确。print 的本职就是把内容打印到屏幕上",
+        "程序何时结束由代码执行完毕或 exit 决定，与 print 无关"
+      ],
+      "difficulty": "基础",
+      "tags": ["print", "基础语法"]
+    },
+    {
+      "id": "python-002",
+      "question": "下面哪一个是合法的 Python 变量名？",
+      "options": [
+        "2name",
+        "user-name",
+        "class",
+        "student_age"
+      ],
+      "answerIndex": 3,
+      "explanation": "变量名只能由字母、数字和下划线组成，且不能以数字开头，也不能和关键字重名。student_age 是四个选项里唯一同时满足这些规则的写法。",
+      "optionNotes": [
+        "变量名不能以数字开头，2name 会被语法检查直接拒绝",
+        "连字符会被当成减法运算，变量名里不允许出现 user-name",
+        "class 是 Python 关键字，用于定义类，不能拿来当变量名",
+        "正确。字母加下划线的组合完全符合变量命名规则"
+      ],
+      "difficulty": "基础",
+      "tags": ["变量", "命名规则"]
+    },
+    {
+      "id": "python-003",
+      "question": "这段代码会输出什么？",
+      "code": {
+        "language": "python",
+        "content": "x = \"3\"\nprint(x * 2)"
+      },
+      "options": [
+        "6",
+        "33",
+        "9",
+        "程序报错"
+      ],
+      "answerIndex": 1,
+      "explanation": "x 里存的是字符串 \"3\"，字符串乘以整数表示重复，所以 x * 2 得到 \"33\"。这里没有发生任何类型转换，只有数字类型相乘才做算术。",
+      "optionNotes": [
+        "选 6 是误以为 \"3\" 会自动变成数字 3 参与乘法，实际并没有转换",
+        "正确。字符串乘整数是重复拼接，\"3\" 重复两次就是 \"33\"",
+        "9 是把 3 当数字加倍再相加的结果，但 x 的类型是字符串",
+        "字符串乘整数是完全合法的操作，不会抛出异常"
+      ],
+      "difficulty": "基础",
+      "tags": ["字符串", "类型"]
+    },
+    {
+      "id": "python-004",
+      "question": "运行这段代码报了 TypeError，想正确输出 19，应该怎么改？",
+      "code": {
+        "language": "python",
+        "content": "age = \"18\"\nprint(age + 1)"
+      },
+      "options": [
+        "把第二行改成 print(int(age) + 1)",
+        "把第二行改成 print(str(age) + 1)",
+        "把第二行改成 print(age + str(1))",
+        "把第二行改成 print(age + \"1\")"
+      ],
+      "answerIndex": 0,
+      "explanation": "age 保存的是字符串 \"18\"，字符串不能和整数相加，所以报 TypeError。先用 int() 把它转成整数再做加法，才能得到算术结果 19。",
+      "optionNotes": [
+        "正确。int(age) 把 \"18\" 转成整数 18，加 1 得到 19",
+        "str(age) 仍然是字符串，字符串加整数还是会报 TypeError",
+        "这行会输出 181，是字符串拼接而不是算术结果",
+        "同理输出 181，加上引号的 1 依旧是字符串"
+      ],
+      "difficulty": "基础",
+      "tags": ["类型转换", "排错"]
+    },
+    {
+      "id": "python-005",
+      "question": "这段代码最后打印出多少？",
+      "code": {
+        "language": "python",
+        "content": "total = 0\nfor i in range(1, 4):\n    total = total + i\nprint(total)"
+      },
+      "options": [
+        "3",
+        "6",
+        "10",
+        "4"
+      ],
+      "answerIndex": 1,
+      "explanation": "range(1, 4) 依次产生 1、2、3，循环把这三个数累加进 total，结果是 6。注意 range 是左闭右开区间，终点 4 不会取到。",
+      "optionNotes": [
+        "3 是误以为只累加了末尾一个值，实际循环完整跑了三次",
+        "正确。1 + 2 + 3 = 6，range 左闭右开，不包含 4",
+        "10 来自 1+2+3+4，多算了取不到的终点 4",
+        "4 是把 range 的终点当成了循环值，终点本身不参与累加"
+      ],
+      "difficulty": "基础",
+      "tags": ["循环", "range"]
+    },
+    {
+      "id": "python-006",
+      "question": "关于列表（list）和元组（tuple），下面哪个说法是正确的？",
+      "options": [
+        "元组也可以用 append() 随时添加元素",
+        "列表创建之后就不允许再修改内容",
+        "列表和元组都支持随意增删改元素",
+        "元组一旦创建就不能修改，列表可以增删改"
+      ],
+      "answerIndex": 3,
+      "explanation": "列表是可变容器，追加、删除元素都可以；元组是不可变容器，创建后内容固定。需要保证数据不被改动时，元组比列表更合适。",
+      "optionNotes": [
+        "元组没有 append 方法，调用会直接抛 AttributeError",
+        "说反了，列表恰恰是可变的，增删改都支持",
+        "元组不可变，这个说法对元组并不成立",
+        "正确。可变与不可变正是 list 和 tuple 最核心的区别"
+      ],
+      "difficulty": "进阶",
+      "tags": ["列表", "元组"]
+    },
+    {
+      "id": "python-007",
+      "question": "运行后提示 IndexError: list index out of range，原因是什么？",
+      "code": {
+        "language": "python",
+        "content": "nums = [10, 20, 30]\nprint(nums[3])"
+      },
+      "options": [
+        "列表下标从 0 开始，最大下标是 2，应改用 nums[2] 或 nums[-1]",
+        "列表是空的，必须先 append 三个元素才能访问",
+        "应该往列表里再加一个元素，让长度凑够 4 就不报错了",
+        "print 打印列表必须配合循环使用，不允许直接用下标访问"
+      ],
+      "answerIndex": 0,
+      "explanation": "包含 3 个元素的列表，下标范围是 0 到 2，访问 nums[3] 已经越界。取最后一个元素用 nums[2] 或负下标 nums[-1] 都可以。",
+      "optionNotes": [
+        "正确。长度 3 的列表下标最大是 2，nums[3] 越界引发 IndexError",
+        "nums 明明有 3 个元素，不是空列表，前提就错了",
+        "加长列表只是让下标 3 恰好存在，并没有理解越界的真正原因",
+        "用下标访问单个元素是合法操作，和用不用循环没有关系"
+      ],
+      "difficulty": "进阶",
+      "tags": ["列表", "索引", "排错"]
+    },
+    {
+      "id": "python-008",
+      "question": "下面哪种需求最适合用 while 循环而不是 for 循环来实现？",
+      "options": [
+        "依次打印列表 [1, 2, 3] 里的每个元素",
+        "计算 1 到 100 所有整数的和",
+        "反复让用户输入密码，直到输入正确才继续",
+        "把字符串 \"hi\" 里的每个字符打印一遍"
+      ],
+      "answerIndex": 2,
+      "explanation": "for 适合次数已知、按序列逐个处理的场景；while 适合次数不确定、只看条件是否满足的场景。密码要输几次才能对无法预知，只能用条件控制循环。",
+      "optionNotes": [
+        "遍历列表次数已知、有现成序列，用 for 更简洁",
+        "范围固定，for i in range(1, 101) 一行就能搞定",
+        "正确。输入几次才能对无法预知，while 的条件循环正合适",
+        "遍历字符串同样次数已知，for ch in s 是标准写法"
+      ],
+      "difficulty": "进阶",
+      "tags": ["循环", "场景选择"]
+    },
+    {
+      "id": "python-009",
+      "question": "这段代码会打印什么？",
+      "code": {
+        "language": "python",
+        "content": "def add(a, b):\n    result = a + b\n\nprint(add(2, 3))"
+      },
+      "options": [
+        "5",
+        "None",
+        "result",
+        "程序报错"
+      ],
+      "answerIndex": 1,
+      "explanation": "add 函数里只做了加法，没有写 return，Python 让它默认返回 None。result 只是函数内部的局部变量，外界拿不到它的值。",
+      "optionNotes": [
+        "5 是把「函数里有 result」误当成了「函数返回了 result」",
+        "正确。没有 return 的函数默认返回 None，print 打印出 None",
+        "result 是函数内部的局部变量名，不会作为返回值传出来",
+        "函数的定义和调用本身都合法，不会抛出异常"
+      ],
+      "difficulty": "进阶",
+      "tags": ["函数", "return"]
+    },
+    {
+      "id": "python-010",
+      "question": "小李定义了函数 double，函数体只有 print(x * 2) 这一行。执行 y = double(4) 后再 print(y)，结果先显示 8，再显示 None。想让 y 的值真正是 8，应该怎么改？",
+      "options": [
+        "把 4 定义成全局变量，函数就能自动把结果交给 y",
+        "在调用处写成 y = print(double(4))，用 print 接住返回值",
+        "把函数名 double 改成别的名字，避免和内置函数冲突",
+        "把函数体里的 print(x * 2) 改成 return x * 2"
+      ],
+      "answerIndex": 3,
+      "explanation": "print 只负责把 8 显示在屏幕上，并不会把值交还给调用者，所以 y 拿到的是默认返回值 None。用 return 才能把结果真正传出去。",
+      "optionNotes": [
+        "问题不在参数传递，4 已经正确传进函数，缺的是返回值",
+        "print 自身返回 None，这样改 y 依然是 None",
+        "double 并没有和内置函数冲突，改名解决不了返回值问题",
+        "正确。return 是函数交出结果的出口，y 会被赋值为 8"
+      ],
+      "difficulty": "进阶",
+      "tags": ["函数", "return", "排错"]
+    },
+    {
+      "id": "python-011",
+      "question": "这段代码打印出来的数字是多少？",
+      "code": {
+        "language": "python",
+        "content": "a = [1, 2, 3]\nb = a\nb.append(4)\nprint(len(a))"
+      },
+      "options": [
+        "4",
+        "3",
+        "7",
+        "程序报错"
+      ],
+      "answerIndex": 0,
+      "explanation": "b = a 并没有复制列表，只是让 b 和 a 指向同一个列表对象。对 b 追加 4 之后，a 也变成了 [1, 2, 3, 4]，长度是 4。",
+      "optionNotes": [
+        "正确。a 和 b 指向同一个列表，append 之后长度变成 4",
+        "选 3 是以为 b 是独立副本，实际两个名字指向同一个对象",
+        "7 是把列表内容当成数字相加的误会，len 只统计元素个数",
+        "append 对列表是完全合法的操作，不会抛出异常"
+      ],
+      "difficulty": "挑战",
+      "tags": ["列表", "引用"]
+    },
+    {
+      "id": "python-012",
+      "question": "运行这段代码的结果是什么？",
+      "code": {
+        "language": "python",
+        "content": "x = 10\ndef bump():\n    x = x + 1\n\nbump()\nprint(x)"
+      },
+      "options": [
+        "打印 10",
+        "打印 11",
+        "程序报错，x 在函数内未先赋值就被使用",
+        "打印 None"
+      ],
+      "answerIndex": 2,
+      "explanation": "函数里对 x 赋值会让 Python 把它当作局部变量，而局部变量在赋值前就被读取了，于是抛出 UnboundLocalError。想修改全局的 x，需要在函数里先写 global x。",
+      "optionNotes": [
+        "以为函数内的 x 就是外面的 10，忽略了赋值语句改变了它的身份",
+        "11 的前提是函数成功修改了全局变量，但这一步根本没执行成功",
+        "正确。局部变量先用后赋值，Python 抛出 UnboundLocalError",
+        "None 只和函数返回值有关，这段程序在报错处就中止了"
+      ],
+      "difficulty": "挑战",
+      "tags": ["函数", "作用域"]
+    },
+    {
+      "id": "python-013",
+      "question": "执行 print(10 > 3) 的输出是？",
+      "options": [
+        "True",
+        "true",
+        "10 > 3",
+        "程序报错"
+      ],
+      "answerIndex": 0,
+      "explanation": "10 > 3 是一个比较表达式，求值结果是布尔值 True。Python 的布尔值首字母必须大写，小写的 true 会被当成未定义的名字。",
+      "optionNotes": [
+        "正确。比较运算的结果就是布尔值 True",
+        "Python 布尔值首字母大写，小写 true 不是合法的布尔值",
+        "print 不会原样打印表达式，而是先求值再输出结果",
+        "比较运算完全合法，任何可比较的两个值都能得出布尔结果"
+      ],
+      "difficulty": "基础",
+      "tags": ["布尔值", "比较运算"]
+    },
+    {
+      "id": "python-014",
+      "question": "执行 print(7 % 2) 的输出是？",
+      "options": [
+        "3",
+        "1",
+        "3.5",
+        "0"
+      ],
+      "answerIndex": 1,
+      "explanation": "% 是取余运算符，7 除以 2 商 3 余 1，所以输出 1。取余常用来判断奇偶：余 0 是偶数，余 1 是奇数。",
+      "optionNotes": [
+        "3 是整除 7 // 2 的结果，% 求的是余数",
+        "正确。7 = 2 × 3 + 1，余数是 1",
+        "3.5 是普通除法 7 / 2 的结果，% 并不做除法",
+        "0 是 7 能被 2 整除时的余数，但 7 是奇数"
+      ],
+      "difficulty": "基础",
+      "tags": ["运算符", "取余"]
+    },
+    {
+      "id": "python-015",
+      "question": "关于 == 和 is，下面哪个说法是正确的？",
+      "options": [
+        "两者完全等价，任何时候都可以互换",
+        "is 比较值是否相等，== 比较是不是同一个对象",
+        "== 只能用来比较两个数字的大小",
+        "== 比较值是否相等，is 比较两个名字是否指向同一个对象"
+      ],
+      "answerIndex": 3,
+      "explanation": "== 比较的是内容是否相等，is 比较的是身份，即两个名字是否指向内存中的同一个对象。日常判断值相等用 ==，只有判断是否为同一对象时才用 is。",
+      "optionNotes": [
+        "两者语义不同，值相等的两个对象未必是同一个对象",
+        "把两者的分工说反了，这正是新手最常见的混淆点",
+        "== 对字符串、列表等类型同样适用，并不限于数字",
+        "正确。一个看值，一个看身份，分工泾渭分明"
+      ],
+      "difficulty": "进阶",
+      "tags": ["运算符", "对比"]
+    }
+  ]
+}

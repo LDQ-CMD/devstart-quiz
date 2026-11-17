@@ -1,0 +1,429 @@
+{
+  "schemaVersion": 2,
+  "id": "docker",
+  "title": "Docker 容器入门",
+  "tagline": "把应用连同环境一起打包，走到哪都能跑",
+  "description": "「在我电脑上明明能跑」是每个开发者都遇过的噩梦。Docker 用镜像和容器把应用与依赖固定下来，让部署变得可预测。本主题从镜像分层讲到 Dockerfile 构建、端口映射与常见故障排查。",
+  "level": "入门",
+  "estimatedMinutes": 50,
+  "accent": "#1e6fd9",
+  "icon": "docker",
+  "objectives": [
+    "能区分镜像与容器，并说明容器与虚拟机的差异",
+    "能读懂常见 Dockerfile 指令及其构建顺序",
+    "能使用端口映射和数据卷运行有状态服务",
+    "能根据容器状态、日志和报错定位启动失败原因"
+  ],
+  "cards": [
+    {
+      "id": "docker-card-01",
+      "title": "镜像与容器",
+      "summary": "镜像是分层只读模板，容器是镜像启动后带可写层的运行实例。",
+      "points": [
+        "镜像（Image）由多层只读文件系统叠加而成，包含代码、依赖和运行环境",
+        "容器（Container）是镜像的运行实例，启动时在镜像顶部增加一个可写层",
+        "同一个镜像可以启动任意多个容器，容器之间默认互不影响",
+        "容器删除后可写层随之丢弃，但镜像本身仍然保留在本地",
+        "镜像用「仓库名:标签」标识，如 nginx:1.27；不写标签时默认使用 latest"
+      ],
+      "example": {
+        "language": "bash",
+        "caption": "同一个镜像可以启动多个独立容器",
+        "code": "docker run -d --name web1 nginx:1.27\ndocker run -d --name web2 nginx:1.27\ndocker ps"
+      },
+      "pitfalls": [
+        "把容器当虚拟机登录后随意改文件，改动只在可写层，删除容器即丢失",
+        "生产环境使用 latest 标签，不同时间拉到的镜像内容可能不一致",
+        "误以为删除容器会连镜像一起删除，实际需要单独执行 docker rmi"
+      ]
+    },
+    {
+      "id": "docker-card-02",
+      "title": "Dockerfile 与构建",
+      "summary": "Dockerfile 按层构建镜像，指令顺序直接决定缓存命中率和最终体积。",
+      "points": [
+        "FROM 指定基础镜像，后续指令都在它的基础上叠加",
+        "WORKDIR 设置工作目录，影响后续 COPY、RUN 以及容器启动时的默认目录",
+        "COPY 只能读取构建上下文中的文件，上下文由 docker build 末尾的路径决定",
+        "每条 RUN、COPY 生成一层，前面的层未变化时可以复用缓存",
+        "CMD 提供默认启动命令，docker run 后的参数会覆盖 CMD；ENTRYPOINT 定义固定入口"
+      ],
+      "example": {
+        "language": "dockerfile",
+        "caption": "先装依赖再拷源码，让依赖层稳定命中缓存",
+        "code": "FROM node:20-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install\nCOPY . .\nEXPOSE 3000\nCMD [\"node\", \"server.js\"]"
+      },
+      "pitfalls": [
+        "先 COPY . . 再 RUN npm install，任何源码改动都会让依赖层缓存失效",
+        "把密钥写进 Dockerfile 或 COPY 进镜像，镜像层里仍然可以被提取",
+        "混淆构建上下文与 Dockerfile 所在目录，COPY 无法读取上级目录的文件"
+      ]
+    },
+    {
+      "id": "docker-card-03",
+      "title": "容器、虚拟机与数据持久化",
+      "summary": "容器共享宿主机内核所以轻量，但生命周期短，重要数据必须放在容器之外。",
+      "points": [
+        "虚拟机通过 Hypervisor 虚拟出完整硬件并运行客户操作系统，启动慢、占用大",
+        "容器复用宿主机内核，用命名空间隔离进程和网络，用 cgroups 限制资源",
+        "容器通常秒级启动，一台主机可以同时运行大量容器",
+        "容器可写层随容器删除而消失；Volume 由 Docker 管理，生命周期独立于容器",
+        "bind mount 直接把宿主机目录挂进容器，适合开发时同步代码"
+      ],
+      "example": {
+        "language": "bash",
+        "caption": "用命名卷保存数据库数据",
+        "code": "docker volume create appdata\ndocker run -d --name db \\\n  -v appdata:/var/lib/postgresql/data \\\n  postgres:16"
+      },
+      "pitfalls": [
+        "把数据库数据只放在容器可写层，删除容器后无法恢复",
+        "用 bind mount 挂载空目录覆盖镜像内已有文件，导致配置丢失",
+        "认为容器隔离等于绝对安全；容器共享内核，逃逸风险仍需重视"
+      ]
+    },
+    {
+      "id": "docker-card-04",
+      "title": "网络、端口与排错",
+      "summary": "端口映射把宿主机流量送进容器，排错先从容器状态、日志和端口占用入手。",
+      "points": [
+        "-p 宿主机端口:容器端口 建立映射，如 -p 8080:80",
+        "容器内应用要监听 0.0.0.0，只监听 127.0.0.1 时外部流量进不来",
+        "docker ps 只显示运行中的容器，加 -a 才能看到已退出的容器和退出码",
+        "docker logs 查看应用输出，docker exec -it 容器 sh 进入运行中的容器",
+        "退出码 137 通常表示被 SIGKILL（常见于内存超限），143 表示收到 SIGTERM"
+      ],
+      "example": {
+        "language": "bash",
+        "caption": "启动容器、确认状态、查看最近日志",
+        "code": "docker run -d --name web -p 8080:80 nginx:1.27\ndocker ps\ndocker logs --tail 50 web"
+      },
+      "pitfalls": [
+        "宿主机端口被占用时只改容器端口，宿主机端口冲突依旧存在",
+        "对已退出的容器执行 docker exec，命令会失败，应先查看 docker logs",
+        "把 EXPOSE 当成端口发布；它只是声明，真正映射要靠 -p"
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": "docker-001",
+      "question": "关于镜像与容器的关系，下列哪种描述最准确？",
+      "options": [
+        "镜像是只读模板，容器是由镜像启动的可写运行实例",
+        "容器是只读模板，镜像是容器运行后导出的副本",
+        "镜像和容器是同一份数据，只是命令里的叫法不同",
+        "一个镜像启动后只能对应一个容器，无法复用"
+      ],
+      "answerIndex": 0,
+      "explanation": "镜像构建完成后是只读的，容器启动时会在镜像顶部加一层可写层，运行时的修改都落在这层。同一个镜像可以反复启动多个容器，每个容器拥有自己的可写层。",
+      "optionNotes": [
+        "正确：镜像只读，容器是带可写层的运行实例",
+        "说反了：容器由镜像创建，不是镜像由容器创建",
+        "两者生命周期和可写性都不同，不能混为一谈",
+        "同一镜像可启动多个容器，彼此互不冲突"
+      ],
+      "difficulty": "基础",
+      "tags": ["镜像", "容器"]
+    },
+    {
+      "id": "docker-002",
+      "question": "执行 docker run -d 启动容器后它立刻退出，再执行 docker ps 却看不到它。最直接的原因是什么？",
+      "options": [
+        "镜像在容器退出后被自动删除",
+        "端口映射失败，容器被 Docker 隐藏",
+        "docker ps 默认只列运行中的容器，已退出的要用 docker ps -a",
+        "容器被自动调度到了另一台主机"
+      ],
+      "answerIndex": 2,
+      "explanation": "docker ps 默认只显示正在运行的容器；容器主进程结束后状态变为 Exited，必须加 -a 才能看到。看到退出状态后，应再用 docker logs 查看失败原因。",
+      "optionNotes": [
+        "容器退出不会删除镜像，镜像仍然留在本地",
+        "端口映射失败通常直接报错，不会把容器隐藏",
+        "正确：-a 才会列出已停止的容器",
+        "单机 Docker 不会把容器调度到其他主机"
+      ],
+      "difficulty": "基础",
+      "tags": ["docker ps", "排错"]
+    },
+    {
+      "id": "docker-003",
+      "question": "构建完成后，镜像中的 app.py 位于哪个目录？",
+      "code": {
+        "language": "dockerfile",
+        "content": "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . .\nCMD [\"python\", \"app.py\"]"
+      },
+      "options": [
+        "根目录 /",
+        "/app 目录",
+        "/usr/local/bin 目录",
+        "只存在于构建上下文，不会被写进镜像"
+      ],
+      "answerIndex": 1,
+      "explanation": "WORKDIR /app 同时影响后续指令和容器启动时的默认目录，COPY . . 的目标「.」就解析为 /app。因此 app.py 被复制到 /app/app.py，CMD 也在 /app 下执行。",
+      "optionNotes": [
+        "未设置 WORKDIR 时相对路径才会落到根目录",
+        "正确：WORKDIR /app 让后续相对路径以 /app 为基准",
+        "这是可执行文件目录，与 COPY 的目标无关",
+        "COPY 会把文件写入镜像层，构建上下文不会自动进镜像"
+      ],
+      "difficulty": "基础",
+      "tags": ["Dockerfile", "WORKDIR"]
+    },
+    {
+      "id": "docker-004",
+      "question": "命令中的 -p 8080:80 表示什么？",
+      "code": {
+        "language": "bash",
+        "content": "docker run -d --name web -p 8080:80 nginx:1.27"
+      },
+      "options": [
+        "容器监听 8080，宿主机转发到 80",
+        "镜像标签是 8080，容器端口是 80",
+        "随机分配宿主机端口 8080，容器端口由镜像决定",
+        "宿主机 8080 端口转发到容器 80 端口"
+      ],
+      "answerIndex": 3,
+      "explanation": "端口映射的格式是「宿主机端口:容器端口」，冒号前是外部访问入口，冒号后是容器内应用监听的端口。访问宿主机的 8080 时，Docker 把流量转发到容器的 80。",
+      "optionNotes": [
+        "顺序反了：冒号前是宿主机端口",
+        "-p 与镜像标签无关，标签写在镜像名后面",
+        "8080 是明确指定的宿主机端口，不是随机分配",
+        "正确：宿主机 8080 转发到容器 80"
+      ],
+      "difficulty": "基础",
+      "tags": ["端口映射", "docker run"]
+    },
+    {
+      "id": "docker-005",
+      "question": "写入容器的数据在 docker rm 后消失。要保留数据，正确做法是什么？",
+      "options": [
+        "启动时用 -v 挂载数据卷，把数据目录放到容器外",
+        "用 docker commit 把数据提交进镜像，之后就不会丢",
+        "加 --restart=always，容器删除后数据仍会保留",
+        "把镜像改成可写模式，数据就会跟随镜像保存"
+      ],
+      "answerIndex": 0,
+      "explanation": "容器的可写层与容器同生命周期，删除容器就会丢弃。Volume 或 bind mount 把数据存到宿主机管理的位置，新容器挂载同一卷即可读回数据。",
+      "optionNotes": [
+        "正确：数据卷独立于容器生命周期",
+        "commit 会生成新镜像，不是持久化数据的正确方式",
+        "重启策略只影响退出后是否重启，不保护已删除容器的数据",
+        "镜像始终只读，不存在可写镜像模式"
+      ],
+      "difficulty": "基础",
+      "tags": ["数据卷", "持久化"]
+    },
+    {
+      "id": "docker-006",
+      "question": "容器与虚拟机最本质的区别是什么？",
+      "options": [
+        "容器必须在内部安装一套完整的客户操作系统",
+        "虚拟机共享宿主机内核，容器各自运行独立内核",
+        "容器共享宿主机内核，只隔离进程、网络和文件系统",
+        "容器无法限制 CPU 和内存，虚拟机才可以"
+      ],
+      "answerIndex": 2,
+      "explanation": "虚拟机由 Hypervisor 虚拟出硬件并运行完整客户操作系统，而容器直接复用宿主机内核，通过命名空间和 cgroups 做隔离与资源限制。少了一层操作系统，容器启动更快、密度更高。",
+      "optionNotes": [
+        "安装完整客户系统的是虚拟机，不是容器",
+        "说反了：共享内核的是容器，虚拟机有独立内核",
+        "正确：共享内核加命名空间隔离是容器的关键",
+        "cgroups 可以限制容器的 CPU 和内存"
+      ],
+      "difficulty": "基础",
+      "tags": ["容器", "虚拟机", "对比"]
+    },
+    {
+      "id": "docker-007",
+      "question": "Dockerfile 的核心作用是什么？",
+      "options": [
+        "保存容器运行期间产生的业务数据",
+        "用文本指令描述如何从基础镜像构建出目标镜像",
+        "管理远程镜像仓库的登录凭证",
+        "在容器运行时持续监控资源占用"
+      ],
+      "answerIndex": 1,
+      "explanation": "Dockerfile 是构建镜像的「配方」，FROM、COPY、RUN 等指令按顺序执行，每一层的结果叠加成最终镜像。运行期数据、仓库登录和监控都不由它负责。",
+      "optionNotes": [
+        "运行期数据应放数据卷，不写在 Dockerfile 里",
+        "正确：它描述镜像的构建步骤",
+        "仓库登录用 docker login 管理",
+        "资源监控由 docker stats 等工具完成"
+      ],
+      "difficulty": "基础",
+      "tags": ["Dockerfile", "镜像构建"]
+    },
+    {
+      "id": "docker-008",
+      "question": "启动容器时报错 bind: address already in use。最合理的下一步是什么？",
+      "options": [
+        "删除本地所有镜像后重新构建",
+        "把容器内监听的 80 改成 8081 后重试",
+        "给容器加 --privileged 绕过端口限制",
+        "查出占用宿主机 8080 的进程，停止它或换一个宿主机端口"
+      ],
+      "answerIndex": 3,
+      "explanation": "报错说明宿主机的 8080 已被别的进程占用，Docker 无法再绑定同一端口。应先用 netstat 或 lsof 找到占用者，或把 -p 的宿主机端口改成未使用的值；只改容器端口仍会冲突。",
+      "optionNotes": [
+        "镜像与端口占用无关，删镜像解决不了",
+        "冲突在宿主机 8080，改容器端口不改变宿主机绑定",
+        "--privileged 扩大权限，不会让被占用端口变得可用",
+        "正确：释放宿主机端口或改用其他宿主机端口"
+      ],
+      "difficulty": "进阶",
+      "tags": ["端口冲突", "排错"]
+    },
+    {
+      "id": "docker-009",
+      "question": "只改一行业务代码，重新构建却总要重跑 npm install，速度很慢。最有效的改法是什么？",
+      "code": {
+        "language": "dockerfile",
+        "content": "FROM node:20-alpine\nWORKDIR /app\nCOPY . .\nRUN npm install\nCMD [\"npm\", \"start\"]"
+      },
+      "options": [
+        "先 COPY package*.json 并 RUN npm install，再 COPY 其余源码",
+        "构建时加 --no-cache，强制每层重新执行",
+        "把基础镜像换成体积更小的 alpine 版本",
+        "把 RUN npm install 移到 CMD 之后执行"
+      ],
+      "answerIndex": 0,
+      "explanation": "Docker 逐层复用缓存，某一层失效后其后的层都要重建。COPY . . 放在依赖安装之前，任何源码改动都会让 npm install 层失效；先复制依赖清单可让这层长期命中缓存。",
+      "optionNotes": [
+        "正确：把不常变的依赖安装层提前，稳定命中缓存",
+        "--no-cache 会禁用缓存，构建只会更慢",
+        "小基础镜像省体积，但不解决依赖层反复重建",
+        "指令顺序不改变源码变更导致依赖层失效的事实"
+      ],
+      "difficulty": "进阶",
+      "tags": ["构建缓存", "Dockerfile"]
+    },
+    {
+      "id": "docker-010",
+      "question": "容器状态为 Exited (1)。要定位启动失败原因，下一步最该做什么？",
+      "code": {
+        "language": "text",
+        "content": "$ docker ps -a\nCONTAINER ID   IMAGE        STATUS                     NAMES\n9f3c1a7b2d4e   myapp:1.0    Exited (1) 3 minutes ago   web"
+      },
+      "options": [
+        "执行 docker rmi myapp:1.0 删掉镜像重拉",
+        "执行 docker exec -it web bash 进入容器",
+        "执行 docker logs web 查看标准输出和错误日志",
+        "执行 docker stats web 观察 CPU 使用率"
+      ],
+      "answerIndex": 2,
+      "explanation": "Exited (1) 表示容器主进程以非零状态退出，最直接的线索是它退出前打印的日志。容器已经停止，docker exec 无法进入，应先看 logs，再决定是否调整启动命令或配置。",
+      "optionNotes": [
+        "删镜像不会解释退出原因，还会丢失本地构建结果",
+        "容器已退出，exec 无法在停止的容器里启动进程",
+        "正确：logs 保留主进程退出前的输出",
+        "stats 面向运行中容器，无法还原崩溃原因"
+      ],
+      "difficulty": "进阶",
+      "tags": ["docker logs", "退出码"]
+    },
+    {
+      "id": "docker-011",
+      "question": "执行 docker run demo world 后，容器会输出什么？",
+      "code": {
+        "language": "dockerfile",
+        "content": "FROM alpine\nENTRYPOINT [\"/bin/echo\"]\nCMD [\"hello\"]"
+      },
+      "options": [
+        "hello world",
+        "world",
+        "hello",
+        "报错，因为 CMD 与 ENTRYPOINT 冲突"
+      ],
+      "answerIndex": 1,
+      "explanation": "ENTRYPOINT 固定了要执行的程序 /bin/echo，CMD 只提供默认参数。docker run 后面追加的 world 会替换 CMD，最终执行的是 /bin/echo world，所以只输出 world。",
+      "optionNotes": [
+        "run 参数会整体替换 CMD，不会把 hello 一起拼接",
+        "正确：world 替换 CMD，成为 echo 的参数",
+        "hello 是默认参数，被 run 参数覆盖后不再生效",
+        "两者是入口加默认参数的组合，不会冲突"
+      ],
+      "difficulty": "进阶",
+      "tags": ["CMD", "ENTRYPOINT"]
+    },
+    {
+      "id": "docker-012",
+      "question": "构建时报错 COPY failed: file not found in build context。最可能的原因是什么？",
+      "options": [
+        "目标镜像在仓库中不存在",
+        "Docker daemon 没有启动",
+        "宿主机磁盘空间不足",
+        "要复制的文件不在构建上下文内，或被 .dockerignore 排除"
+      ],
+      "answerIndex": 3,
+      "explanation": "COPY 只能访问 docker build 末尾路径所代表的构建上下文，以及未被 .dockerignore 排除的文件。常见情况是从上级目录复制文件，或在子目录执行构建导致上下文范围变小。",
+      "optionNotes": [
+        "镜像不存在会报拉取失败，不是 COPY 找不到文件",
+        "daemon 未启动时命令根本无法连接",
+        "磁盘满通常报 no space left on device",
+        "正确：上下文范围或 .dockerignore 挡住了文件"
+      ],
+      "difficulty": "进阶",
+      "tags": ["构建上下文", "COPY"]
+    },
+    {
+      "id": "docker-013",
+      "question": "使用 shell 形式的 CMD 启动应用后，docker stop 时进程常被强杀。根因和改进方式是什么？",
+      "options": [
+        "PID 1 是 /bin/sh，不转发信号；改用 CMD [\"node\", \"server.js\"] 让 node 直接接收信号",
+        "node 不支持 SIGTERM；应改用 SIGKILL 才能退出",
+        "docker stop 默认不发送任何信号；应改用 docker kill",
+        "容器缺少接收信号的权限；应加 --privileged 启动"
+      ],
+      "answerIndex": 0,
+      "explanation": "shell 形式会把命令交给 /bin/sh -c 执行，sh 成为 PID 1，SIGTERM 发给 sh 后不一定转发给 node，超时后 Docker 发送 SIGKILL。exec 形式让 node 直接成为 PID 1，才能收到信号做优雅退出。",
+      "optionNotes": [
+        "正确：exec 形式避免 shell 吞掉信号",
+        "node 支持 SIGTERM，问题在信号没有送达",
+        "docker stop 默认发送 SIGTERM，超时才发 SIGKILL",
+        "信号接收与特权模式无关"
+      ],
+      "difficulty": "挑战",
+      "tags": ["信号", "CMD", "优雅退出"]
+    },
+    {
+      "id": "docker-014",
+      "question": "容器内应用监听 127.0.0.1:8000，已用 -p 8080:8000 映射，宿主机访问 8080 却被拒绝。最可能的原因是什么？",
+      "options": [
+        "宿主机 8080 端口已经被占用",
+        "应用只绑定了容器回环地址，应改为监听 0.0.0.0",
+        "镜像没有写 EXPOSE 8000，端口映射不会生效",
+        "必须使用 --network=host 才能访问容器端口"
+      ],
+      "answerIndex": 1,
+      "explanation": "端口映射把流量转发到容器的 eth0 地址，而监听 127.0.0.1 的进程只接受来自容器自身的连接。把监听地址改为 0.0.0.0，映射后的外部流量才能进入。",
+      "optionNotes": [
+        "端口被占用会在启动时报 bind 错误，不是连接被拒绝",
+        "正确：回环地址拒绝来自容器外的流量",
+        "EXPOSE 只是文档声明，-p 映射不依赖它",
+        "host 网络不是端口映射生效的前提"
+      ],
+      "difficulty": "挑战",
+      "tags": ["网络", "监听地址"]
+    },
+    {
+      "id": "docker-015",
+      "question": "运行镜像接近 1 GB，包含编译工具和源码，但运行时只需要构建产物。最合适的优化方式是什么？",
+      "options": [
+        "用 docker commit 反复提交容器来压缩镜像",
+        "进入容器删除日志文件后再导出镜像",
+        "使用多阶段构建，只把构建产物复制到精简的运行镜像",
+        "把 CMD 改成 ENTRYPOINT 以减少镜像层数"
+      ],
+      "answerIndex": 2,
+      "explanation": "多阶段构建在一个 Dockerfile 里使用多个 FROM：前一阶段负责编译，后一阶段只 COPY --from 产物，编译器和源码不会进入最终镜像。这样能同时减小体积和攻击面。",
+      "optionNotes": [
+        "commit 会叠加更多层，通常让镜像更大",
+        "手工删文件难以复现，也容易遗漏缓存和依赖",
+        "正确：最终镜像只保留运行所需文件",
+        "CMD 与 ENTRYPOINT 的选择不改变镜像体积"
+      ],
+      "difficulty": "进阶",
+      "tags": ["多阶段构建", "镜像优化"]
+    }
+  ]
+}

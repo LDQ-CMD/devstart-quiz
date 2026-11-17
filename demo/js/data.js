@@ -1,6 +1,8 @@
 /*
- * 起点编程 (DevStart) — 课程与题库数据
- * UMD wrapper: works in browser (window.LEARN_DATA) and Node (module.exports).
+ * 起点编程 DevStart — 内置题库（自动生成，请勿手工编辑）
+ * 数据源：demo/content/packs/*.json
+ * 生成命令：node scripts/build-content.js
+ * 版本：2.0.0 · 2026-11-17
  */
 (function (root, factory) {
   "use strict";
@@ -13,759 +15,3812 @@
   }
 }(typeof self !== "undefined" ? self : this, function () {
   "use strict";
-
   return {
-    version: 1,
-    topics: [
-      /* ==================== Python ==================== */
-      {
-        id: "python",
-        title: "Python 编程基础",
-        tagline: "从第一行代码开始，学会和计算机对话",
-        description: "Python 语法简洁、上手友好，是零基础学编程最常见的起点。这一课带你理解变量、条件循环和函数这三个最核心的概念。",
-        level: "入门",
-        estimatedMinutes: 25,
-        accent: "#2f6fb2",
-        icon: "python",
-        cards: [
-          {
-            title: "变量与数据类型",
-            summary: "变量是给数据贴上标签，程序的一切计算都从存数据、取数据开始。",
-            points: [
-              "用「变量名 = 值」把数据存进变量，例如 age = 18",
-              "常见类型：整数（int）、小数（float）、字符串（str）、布尔值（bool）",
-              "变量名要有意义，只能用字母、数字和下划线，且不能以数字开头",
-              "用 type() 可以查看一个数据是什么类型"
-            ]
+  "schemaVersion": 2,
+  "contentVersion": "2.0.0",
+  "releasedAt": "2026-11-17",
+  "notes": [
+    "题库扩充为 8 个主题、120 道题，新增计算机网络、SQL、数据结构",
+    "新增进阶与挑战题，覆盖代码阅读、命令输出、场景排错与方案权衡",
+    "每道题提供逐选项解析，错题可回炉重练",
+    "新增知识点掌握度、全局错题本与多种练习模式",
+    "题库支持独立更新：内容包重新构建后无需改动应用代码"
+  ],
+  "topics": [
+    {
+      "id": "python",
+      "title": "Python 编程基础",
+      "tagline": "从第一行代码开始，学会和计算机对话",
+      "description": "Python 语法简洁、上手友好，是零基础学编程最常见的起点。这一课带你打通变量、条件循环、函数和列表四个核心概念，学会读懂代码、预测输出，并能独立排查类型转换、越界和作用域这类典型报错。",
+      "level": "入门",
+      "estimatedMinutes": 50,
+      "accent": "#2f6fb2",
+      "icon": "python",
+      "objectives": [
+        "理解变量与常见数据类型，会用 type() 和类型转换解决实际报错",
+        "能读懂 if / for / while 代码块并正确预测程序输出",
+        "能定义带参数和返回值的函数，并解释 print 与 return 的区别",
+        "能区分列表与元组，避开越界访问和引用复制这两类典型坑"
+      ],
+      "cards": [
+        {
+          "id": "python-card-01",
+          "title": "变量与数据类型",
+          "summary": "变量是给数据贴的标签，而类型决定了这份数据能参与什么运算。",
+          "points": [
+            "用「变量名 = 值」赋值，赋了什么类型的值，变量当下就是什么类型",
+            "常见类型：int 整数、float 浮点数、str 字符串、bool 布尔值",
+            "type() 可以查看任意数据或变量当前的类型",
+            "input() 读到的永远是字符串，做算术前必须先用 int() 或 float() 转换",
+            "变量名只能用字母、数字和下划线，不能以数字开头，也不能占用关键字"
+          ],
+          "example": {
+            "language": "python",
+            "caption": "用 type() 看清数据类型",
+            "code": "age = 18            # int\nprice = 9.9         # float\nname = \"小明\"       # str\nok = True           # bool\nprint(type(price))  # <class 'float'>"
           },
-          {
-            title: "条件与循环",
-            summary: "让程序学会「看情况做事」和「重复做事」，这是所有逻辑的骨架。",
-            points: [
-              "if / elif / else 让程序按条件选择不同的路",
-              "Python 用缩进表示代码块的层级，缩进错了程序会直接报错",
-              "for 循环适合「按次数」重复，while 循环适合「按条件」重复",
-              "range(3) 会生成 0、1、2，常和 for 搭配使用"
-            ]
+          "pitfalls": [
+            "把 \"18\"（字符串）和 18（整数）混着做加法，会直接抛出 TypeError",
+            "变量名写成 2name 或 user-name，程序在语法检查这一关就过不去",
+            "以为 input() 能直接得到数字，结果两个字符串相加变成了拼接"
+          ]
+        },
+        {
+          "id": "python-card-02",
+          "title": "条件与循环",
+          "summary": "if 让程序看情况做事，for 和 while 让程序重复做事，缩进决定哪些行属于同一个代码块。",
+          "points": [
+            "if / elif / else 让程序按条件选择不同的执行路径",
+            "Python 用统一缩进表示代码块层级，缩进混乱会直接报 IndentationError",
+            "for 适合按序列逐个处理，while 适合次数不确定、只看条件的重复",
+            "range(1, 4) 依次产生 1、2、3，左闭右开，终点本身不会取到",
+            "循环体内别忘了缩进，循环外要处理的结果记得写在循环结束后"
+          ],
+          "example": {
+            "language": "python",
+            "caption": "缩进决定哪些行属于 if",
+            "code": "score = 75\nif score >= 60:\n    print(\"及格\")\nelse:\n    print(\"需要补考\")\n\nfor i in range(1, 4):\n    print(i)"
           },
-          {
-            title: "函数与代码复用",
-            summary: "把一段常用逻辑打包起名字，需要时随时调用，代码才能越写越省力。",
-            points: [
-              "用 def 定义函数，调用时写 函数名() 即可执行",
-              "参数是函数的「入口」，return 是结果的「出口」",
-              "没有 return 的函数会默认返回 None",
-              "写函数的核心动机：一次定义，处处复用"
-            ]
-          }
-        ],
-        questions: [
-          {
-            id: "python-01",
-            question: "在 Python 中运行 print(\"Hello\") 后会发生什么？",
-            options: [
-              "创建一个名为 Hello 的变量",
-              "把 Hello 保存到文件里",
-              "在屏幕上输出 Hello",
-              "结束程序运行"
-            ],
-            answerIndex: 2,
-            explanation: "print 是 Python 的内置函数，作用是把括号里的内容显示到屏幕上。它不会创建变量，也不会把内容存进文件。",
-            difficulty: "基础"
+          "pitfalls": [
+            "if 下的两行代码缩进不一致，程序直接报缩进错误",
+            "把 range(3) 当成会产出 1、2、3，实际是 0、1、2",
+            "该用 while 的场景硬用 for，比如「输对密码为止」这种次数未知的循环"
+          ]
+        },
+        {
+          "id": "python-card-03",
+          "title": "函数与代码复用",
+          "summary": "函数把一段逻辑打包命名，参数是入口，return 才是真正交出结果的出口。",
+          "points": [
+            "用 def 定义函数，调用时必须带上括号，例如 square(5)",
+            "没有写 return 的函数默认返回 None，这是最容易踩的坑之一",
+            "print 只把内容显示在屏幕上，并不会把值返回给调用者",
+            "函数内部赋值的变量是局部变量，函数外面拿不到",
+            "在函数里给变量赋值会让它变成局部变量，想改全局变量要先写 global"
+          ],
+          "example": {
+            "language": "python",
+            "caption": "print 与 return 的区别",
+            "code": "def square(x):\n    return x * x\n\nresult = square(5)\nprint(result)   # 25\nprint(square)   # 漏了括号，拿到的是函数本身"
           },
-          {
-            id: "python-02",
-            question: "下面哪一个是合法的 Python 变量名？",
-            options: [
-              "2name",
-              "user-name",
-              "class",
-              "student_age"
-            ],
-            answerIndex: 3,
-            explanation: "变量名不能以数字开头，不能包含连字符，也不能使用关键字（如 class）。student_age 由字母和下划线组成，完全合法。",
-            difficulty: "基础"
+          "pitfalls": [
+            "函数里只用 print 展示结果却忘了 return，调用方拿到的永远是 None",
+            "在函数里给全局变量赋值，Python 把它当局部变量，报 UnboundLocalError",
+            "调用时漏写括号，y = double 拿到的是函数对象而不是计算结果"
+          ]
+        },
+        {
+          "id": "python-card-04",
+          "title": "列表、元组与引用",
+          "summary": "列表是最常用的容器，但赋值传的是同一个对象而不是副本，改一个等于改两个。",
+          "points": [
+            "用方括号创建列表，append() 在末尾追加元素，下标从 0 开始",
+            "负下标从末尾数起，nums[-1] 就是最后一个元素",
+            "长度为 3 的列表下标范围是 0 到 2，访问 nums[3] 会越界报 IndexError",
+            "b = a 只是让两个名字指向同一个列表，修改 b 会同时影响 a",
+            "想要独立副本要用 a.copy() 或切片 a[:]；元组（tuple）创建后不可修改"
+          ],
+          "example": {
+            "language": "python",
+            "caption": "赋值是别名，不是复制",
+            "code": "a = [1, 2, 3]\nb = a          # b 和 a 指向同一个列表\nb.append(4)\nprint(a)       # [1, 2, 3, 4]\nc = a.copy()   # 真正的副本\nc.append(5)\nprint(a)       # [1, 2, 3, 4]，c 的修改不影响 a"
           },
-          {
-            id: "python-03",
-            question: "执行 type(3.14) 的返回结果是？",
-            options: [
-              "<class 'int'>",
-              "<class 'float'>",
-              "<class 'str'>",
-              "<class 'bool'>"
-            ],
-            answerIndex: 1,
-            explanation: "3.14 是带小数点的数字，属于浮点数类型，所以 type() 返回 <class 'float'>。不带小数点的 3 才是 int。",
-            difficulty: "进阶"
+          "pitfalls": [
+            "以为 b = a 复制了列表，结果改 b 时 a 也跟着变了",
+            "访问 nums[len(nums)] 越界报 IndexError，最后一个下标是 len(nums) - 1",
+            "对元组调用 append 或给元素重新赋值，直接抛 TypeError"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "python-001",
+          "question": "在 Python 中运行 print(\"Hello\") 后会发生什么？",
+          "options": [
+            "创建一个名为 Hello 的变量",
+            "把 Hello 保存到当前文件夹里",
+            "在屏幕上输出 Hello",
+            "程序会立即结束运行"
+          ],
+          "answerIndex": 2,
+          "explanation": "print 是内置函数，作用是把括号里的内容显示到屏幕上。它既不创建变量，也不写文件。想把数据保存下来应该用赋值语句，而不是依赖 print。",
+          "optionNotes": [
+            "print 只负责输出显示，没有任何存储功能，所以不会创建变量",
+            "print 的输出只到屏幕为止，不会生成或修改任何文件",
+            "正确。print 的本职就是把内容打印到屏幕上",
+            "程序何时结束由代码执行完毕或 exit 决定，与 print 无关"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "print",
+            "基础语法"
+          ]
+        },
+        {
+          "id": "python-002",
+          "question": "下面哪一个是合法的 Python 变量名？",
+          "options": [
+            "2name",
+            "user-name",
+            "class",
+            "student_age"
+          ],
+          "answerIndex": 3,
+          "explanation": "变量名只能由字母、数字和下划线组成，且不能以数字开头，也不能和关键字重名。student_age 是四个选项里唯一同时满足这些规则的写法。",
+          "optionNotes": [
+            "变量名不能以数字开头，2name 会被语法检查直接拒绝",
+            "连字符会被当成减法运算，变量名里不允许出现 user-name",
+            "class 是 Python 关键字，用于定义类，不能拿来当变量名",
+            "正确。字母加下划线的组合完全符合变量命名规则"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "变量",
+            "命名规则"
+          ]
+        },
+        {
+          "id": "python-003",
+          "question": "这段代码会输出什么？",
+          "code": {
+            "language": "python",
+            "content": "x = \"3\"\nprint(x * 2)"
           },
-          {
-            id: "python-04",
-            question: "len(\"Python\") 的值是多少？",
-            options: [
-              "5",
-              "7",
-              "运行报错",
-              "6"
-            ],
-            answerIndex: 3,
-            explanation: "\"Python\" 这个字符串一共有 6 个字符，len() 用于统计字符串的长度，所以返回 6。",
-            difficulty: "基础"
+          "options": [
+            "6",
+            "33",
+            "9",
+            "程序报错"
+          ],
+          "answerIndex": 1,
+          "explanation": "x 里存的是字符串 \"3\"，字符串乘以整数表示重复，所以 x * 2 得到 \"33\"。这里没有发生任何类型转换，只有数字类型相乘才做算术。",
+          "optionNotes": [
+            "选 6 是误以为 \"3\" 会自动变成数字 3 参与乘法，实际并没有转换",
+            "正确。字符串乘整数是重复拼接，\"3\" 重复两次就是 \"33\"",
+            "9 是把 3 当数字加倍再相加的结果，但 x 的类型是字符串",
+            "字符串乘整数是完全合法的操作，不会抛出异常"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "字符串",
+            "类型"
+          ]
+        },
+        {
+          "id": "python-004",
+          "question": "运行这段代码报了 TypeError，想正确输出 19，应该怎么改？",
+          "code": {
+            "language": "python",
+            "content": "age = \"18\"\nprint(age + 1)"
           },
-          {
-            id: "python-05",
-            question: "Python 用什么方式表示代码块的层级关系（比如 if 里面的代码）？",
-            options: [
-              "大括号 { }",
-              "缩进（行首空格）",
-              "分号 ;",
-              "圆括号 ( )"
-            ],
-            answerIndex: 1,
-            explanation: "Python 不靠大括号划分代码块，而是靠统一的缩进。同一段代码块必须保持相同的缩进，否则会报 IndentationError。",
-            difficulty: "基础"
+          "options": [
+            "把第二行改成 print(int(age) + 1)",
+            "把第二行改成 print(str(age) + 1)",
+            "把第二行改成 print(age + str(1))",
+            "把第二行改成 print(age + \"1\")"
+          ],
+          "answerIndex": 0,
+          "explanation": "age 保存的是字符串 \"18\"，字符串不能和整数相加，所以报 TypeError。先用 int() 把它转成整数再做加法，才能得到算术结果 19。",
+          "optionNotes": [
+            "正确。int(age) 把 \"18\" 转成整数 18，加 1 得到 19",
+            "str(age) 仍然是字符串，字符串加整数还是会报 TypeError",
+            "这行会输出 181，是字符串拼接而不是算术结果",
+            "同理输出 181，加上引号的 1 依旧是字符串"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "类型转换",
+            "排错"
+          ]
+        },
+        {
+          "id": "python-005",
+          "question": "这段代码最后打印出多少？",
+          "code": {
+            "language": "python",
+            "content": "total = 0\nfor i in range(1, 4):\n    total = total + i\nprint(total)"
           },
-          {
-            id: "python-06",
-            question: "下面这段代码会输出几行？\nfor i in range(3):\n    print(i)",
-            options: [
-              "3 行，分别是 0、1、2",
-              "3 行，分别是 1、2、3",
-              "2 行",
-              "4 行"
-            ],
-            answerIndex: 0,
-            explanation: "range(3) 会依次产生 0、1、2 三个数（不包含 3），所以循环执行 3 次，分别打印出这三个数。",
-            difficulty: "基础"
+          "options": [
+            "3",
+            "6",
+            "10",
+            "4"
+          ],
+          "answerIndex": 1,
+          "explanation": "range(1, 4) 依次产生 1、2、3，循环把这三个数累加进 total，结果是 6。注意 range 是左闭右开区间，终点 4 不会取到。",
+          "optionNotes": [
+            "3 是误以为只累加了末尾一个值，实际循环完整跑了三次",
+            "正确。1 + 2 + 3 = 6，range 左闭右开，不包含 4",
+            "10 来自 1+2+3+4，多算了取不到的终点 4",
+            "4 是把 range 的终点当成了循环值，终点本身不参与累加"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "循环",
+            "range"
+          ]
+        },
+        {
+          "id": "python-006",
+          "question": "关于列表（list）和元组（tuple），下面哪个说法是正确的？",
+          "options": [
+            "元组也可以用 append() 随时添加元素",
+            "列表创建之后就不允许再修改内容",
+            "列表和元组都支持随意增删改元素",
+            "元组一旦创建就不能修改，列表可以增删改"
+          ],
+          "answerIndex": 3,
+          "explanation": "列表是可变容器，追加、删除元素都可以；元组是不可变容器，创建后内容固定。需要保证数据不被改动时，元组比列表更合适。",
+          "optionNotes": [
+            "元组没有 append 方法，调用会直接抛 AttributeError",
+            "说反了，列表恰恰是可变的，增删改都支持",
+            "元组不可变，这个说法对元组并不成立",
+            "正确。可变与不可变正是 list 和 tuple 最核心的区别"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "列表",
+            "元组"
+          ]
+        },
+        {
+          "id": "python-007",
+          "question": "运行后提示 IndexError: list index out of range，原因是什么？",
+          "code": {
+            "language": "python",
+            "content": "nums = [10, 20, 30]\nprint(nums[3])"
           },
-          {
-            id: "python-07",
-            question: "想往列表 nums 的末尾添加一个元素 5，正确的写法是？",
-            options: [
-              "nums.append(5)",
-              "nums.add(5)",
-              "nums.push(5)",
-              "nums.insert_last(5)"
-            ],
-            answerIndex: 0,
-            explanation: "Python 列表用 append() 在末尾追加元素。add() 是集合（set）的方法，push() 是其他语言的写法，Python 里并不存在。",
-            difficulty: "进阶"
+          "options": [
+            "列表下标从 0 开始，最大下标是 2，应改用 nums[2] 或 nums[-1]",
+            "列表是空的，必须先 append 三个元素才能访问",
+            "应该往列表里再加一个元素，让长度凑够 4 就不报错了",
+            "print 打印列表必须配合循环使用，不允许直接用下标访问"
+          ],
+          "answerIndex": 0,
+          "explanation": "包含 3 个元素的列表，下标范围是 0 到 2，访问 nums[3] 已经越界。取最后一个元素用 nums[2] 或负下标 nums[-1] 都可以。",
+          "optionNotes": [
+            "正确。长度 3 的列表下标最大是 2，nums[3] 越界引发 IndexError",
+            "nums 明明有 3 个元素，不是空列表，前提就错了",
+            "加长列表只是让下标 3 恰好存在，并没有理解越界的真正原因",
+            "用下标访问单个元素是合法操作，和用不用循环没有关系"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "列表",
+            "索引",
+            "排错"
+          ]
+        },
+        {
+          "id": "python-008",
+          "question": "下面哪种需求最适合用 while 循环而不是 for 循环来实现？",
+          "options": [
+            "依次打印列表 [1, 2, 3] 里的每个元素",
+            "计算 1 到 100 所有整数的和",
+            "反复让用户输入密码，直到输入正确才继续",
+            "把字符串 \"hi\" 里的每个字符打印一遍"
+          ],
+          "answerIndex": 2,
+          "explanation": "for 适合次数已知、按序列逐个处理的场景；while 适合次数不确定、只看条件是否满足的场景。密码要输几次才能对无法预知，只能用条件控制循环。",
+          "optionNotes": [
+            "遍历列表次数已知、有现成序列，用 for 更简洁",
+            "范围固定，for i in range(1, 101) 一行就能搞定",
+            "正确。输入几次才能对无法预知，while 的条件循环正合适",
+            "遍历字符串同样次数已知，for ch in s 是标准写法"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "循环",
+            "场景选择"
+          ]
+        },
+        {
+          "id": "python-009",
+          "question": "这段代码会打印什么？",
+          "code": {
+            "language": "python",
+            "content": "def add(a, b):\n    result = a + b\n\nprint(add(2, 3))"
           },
-          {
-            id: "python-08",
-            question: "关于 Python 函数，下面哪个说法是正确的？",
-            options: [
-              "函数必须至少定义一个参数",
-              "函数体里没有 return 时，调用后会返回 None",
-              "函数名不能和普通变量同名",
-              "一个程序里最多只能定义一个函数"
-            ],
-            answerIndex: 1,
-            explanation: "没有写 return（或只写 return 不带值）的函数，Python 会默认返回 None。函数可以没有参数，也可以在一个程序里定义任意多个。",
-            difficulty: "进阶"
-          }
-        ]
-      },
-
-      /* ==================== Docker ==================== */
-      {
-        id: "docker",
-        title: "Docker 容器入门",
-        tagline: "把应用连同环境一起打包，走到哪都能跑",
-        description: "「在我电脑上明明能跑」是每个开发者都遇过的噩梦。Docker 用镜像和容器把应用与依赖固定下来，让部署变得可预测。",
-        level: "入门",
-        estimatedMinutes: 30,
-        accent: "#1e6fd9",
-        icon: "docker",
-        cards: [
-          {
-            title: "镜像与容器",
-            summary: "镜像是只读的「安装光盘」，容器是这张光盘运行起来的「活环境」。",
-            points: [
-              "镜像（Image）是一个打包好的模板，包含代码、依赖和运行环境",
-              "容器（Container）是镜像的运行实例，同一个镜像可以同时跑很多容器",
-              "镜像分层构建，多个镜像可以共享相同的底层，节省磁盘和下载时间",
-              "容器默认是隔离的：有自己的进程空间和文件系统，互不干扰"
-            ]
+          "options": [
+            "5",
+            "None",
+            "result",
+            "程序报错"
+          ],
+          "answerIndex": 1,
+          "explanation": "add 函数里只做了加法，没有写 return，Python 让它默认返回 None。result 只是函数内部的局部变量，外界拿不到它的值。",
+          "optionNotes": [
+            "5 是把「函数里有 result」误当成了「函数返回了 result」",
+            "正确。没有 return 的函数默认返回 None，print 打印出 None",
+            "result 是函数内部的局部变量名，不会作为返回值传出来",
+            "函数的定义和调用本身都合法，不会抛出异常"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "函数",
+            "return"
+          ]
+        },
+        {
+          "id": "python-010",
+          "question": "小李定义了函数 double，函数体只有 print(x * 2) 这一行。执行 y = double(4) 后再 print(y)，结果先显示 8，再显示 None。想让 y 的值真正是 8，应该怎么改？",
+          "options": [
+            "把 4 定义成全局变量，函数就能自动把结果交给 y",
+            "在调用处写成 y = print(double(4))，用 print 接住返回值",
+            "把函数名 double 改成别的名字，避免和内置函数冲突",
+            "把函数体里的 print(x * 2) 改成 return x * 2"
+          ],
+          "answerIndex": 3,
+          "explanation": "print 只负责把 8 显示在屏幕上，并不会把值交还给调用者，所以 y 拿到的是默认返回值 None。用 return 才能把结果真正传出去。",
+          "optionNotes": [
+            "问题不在参数传递，4 已经正确传进函数，缺的是返回值",
+            "print 自身返回 None，这样改 y 依然是 None",
+            "double 并没有和内置函数冲突，改名解决不了返回值问题",
+            "正确。return 是函数交出结果的出口，y 会被赋值为 8"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "函数",
+            "return",
+            "排错"
+          ]
+        },
+        {
+          "id": "python-011",
+          "question": "这段代码打印出来的数字是多少？",
+          "code": {
+            "language": "python",
+            "content": "a = [1, 2, 3]\nb = a\nb.append(4)\nprint(len(a))"
           },
-          {
-            title: "Dockerfile 与构建",
-            summary: "Dockerfile 是一份「搭环境的菜谱」，照着它一步步就能做出标准镜像。",
-            points: [
-              "Dockerfile 是纯文本文件，逐行描述从基础镜像到装依赖、拷代码的过程",
-              "docker build -t 名字 . 会按 Dockerfile 构建镜像，末尾的 . 表示用当前目录作为构建上下文",
-              "docker run 基于镜像创建并启动容器；docker ps 查看正在运行的容器",
-              "常用基础镜像（如 python:3.12）来自 Docker Hub，可以直接拉取复用"
-            ]
+          "options": [
+            "4",
+            "3",
+            "7",
+            "程序报错"
+          ],
+          "answerIndex": 0,
+          "explanation": "b = a 并没有复制列表，只是让 b 和 a 指向同一个列表对象。对 b 追加 4 之后，a 也变成了 [1, 2, 3, 4]，长度是 4。",
+          "optionNotes": [
+            "正确。a 和 b 指向同一个列表，append 之后长度变成 4",
+            "选 3 是以为 b 是独立副本，实际两个名字指向同一个对象",
+            "7 是把列表内容当成数字相加的误会，len 只统计元素个数",
+            "append 对列表是完全合法的操作，不会抛出异常"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "列表",
+            "引用"
+          ]
+        },
+        {
+          "id": "python-012",
+          "question": "运行这段代码的结果是什么？",
+          "code": {
+            "language": "python",
+            "content": "x = 10\ndef bump():\n    x = x + 1\n\nbump()\nprint(x)"
           },
-          {
-            title: "容器 vs 虚拟机",
-            summary: "同样是「隔离」，容器和虚拟机的实现思路完全不同，各有各的适用场景。",
-            points: [
-              "虚拟机虚拟出一整套操作系统，笨重但隔离更彻底",
-              "容器共享宿主机的内核，只隔离应用层，因此更轻量、启动更快",
-              "一台机器上通常能跑几十个容器，但很难同时跑几十台虚拟机",
-              "容器里产生的数据默认随容器删除而丢失，需要用数据卷（Volume）持久保存"
-            ]
-          }
-        ],
-        questions: [
-          {
-            id: "docker-01",
-            question: "关于「镜像」和「容器」的关系，下面说法正确的是？",
-            options: [
-              "镜像运行起来的实例就是容器",
-              "容器是创建镜像的模板",
-              "两者是完全无关的概念",
-              "一个镜像只能被运行一次"
-            ],
-            answerIndex: 0,
-            explanation: "镜像是静态的打包模板，容器是镜像运行起来的实例。类比来说：镜像是安装光盘，容器是装好正在运行的系统。同一个镜像可以同时运行多个容器。",
-            difficulty: "基础"
+          "options": [
+            "打印 10",
+            "打印 11",
+            "程序报错，x 在函数内未先赋值就被使用",
+            "打印 None"
+          ],
+          "answerIndex": 2,
+          "explanation": "函数里对 x 赋值会让 Python 把它当作局部变量，而局部变量在赋值前就被读取了，于是抛出 UnboundLocalError。想修改全局的 x，需要在函数里先写 global x。",
+          "optionNotes": [
+            "以为函数内的 x 就是外面的 10，忽略了赋值语句改变了它的身份",
+            "11 的前提是函数成功修改了全局变量，但这一步根本没执行成功",
+            "正确。局部变量先用后赋值，Python 抛出 UnboundLocalError",
+            "None 只和函数返回值有关，这段程序在报错处就中止了"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "函数",
+            "作用域"
+          ]
+        },
+        {
+          "id": "python-013",
+          "question": "执行 print(10 > 3) 的输出是？",
+          "options": [
+            "True",
+            "true",
+            "10 > 3",
+            "程序报错"
+          ],
+          "answerIndex": 0,
+          "explanation": "10 > 3 是一个比较表达式，求值结果是布尔值 True。Python 的布尔值首字母必须大写，小写的 true 会被当成未定义的名字。",
+          "optionNotes": [
+            "正确。比较运算的结果就是布尔值 True",
+            "Python 布尔值首字母大写，小写 true 不是合法的布尔值",
+            "print 不会原样打印表达式，而是先求值再输出结果",
+            "比较运算完全合法，任何可比较的两个值都能得出布尔结果"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "布尔值",
+            "比较运算"
+          ]
+        },
+        {
+          "id": "python-014",
+          "question": "执行 print(7 % 2) 的输出是？",
+          "options": [
+            "3",
+            "1",
+            "3.5",
+            "0"
+          ],
+          "answerIndex": 1,
+          "explanation": "% 是取余运算符，7 除以 2 商 3 余 1，所以输出 1。取余常用来判断奇偶：余 0 是偶数，余 1 是奇数。",
+          "optionNotes": [
+            "3 是整除 7 // 2 的结果，% 求的是余数",
+            "正确。7 = 2 × 3 + 1，余数是 1",
+            "3.5 是普通除法 7 / 2 的结果，% 并不做除法",
+            "0 是 7 能被 2 整除时的余数，但 7 是奇数"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "运算符",
+            "取余"
+          ]
+        },
+        {
+          "id": "python-015",
+          "question": "关于 == 和 is，下面哪个说法是正确的？",
+          "options": [
+            "两者完全等价，任何时候都可以互换",
+            "is 比较值是否相等，== 比较是不是同一个对象",
+            "== 只能用来比较两个数字的大小",
+            "== 比较值是否相等，is 比较两个名字是否指向同一个对象"
+          ],
+          "answerIndex": 3,
+          "explanation": "== 比较的是内容是否相等，is 比较的是身份，即两个名字是否指向内存中的同一个对象。日常判断值相等用 ==，只有判断是否为同一对象时才用 is。",
+          "optionNotes": [
+            "两者语义不同，值相等的两个对象未必是同一个对象",
+            "把两者的分工说反了，这正是新手最常见的混淆点",
+            "== 对字符串、列表等类型同样适用，并不限于数字",
+            "正确。一个看值，一个看身份，分工泾渭分明"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "运算符",
+            "对比"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "docker",
+      "title": "Docker 容器入门",
+      "tagline": "把应用连同环境一起打包，走到哪都能跑",
+      "description": "「在我电脑上明明能跑」是每个开发者都遇过的噩梦。Docker 用镜像和容器把应用与依赖固定下来，让部署变得可预测。本主题从镜像分层讲到 Dockerfile 构建、端口映射与常见故障排查。",
+      "level": "入门",
+      "estimatedMinutes": 50,
+      "accent": "#1e6fd9",
+      "icon": "docker",
+      "objectives": [
+        "能区分镜像与容器，并说明容器与虚拟机的差异",
+        "能读懂常见 Dockerfile 指令及其构建顺序",
+        "能使用端口映射和数据卷运行有状态服务",
+        "能根据容器状态、日志和报错定位启动失败原因"
+      ],
+      "cards": [
+        {
+          "id": "docker-card-01",
+          "title": "镜像与容器",
+          "summary": "镜像是分层只读模板，容器是镜像启动后带可写层的运行实例。",
+          "points": [
+            "镜像（Image）由多层只读文件系统叠加而成，包含代码、依赖和运行环境",
+            "容器（Container）是镜像的运行实例，启动时在镜像顶部增加一个可写层",
+            "同一个镜像可以启动任意多个容器，容器之间默认互不影响",
+            "容器删除后可写层随之丢弃，但镜像本身仍然保留在本地",
+            "镜像用「仓库名:标签」标识，如 nginx:1.27；不写标签时默认使用 latest"
+          ],
+          "example": {
+            "language": "bash",
+            "caption": "同一个镜像可以启动多个独立容器",
+            "code": "docker run -d --name web1 nginx:1.27\ndocker run -d --name web2 nginx:1.27\ndocker ps"
           },
-          {
-            id: "docker-02",
-            question: "Dockerfile 的作用是什么？",
-            options: [
-              "存储容器运行时产生的数据",
-              "描述如何一步步构建出一个镜像",
-              "管理远程镜像仓库的登录账号",
-              "监控容器占用的内存大小"
-            ],
-            answerIndex: 1,
-            explanation: "Dockerfile 是一份文本「菜谱」，逐行写清楚从哪个基础镜像开始、装什么依赖、拷什么文件，docker build 会照着它构建出镜像。",
-            difficulty: "基础"
+          "pitfalls": [
+            "把容器当虚拟机登录后随意改文件，改动只在可写层，删除容器即丢失",
+            "生产环境使用 latest 标签，不同时间拉到的镜像内容可能不一致",
+            "误以为删除容器会连镜像一起删除，实际需要单独执行 docker rmi"
+          ]
+        },
+        {
+          "id": "docker-card-02",
+          "title": "Dockerfile 与构建",
+          "summary": "Dockerfile 按层构建镜像，指令顺序直接决定缓存命中率和最终体积。",
+          "points": [
+            "FROM 指定基础镜像，后续指令都在它的基础上叠加",
+            "WORKDIR 设置工作目录，影响后续 COPY、RUN 以及容器启动时的默认目录",
+            "COPY 只能读取构建上下文中的文件，上下文由 docker build 末尾的路径决定",
+            "每条 RUN、COPY 生成一层，前面的层未变化时可以复用缓存",
+            "CMD 提供默认启动命令，docker run 后的参数会覆盖 CMD；ENTRYPOINT 定义固定入口"
+          ],
+          "example": {
+            "language": "dockerfile",
+            "caption": "先装依赖再拷源码，让依赖层稳定命中缓存",
+            "code": "FROM node:20-alpine\nWORKDIR /app\nCOPY package*.json ./\nRUN npm install\nCOPY . .\nEXPOSE 3000\nCMD [\"node\", \"server.js\"]"
           },
-          {
-            id: "docker-03",
-            question: "容器最能解决的痛点是下面哪一个？",
-            options: [
-              "让程序的运行速度提升上百倍",
-              "可以完全代替操作系统",
-              "把应用和依赖打包成统一环境，避免「在我电脑上能跑」",
-              "自带杀毒和防火墙功能"
-            ],
-            answerIndex: 2,
-            explanation: "容器把代码、依赖、系统库一起打包，无论在谁的电脑、哪台服务器上运行，环境都完全一致，从根上解决环境不一致的问题。",
-            difficulty: "基础"
+          "pitfalls": [
+            "先 COPY . . 再 RUN npm install，任何源码改动都会让依赖层缓存失效",
+            "把密钥写进 Dockerfile 或 COPY 进镜像，镜像层里仍然可以被提取",
+            "混淆构建上下文与 Dockerfile 所在目录，COPY 无法读取上级目录的文件"
+          ]
+        },
+        {
+          "id": "docker-card-03",
+          "title": "容器、虚拟机与数据持久化",
+          "summary": "容器共享宿主机内核所以轻量，但生命周期短，重要数据必须放在容器之外。",
+          "points": [
+            "虚拟机通过 Hypervisor 虚拟出完整硬件并运行客户操作系统，启动慢、占用大",
+            "容器复用宿主机内核，用命名空间隔离进程和网络，用 cgroups 限制资源",
+            "容器通常秒级启动，一台主机可以同时运行大量容器",
+            "容器可写层随容器删除而消失；Volume 由 Docker 管理，生命周期独立于容器",
+            "bind mount 直接把宿主机目录挂进容器，适合开发时同步代码"
+          ],
+          "example": {
+            "language": "bash",
+            "caption": "用命名卷保存数据库数据",
+            "code": "docker volume create appdata\ndocker run -d --name db \\\n  -v appdata:/var/lib/postgresql/data \\\n  postgres:16"
           },
-          {
-            id: "docker-04",
-            question: "想查看当前正在运行的容器，应该使用哪条命令？",
-            options: [
-              "docker ps",
-              "docker images",
-              "docker run",
-              "docker logs"
-            ],
-            answerIndex: 0,
-            explanation: "docker ps 列出正在运行的容器（加 -a 可看到已停止的）；docker images 看镜像，docker run 启动容器，docker logs 看日志。",
-            difficulty: "基础"
+          "pitfalls": [
+            "把数据库数据只放在容器可写层，删除容器后无法恢复",
+            "用 bind mount 挂载空目录覆盖镜像内已有文件，导致配置丢失",
+            "认为容器隔离等于绝对安全；容器共享内核，逃逸风险仍需重视"
+          ]
+        },
+        {
+          "id": "docker-card-04",
+          "title": "网络、端口与排错",
+          "summary": "端口映射把宿主机流量送进容器，排错先从容器状态、日志和端口占用入手。",
+          "points": [
+            "-p 宿主机端口:容器端口 建立映射，如 -p 8080:80",
+            "容器内应用要监听 0.0.0.0，只监听 127.0.0.1 时外部流量进不来",
+            "docker ps 只显示运行中的容器，加 -a 才能看到已退出的容器和退出码",
+            "docker logs 查看应用输出，docker exec -it 容器 sh 进入运行中的容器",
+            "退出码 137 通常表示被 SIGKILL（常见于内存超限），143 表示收到 SIGTERM"
+          ],
+          "example": {
+            "language": "bash",
+            "caption": "启动容器、确认状态、查看最近日志",
+            "code": "docker run -d --name web -p 8080:80 nginx:1.27\ndocker ps\ndocker logs --tail 50 web"
           },
-          {
-            id: "docker-05",
-            question: "执行 docker build -t myapp . 时，命令末尾的「.」表示什么？",
-            options: [
-              "构建出来的镜像名字叫「.」",
-              "使用当前目录作为构建上下文（在这里找 Dockerfile 和文件）",
-              "让镜像在后台运行",
-              "只构建 Dockerfile 的第一层"
-            ],
-            answerIndex: 1,
-            explanation: "末尾的「.」指定构建上下文为当前目录，Docker 会从这里找 Dockerfile 以及 COPY 等指令要用的文件。镜像名字由 -t myapp 指定。",
-            difficulty: "进阶"
+          "pitfalls": [
+            "宿主机端口被占用时只改容器端口，宿主机端口冲突依旧存在",
+            "对已退出的容器执行 docker exec，命令会失败，应先查看 docker logs",
+            "把 EXPOSE 当成端口发布；它只是声明，真正映射要靠 -p"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "docker-001",
+          "question": "关于镜像与容器的关系，下列哪种描述最准确？",
+          "options": [
+            "镜像是只读模板，容器是由镜像启动的可写运行实例",
+            "容器是只读模板，镜像是容器运行后导出的副本",
+            "镜像和容器是同一份数据，只是命令里的叫法不同",
+            "一个镜像启动后只能对应一个容器，无法复用"
+          ],
+          "answerIndex": 0,
+          "explanation": "镜像构建完成后是只读的，容器启动时会在镜像顶部加一层可写层，运行时的修改都落在这层。同一个镜像可以反复启动多个容器，每个容器拥有自己的可写层。",
+          "optionNotes": [
+            "正确：镜像只读，容器是带可写层的运行实例",
+            "说反了：容器由镜像创建，不是镜像由容器创建",
+            "两者生命周期和可写性都不同，不能混为一谈",
+            "同一镜像可启动多个容器，彼此互不冲突"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "镜像",
+            "容器"
+          ]
+        },
+        {
+          "id": "docker-002",
+          "question": "执行 docker run -d 启动容器后它立刻退出，再执行 docker ps 却看不到它。最直接的原因是什么？",
+          "options": [
+            "镜像在容器退出后被自动删除",
+            "端口映射失败，容器被 Docker 隐藏",
+            "docker ps 默认只列运行中的容器，已退出的要用 docker ps -a",
+            "容器被自动调度到了另一台主机"
+          ],
+          "answerIndex": 2,
+          "explanation": "docker ps 默认只显示正在运行的容器；容器主进程结束后状态变为 Exited，必须加 -a 才能看到。看到退出状态后，应再用 docker logs 查看失败原因。",
+          "optionNotes": [
+            "容器退出不会删除镜像，镜像仍然留在本地",
+            "端口映射失败通常直接报错，不会把容器隐藏",
+            "正确：-a 才会列出已停止的容器",
+            "单机 Docker 不会把容器调度到其他主机"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "docker ps",
+            "排错"
+          ]
+        },
+        {
+          "id": "docker-003",
+          "question": "构建完成后，镜像中的 app.py 位于哪个目录？",
+          "code": {
+            "language": "dockerfile",
+            "content": "FROM python:3.12-slim\nWORKDIR /app\nCOPY requirements.txt .\nRUN pip install -r requirements.txt\nCOPY . .\nCMD [\"python\", \"app.py\"]"
           },
-          {
-            id: "docker-06",
-            question: "docker run 这条命令的主要作用是？",
-            options: [
-              "基于镜像创建并启动一个容器",
-              "删除本地的无用镜像",
-              "把镜像上传到远程仓库",
-              "查看容器的输出日志"
-            ],
-            answerIndex: 0,
-            explanation: "docker run 会基于指定镜像创建一个新的容器并启动它。上传镜像用 docker push，看日志用 docker logs。",
-            difficulty: "基础"
+          "options": [
+            "根目录 /",
+            "/app 目录",
+            "/usr/local/bin 目录",
+            "只存在于构建上下文，不会被写进镜像"
+          ],
+          "answerIndex": 1,
+          "explanation": "WORKDIR /app 同时影响后续指令和容器启动时的默认目录，COPY . . 的目标「.」就解析为 /app。因此 app.py 被复制到 /app/app.py，CMD 也在 /app 下执行。",
+          "optionNotes": [
+            "未设置 WORKDIR 时相对路径才会落到根目录",
+            "正确：WORKDIR /app 让后续相对路径以 /app 为基准",
+            "这是可执行文件目录，与 COPY 的目标无关",
+            "COPY 会把文件写入镜像层，构建上下文不会自动进镜像"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "Dockerfile",
+            "WORKDIR"
+          ]
+        },
+        {
+          "id": "docker-004",
+          "question": "命令中的 -p 8080:80 表示什么？",
+          "code": {
+            "language": "bash",
+            "content": "docker run -d --name web -p 8080:80 nginx:1.27"
           },
-          {
-            id: "docker-07",
-            question: "关于容器与虚拟机的区别，下面哪个说法是正确的？",
-            options: [
-              "容器需要在内部安装一套完整的客户操作系统",
-              "容器共享宿主机内核，因此更轻量、启动更快",
-              "虚拟机比容器更轻量，启动只需几毫秒",
-              "容器默认无法访问任何网络"
-            ],
-            answerIndex: 1,
-            explanation: "虚拟机要跑一整个客户操作系统，而容器只隔离应用层、共享宿主机内核，所以更轻、启动更快，一台机器能同时跑大量容器。容器网络是可以正常配置和访问的。",
-            difficulty: "进阶"
+          "options": [
+            "容器监听 8080，宿主机转发到 80",
+            "镜像标签是 8080，容器端口是 80",
+            "随机分配宿主机端口 8080，容器端口由镜像决定",
+            "宿主机 8080 端口转发到容器 80 端口"
+          ],
+          "answerIndex": 3,
+          "explanation": "端口映射的格式是「宿主机端口:容器端口」，冒号前是外部访问入口，冒号后是容器内应用监听的端口。访问宿主机的 8080 时，Docker 把流量转发到容器的 80。",
+          "optionNotes": [
+            "顺序反了：冒号前是宿主机端口",
+            "-p 与镜像标签无关，标签写在镜像名后面",
+            "8080 是明确指定的宿主机端口，不是随机分配",
+            "正确：宿主机 8080 转发到容器 80"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "端口映射",
+            "docker run"
+          ]
+        },
+        {
+          "id": "docker-005",
+          "question": "写入容器的数据在 docker rm 后消失。要保留数据，正确做法是什么？",
+          "options": [
+            "启动时用 -v 挂载数据卷，把数据目录放到容器外",
+            "用 docker commit 把数据提交进镜像，之后就不会丢",
+            "加 --restart=always，容器删除后数据仍会保留",
+            "把镜像改成可写模式，数据就会跟随镜像保存"
+          ],
+          "answerIndex": 0,
+          "explanation": "容器的可写层与容器同生命周期，删除容器就会丢弃。Volume 或 bind mount 把数据存到宿主机管理的位置，新容器挂载同一卷即可读回数据。",
+          "optionNotes": [
+            "正确：数据卷独立于容器生命周期",
+            "commit 会生成新镜像，不是持久化数据的正确方式",
+            "重启策略只影响退出后是否重启，不保护已删除容器的数据",
+            "镜像始终只读，不存在可写镜像模式"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "数据卷",
+            "持久化"
+          ]
+        },
+        {
+          "id": "docker-006",
+          "question": "容器与虚拟机最本质的区别是什么？",
+          "options": [
+            "容器必须在内部安装一套完整的客户操作系统",
+            "虚拟机共享宿主机内核，容器各自运行独立内核",
+            "容器共享宿主机内核，只隔离进程、网络和文件系统",
+            "容器无法限制 CPU 和内存，虚拟机才可以"
+          ],
+          "answerIndex": 2,
+          "explanation": "虚拟机由 Hypervisor 虚拟出硬件并运行完整客户操作系统，而容器直接复用宿主机内核，通过命名空间和 cgroups 做隔离与资源限制。少了一层操作系统，容器启动更快、密度更高。",
+          "optionNotes": [
+            "安装完整客户系统的是虚拟机，不是容器",
+            "说反了：共享内核的是容器，虚拟机有独立内核",
+            "正确：共享内核加命名空间隔离是容器的关键",
+            "cgroups 可以限制容器的 CPU 和内存"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "容器",
+            "虚拟机",
+            "对比"
+          ]
+        },
+        {
+          "id": "docker-007",
+          "question": "Dockerfile 的核心作用是什么？",
+          "options": [
+            "保存容器运行期间产生的业务数据",
+            "用文本指令描述如何从基础镜像构建出目标镜像",
+            "管理远程镜像仓库的登录凭证",
+            "在容器运行时持续监控资源占用"
+          ],
+          "answerIndex": 1,
+          "explanation": "Dockerfile 是构建镜像的「配方」，FROM、COPY、RUN 等指令按顺序执行，每一层的结果叠加成最终镜像。运行期数据、仓库登录和监控都不由它负责。",
+          "optionNotes": [
+            "运行期数据应放数据卷，不写在 Dockerfile 里",
+            "正确：它描述镜像的构建步骤",
+            "仓库登录用 docker login 管理",
+            "资源监控由 docker stats 等工具完成"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "Dockerfile",
+            "镜像构建"
+          ]
+        },
+        {
+          "id": "docker-008",
+          "question": "启动容器时报错 bind: address already in use。最合理的下一步是什么？",
+          "options": [
+            "删除本地所有镜像后重新构建",
+            "把容器内监听的 80 改成 8081 后重试",
+            "给容器加 --privileged 绕过端口限制",
+            "查出占用宿主机 8080 的进程，停止它或换一个宿主机端口"
+          ],
+          "answerIndex": 3,
+          "explanation": "报错说明宿主机的 8080 已被别的进程占用，Docker 无法再绑定同一端口。应先用 netstat 或 lsof 找到占用者，或把 -p 的宿主机端口改成未使用的值；只改容器端口仍会冲突。",
+          "optionNotes": [
+            "镜像与端口占用无关，删镜像解决不了",
+            "冲突在宿主机 8080，改容器端口不改变宿主机绑定",
+            "--privileged 扩大权限，不会让被占用端口变得可用",
+            "正确：释放宿主机端口或改用其他宿主机端口"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "端口冲突",
+            "排错"
+          ]
+        },
+        {
+          "id": "docker-009",
+          "question": "只改一行业务代码，重新构建却总要重跑 npm install，速度很慢。最有效的改法是什么？",
+          "code": {
+            "language": "dockerfile",
+            "content": "FROM node:20-alpine\nWORKDIR /app\nCOPY . .\nRUN npm install\nCMD [\"npm\", \"start\"]"
           },
-          {
-            id: "docker-08",
-            question: "容器被删除后，容器里产生的数据默认会怎样？",
-            options: [
-              "自动上传到云端备份",
-              "永久保存在镜像里",
-              "随容器一起丢失，需要用数据卷（Volume）来持久化",
-              "自动复制到其他所有容器"
-            ],
-            answerIndex: 2,
-            explanation: "容器的写入层是临时的，容器删除数据就没了。要持久保存数据，应该把数据卷（Volume）或宿主机目录挂载进容器。",
-            difficulty: "进阶"
-          }
-        ]
-      },
-
-      /* ==================== Kubernetes ==================== */
-      {
-        id: "k8s",
-        title: "Kubernetes 入门",
-        tagline: "让几十台机器像一台一样听你指挥",
-        description: "当容器多到人管不过来，就需要 Kubernetes（K8s）来自动编排：扩缩容、故障自愈、滚动更新都交给集群自己完成。",
-        level: "入门",
-        estimatedMinutes: 35,
-        accent: "#5a5fd0",
-        icon: "k8s",
-        cards: [
-          {
-            title: "集群与节点",
-            summary: "K8s 集群就是一组协同工作的机器：有人负责指挥，有人负责干活。",
-            points: [
-              "集群（Cluster）由多台机器组成，每台机器称为一个节点（Node）",
-              "控制平面（Control Plane）负责指挥调度，是集群的「大脑」",
-              "工作节点上运行着真正的容器，接收控制平面下发的任务",
-              "kubectl 是操作集群的命令行工具，几乎所有管理都通过它完成"
-            ]
+          "options": [
+            "先 COPY package*.json 并 RUN npm install，再 COPY 其余源码",
+            "构建时加 --no-cache，强制每层重新执行",
+            "把基础镜像换成体积更小的 alpine 版本",
+            "把 RUN npm install 移到 CMD 之后执行"
+          ],
+          "answerIndex": 0,
+          "explanation": "Docker 逐层复用缓存，某一层失效后其后的层都要重建。COPY . . 放在依赖安装之前，任何源码改动都会让 npm install 层失效；先复制依赖清单可让这层长期命中缓存。",
+          "optionNotes": [
+            "正确：把不常变的依赖安装层提前，稳定命中缓存",
+            "--no-cache 会禁用缓存，构建只会更慢",
+            "小基础镜像省体积，但不解决依赖层反复重建",
+            "指令顺序不改变源码变更导致依赖层失效的事实"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "构建缓存",
+            "Dockerfile"
+          ]
+        },
+        {
+          "id": "docker-010",
+          "question": "容器状态为 Exited (1)。要定位启动失败原因，下一步最该做什么？",
+          "code": {
+            "language": "text",
+            "content": "$ docker ps -a\nCONTAINER ID   IMAGE        STATUS                     NAMES\n9f3c1a7b2d4e   myapp:1.0    Exited (1) 3 minutes ago   web"
           },
-          {
-            title: "Pod：最小的调度单元",
-            summary: "K8s 不直接管理单个容器，而是把一个或多个关系紧密的容器打包成 Pod。",
-            points: [
-              "Pod 是 K8s 中最小且不可再分的部署单元",
-              "一个 Pod 内的容器共享网络和存储，彼此可以像本机一样通信",
-              "每个 Pod 在集群内拥有自己的 IP，但 Pod 可能随时被重建，IP 不固定",
-              "kubectl get pods 是查看 Pod 列表最常用的命令"
-            ]
+          "options": [
+            "执行 docker rmi myapp:1.0 删掉镜像重拉",
+            "执行 docker exec -it web bash 进入容器",
+            "执行 docker logs web 查看标准输出和错误日志",
+            "执行 docker stats web 观察 CPU 使用率"
+          ],
+          "answerIndex": 2,
+          "explanation": "Exited (1) 表示容器主进程以非零状态退出，最直接的线索是它退出前打印的日志。容器已经停止，docker exec 无法进入，应先看 logs，再决定是否调整启动命令或配置。",
+          "optionNotes": [
+            "删镜像不会解释退出原因，还会丢失本地构建结果",
+            "容器已退出，exec 无法在停止的容器里启动进程",
+            "正确：logs 保留主进程退出前的输出",
+            "stats 面向运行中容器，无法还原崩溃原因"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "docker logs",
+            "退出码"
+          ]
+        },
+        {
+          "id": "docker-011",
+          "question": "执行 docker run demo world 后，容器会输出什么？",
+          "code": {
+            "language": "dockerfile",
+            "content": "FROM alpine\nENTRYPOINT [\"/bin/echo\"]\nCMD [\"hello\"]"
           },
-          {
-            title: "Deployment 与自愈",
-            summary: "声明「我要 3 个副本」，剩下的交给 K8s：挂了自动补，更新自动换。",
-            points: [
-              "Deployment 声明期望状态，例如「始终运行 3 个 Pod 副本」",
-              "节点宕机或 Pod 挂掉时，K8s 会自动重建，向期望状态收敛，这就是「自愈」",
-              "滚动更新让新版本逐个替换旧版本，服务不中断",
-              "Service 提供稳定的访问入口，把流量转发给背后不断变化的 Pod"
-            ]
-          }
-        ],
-        questions: [
-          {
-            id: "k8s-01",
-            question: "在 Kubernetes 中，最小的可调度部署单元是？",
-            options: [
-              "Node（节点）",
-              "Pod",
-              "Container（容器）",
-              "Deployment"
-            ],
-            answerIndex: 1,
-            explanation: "K8s 不直接调度单个容器，而是把一个或多个容器打包成 Pod。Pod 才是集群里最小、不可再分的调度单元。",
-            difficulty: "基础"
+          "options": [
+            "hello world",
+            "world",
+            "hello",
+            "报错，因为 CMD 与 ENTRYPOINT 冲突"
+          ],
+          "answerIndex": 1,
+          "explanation": "ENTRYPOINT 固定了要执行的程序 /bin/echo，CMD 只提供默认参数。docker run 后面追加的 world 会替换 CMD，最终执行的是 /bin/echo world，所以只输出 world。",
+          "optionNotes": [
+            "run 参数会整体替换 CMD，不会把 hello 一起拼接",
+            "正确：world 替换 CMD，成为 echo 的参数",
+            "hello 是默认参数，被 run 参数覆盖后不再生效",
+            "两者是入口加默认参数的组合，不会冲突"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "CMD",
+            "ENTRYPOINT"
+          ]
+        },
+        {
+          "id": "docker-012",
+          "question": "构建时报错 COPY failed: file not found in build context。最可能的原因是什么？",
+          "options": [
+            "目标镜像在仓库中不存在",
+            "Docker daemon 没有启动",
+            "宿主机磁盘空间不足",
+            "要复制的文件不在构建上下文内，或被 .dockerignore 排除"
+          ],
+          "answerIndex": 3,
+          "explanation": "COPY 只能访问 docker build 末尾路径所代表的构建上下文，以及未被 .dockerignore 排除的文件。常见情况是从上级目录复制文件，或在子目录执行构建导致上下文范围变小。",
+          "optionNotes": [
+            "镜像不存在会报拉取失败，不是 COPY 找不到文件",
+            "daemon 未启动时命令根本无法连接",
+            "磁盘满通常报 no space left on device",
+            "正确：上下文范围或 .dockerignore 挡住了文件"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "构建上下文",
+            "COPY"
+          ]
+        },
+        {
+          "id": "docker-013",
+          "question": "使用 shell 形式的 CMD 启动应用后，docker stop 时进程常被强杀。根因和改进方式是什么？",
+          "options": [
+            "PID 1 是 /bin/sh，不转发信号；改用 CMD [\"node\", \"server.js\"] 让 node 直接接收信号",
+            "node 不支持 SIGTERM；应改用 SIGKILL 才能退出",
+            "docker stop 默认不发送任何信号；应改用 docker kill",
+            "容器缺少接收信号的权限；应加 --privileged 启动"
+          ],
+          "answerIndex": 0,
+          "explanation": "shell 形式会把命令交给 /bin/sh -c 执行，sh 成为 PID 1，SIGTERM 发给 sh 后不一定转发给 node，超时后 Docker 发送 SIGKILL。exec 形式让 node 直接成为 PID 1，才能收到信号做优雅退出。",
+          "optionNotes": [
+            "正确：exec 形式避免 shell 吞掉信号",
+            "node 支持 SIGTERM，问题在信号没有送达",
+            "docker stop 默认发送 SIGTERM，超时才发 SIGKILL",
+            "信号接收与特权模式无关"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "信号",
+            "CMD",
+            "优雅退出"
+          ]
+        },
+        {
+          "id": "docker-014",
+          "question": "容器内应用监听 127.0.0.1:8000，已用 -p 8080:8000 映射，宿主机访问 8080 却被拒绝。最可能的原因是什么？",
+          "options": [
+            "宿主机 8080 端口已经被占用",
+            "应用只绑定了容器回环地址，应改为监听 0.0.0.0",
+            "镜像没有写 EXPOSE 8000，端口映射不会生效",
+            "必须使用 --network=host 才能访问容器端口"
+          ],
+          "answerIndex": 1,
+          "explanation": "端口映射把流量转发到容器的 eth0 地址，而监听 127.0.0.1 的进程只接受来自容器自身的连接。把监听地址改为 0.0.0.0，映射后的外部流量才能进入。",
+          "optionNotes": [
+            "端口被占用会在启动时报 bind 错误，不是连接被拒绝",
+            "正确：回环地址拒绝来自容器外的流量",
+            "EXPOSE 只是文档声明，-p 映射不依赖它",
+            "host 网络不是端口映射生效的前提"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "网络",
+            "监听地址"
+          ]
+        },
+        {
+          "id": "docker-015",
+          "question": "运行镜像接近 1 GB，包含编译工具和源码，但运行时只需要构建产物。最合适的优化方式是什么？",
+          "options": [
+            "用 docker commit 反复提交容器来压缩镜像",
+            "进入容器删除日志文件后再导出镜像",
+            "使用多阶段构建，只把构建产物复制到精简的运行镜像",
+            "把 CMD 改成 ENTRYPOINT 以减少镜像层数"
+          ],
+          "answerIndex": 2,
+          "explanation": "多阶段构建在一个 Dockerfile 里使用多个 FROM：前一阶段负责编译，后一阶段只 COPY --from 产物，编译器和源码不会进入最终镜像。这样能同时减小体积和攻击面。",
+          "optionNotes": [
+            "commit 会叠加更多层，通常让镜像更大",
+            "手工删文件难以复现，也容易遗漏缓存和依赖",
+            "正确：最终镜像只保留运行所需文件",
+            "CMD 与 ENTRYPOINT 的选择不改变镜像体积"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "多阶段构建",
+            "镜像优化"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "k8s",
+      "title": "Kubernetes 入门",
+      "tagline": "让几十台机器像一台一样听你指挥",
+      "description": "当容器多到人管不过来，就需要 Kubernetes（K8s）来自动编排：扩缩容、故障自愈、滚动更新都交给集群自己完成。本主题从 Pod 与节点讲起，逐步理解 Deployment、Service 以及常见故障的排查方法。",
+      "level": "入门",
+      "estimatedMinutes": 50,
+      "accent": "#5a5fd0",
+      "icon": "k8s",
+      "objectives": [
+        "能说明控制平面、节点与声明式 API 的分工",
+        "能区分 Pod、Deployment、StatefulSet 与 Service 的职责",
+        "能读懂常见的 Pod、Deployment、Service YAML",
+        "能根据 Pending、CrashLoopBackOff 等状态定位问题"
+      ],
+      "cards": [
+        {
+          "id": "k8s-card-01",
+          "title": "集群、节点与声明式 API",
+          "summary": "控制平面保存期望状态，工作节点运行 Pod，kubectl 只是读写 API 的客户端。",
+          "points": [
+            "集群由控制平面和工作节点组成，控制平面负责调度、存储状态和提供 API",
+            "工作节点上的 kubelet 管理 Pod，容器运行时负责真正启动容器",
+            "你提交 YAML 声明「要什么」，控制器持续对比实际状态并不断收敛",
+            "kubectl apply 提交配置，get 查询，describe 看详情与事件，delete 删除资源",
+            "节点资源不足时 Pod 会停留在 Pending，而不是自动换一套定义继续运行"
+          ],
+          "example": {
+            "language": "text",
+            "caption": "用 kubectl 查看节点是否就绪",
+            "code": "$ kubectl get nodes\nNAME       STATUS   ROLES           AGE   VERSION\nmaster-1   Ready    control-plane   12d   v1.30.2\nworker-1   Ready    <none>          12d   v1.30.2\nworker-2   Ready    <none>          12d   v1.30.2"
           },
-          {
-            id: "k8s-02",
-            question: "Kubernetes 里的「Node」指的是什么？",
-            options: [
-              "集群中的一台工作机器（物理机或虚拟机）",
-              "一种编程语言",
-              "kubectl 的配置文件",
-              "一个公共镜像仓库"
-            ],
-            answerIndex: 0,
-            explanation: "Node 就是加入集群的每一台机器。工作节点负责运行 Pod 里的容器，并接受控制平面的统一调度。",
-            difficulty: "基础"
+          "pitfalls": [
+            "把 kubectl 当成集群本身；它只是客户端，关闭终端不影响集群运行",
+            "直接修改节点上的容器绕过 API，控制器很快会按期望状态覆盖",
+            "看到 Pending 就反复删除重建，而不看 describe 里的调度事件"
+          ]
+        },
+        {
+          "id": "k8s-card-02",
+          "title": "Pod 与容器生命周期",
+          "summary": "Pod 是最小调度单元，容器在共享的网络与存储环境中运行，重建后 IP 会变化。",
+          "points": [
+            "Pod 是 Kubernetes 创建和调度的最小单位，可以包含一个或多个容器",
+            "同一 Pod 内的容器共享网络命名空间，可用 localhost 互访，端口不能重复",
+            "Pod 重建后 IP 和名称都可能变化，不能把它当作稳定的访问地址",
+            "restartPolicy 控制容器退出后的行为：Always（默认）、OnFailure、Never",
+            "需要独立扩缩容的多个服务应拆成不同 Pod，而不是塞进同一个 Pod"
+          ],
+          "example": {
+            "language": "yaml",
+            "caption": "一个最小可用的 Pod 定义",
+            "code": "apiVersion: v1\nkind: Pod\nmetadata:\n  name: web\nspec:\n  containers:\n  - name: web\n    image: nginx:1.27\n    ports:\n    - containerPort: 80"
           },
-          {
-            id: "k8s-03",
-            question: "Deployment 最重要的能力是什么？",
-            options: [
-              "存储需要长期保存的数据",
-              "给容器分配集群内部的 IP 地址",
-              "按期望副本数管理 Pod，支持滚动更新与自愈",
-              "加密和签名容器镜像"
-            ],
-            answerIndex: 2,
-            explanation: "Deployment 负责维护「我要几个副本」这个期望状态：Pod 挂了自动重建，发布新版本时逐个替换、滚动更新。",
-            difficulty: "基础"
+          "pitfalls": [
+            "把多个无关服务塞进一个 Pod，导致无法分别扩缩容和发布",
+            "依赖 Pod IP 做服务发现，Pod 重建后连接会全部失效",
+            "认为 restartPolicy: Never 会让失败的 Pod 自动修复"
+          ]
+        },
+        {
+          "id": "k8s-card-03",
+          "title": "Deployment、Service 与发布",
+          "summary": "Deployment 管副本和滚动更新，Service 用标签选择器给 Pod 一个稳定入口。",
+          "points": [
+            "Deployment 通过 ReplicaSet 维持副本数，修改 Pod 模板会触发滚动更新并生成新 ReplicaSet",
+            "滚动更新按 maxSurge 和 maxUnavailable 控制新旧 Pod 的替换节奏，也可以随时回滚",
+            "Service 通过 selector 选中带对应标签的 Pod，并提供稳定的 ClusterIP 做负载均衡",
+            "ClusterIP 只在集群内可达；NodePort 在每个节点暴露端口；LoadBalancer 依赖云环境",
+            "Service 的 port 是访问入口端口，targetPort 是 Pod 内容器实际监听的端口"
+          ],
+          "example": {
+            "language": "yaml",
+            "caption": "把 80 端口的服务流量转发到容器的 8080",
+            "code": "apiVersion: v1\nkind: Service\nmetadata:\n  name: web\nspec:\n  type: ClusterIP\n  selector:\n    app: web\n  ports:\n  - port: 80\n    targetPort: 8080"
           },
-          {
-            id: "k8s-04",
-            question: "kubectl 这个命令行工具的作用是？",
-            options: [
-              "编写容器镜像的专用语言",
-              "一种数据库的客户端",
-              "前端页面的构建框架",
-              "与 Kubernetes 集群通信、管理各种资源的工具"
-            ],
-            answerIndex: 3,
-            explanation: "kubectl 把你的命令发给集群的 API，是管理 K8s 资源（Pod、Deployment 等）最常用的命令行入口。",
-            difficulty: "基础"
+          "pitfalls": [
+            "改了 Deployment 的 Pod 标签却忘了同步 Service selector，导致 Endpoints 为空",
+            "把 targetPort 写成 Service 的 port，流量被转发到容器未监听的端口",
+            "以为 Deployment 的 Pod 名称固定，实际名称带随机后缀且每次发布都会变化"
+          ]
+        },
+        {
+          "id": "k8s-card-04",
+          "title": "配置、存储与排错",
+          "summary": "配置与密钥用 ConfigMap/Secret 注入，持久数据用 PVC，排错先看 describe 事件和日志。",
+          "points": [
+            "ConfigMap 保存普通配置，Secret 保存敏感数据；Secret 默认只做 base64 编码，不是加密",
+            "emptyDir 随 Pod 删除而清空；PVC 绑定 PV 后，数据生命周期独立于 Pod",
+            "kubectl describe pod 末尾的 Events 常能直接指出调度、拉镜像或探针失败原因",
+            "Pending 多为资源不足或亲和性不满足；ImagePullBackOff 多为镜像名、权限或网络问题",
+            "CrashLoopBackOff 表示容器反复启动后退出，应结合 kubectl logs 和 --previous 查原因"
+          ],
+          "example": {
+            "language": "text",
+            "caption": "describe 事件直接给出调度失败原因",
+            "code": "Events:\n  Type     Reason            Age   From               Message\n  ----     ------            ----  ----               -------\n  Warning  FailedScheduling  40s   default-scheduler  0/3 nodes are available:\n           3 Insufficient cpu."
           },
-          {
-            id: "k8s-05",
-            question: "某 Pod 里的容器意外崩溃退出了，Kubernetes 会怎么做？",
-            options: [
-              "把这个 Pod 永久删除，不再理会",
-              "自动重启整个集群",
-              "按照重启策略自动重启容器，让实际状态回到期望状态",
-              "直接忽略，等人工处理"
-            ],
-            answerIndex: 2,
-            explanation: "节点上的 kubelet 会持续检查容器状态，发现崩溃后按照 Pod 的重启策略自动重启它，这体现了 K8s「向期望状态收敛」的自愈能力。",
-            difficulty: "进阶"
+          "pitfalls": [
+            "把 Secret 当成加密存储，直接把明文密钥提交进 Git",
+            "用 emptyDir 保存数据库数据，Pod 重建后数据全部丢失",
+            "只反复重启 Pod 不读 describe 事件，错过真正的失败原因"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "k8s-001",
+          "question": "在 Kubernetes 中，最小的可调度部署单元是什么？",
+          "options": [
+            "Node（节点）",
+            "Pod",
+            "Container（容器）",
+            "Deployment"
+          ],
+          "answerIndex": 1,
+          "explanation": "Kubernetes 不直接调度单个容器，而是把一个或多个容器组合成 Pod 后整体调度到节点上。Pod 是调度、网络和生命周期管理的最小单位。",
+          "optionNotes": [
+            "Node 是承载 Pod 的机器，不是被调度的最小单元",
+            "正确：Pod 是最小调度单元",
+            "容器运行在 Pod 内，本身不被单独调度",
+            "Deployment 管理 Pod 副本，粒度比 Pod 更大"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "Pod",
+            "调度"
+          ]
+        },
+        {
+          "id": "k8s-002",
+          "question": "Kubernetes 中的 Node 指的是什么？",
+          "options": [
+            "集群中运行 Pod 的工作机器",
+            "一种描述集群的编程语言",
+            "kubectl 使用的配置文件",
+            "存放镜像的公共仓库"
+          ],
+          "answerIndex": 0,
+          "explanation": "Node 是加入集群的一台机器（物理机或虚拟机），上面运行 kubelet 和容器运行时，负责执行控制平面调度过来的 Pod。控制平面组件也可以部署在节点上，但职责不同。",
+          "optionNotes": [
+            "正确：Node 是承载 Pod 的工作机器",
+            "Kubernetes 不使用某种专属编程语言描述节点",
+            "kubeconfig 是访问配置，不是节点",
+            "镜像仓库是存放镜像的服务，与 Node 无关"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "Node",
+            "集群"
+          ]
+        },
+        {
+          "id": "k8s-003",
+          "question": "kubectl get pods 的主要作用是什么？",
+          "options": [
+            "创建一个新的 Pod",
+            "删除集群中所有容器",
+            "把 Pod 日志导出到文件",
+            "列出 Pod 及其当前状态"
+          ],
+          "answerIndex": 3,
+          "explanation": "get 用于查询资源，kubectl get pods 会列出 Pod 名称、就绪数、状态、重启次数等信息，是日常巡检和排错的第一步。创建用 apply 或 create，看日志用 logs。",
+          "optionNotes": [
+            "创建资源应使用 kubectl apply 或 create",
+            "get 不会删除任何资源",
+            "导出日志应使用 kubectl logs 重定向",
+            "正确：它查询并展示 Pod 列表与状态"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "kubectl",
+            "Pod"
+          ]
+        },
+        {
+          "id": "k8s-004",
+          "question": "Deployment 最核心的能力是什么？",
+          "options": [
+            "为容器提供持久化存储",
+            "给每个 Pod 分配固定公网 IP",
+            "按期望副本数管理 Pod，并支持滚动更新与回滚",
+            "对容器镜像进行加密签名"
+          ],
+          "answerIndex": 2,
+          "explanation": "Deployment 声明副本数和 Pod 模板，由 ReplicaSet 保证实际副本数与期望一致；修改模板会触发滚动更新，并可回滚到历史版本。存储、IP 和镜像签名由其他资源或工具负责。",
+          "optionNotes": [
+            "持久化存储由 PV、PVC 等资源负责",
+            "Pod IP 由网络插件分配，且会随重建变化",
+            "正确：副本管理、滚动更新和回滚是核心能力",
+            "镜像签名属于供应链安全工具，不是 Deployment 的功能"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "Deployment",
+            "副本"
+          ]
+        },
+        {
+          "id": "k8s-005",
+          "question": "Kubernetes 的声明式 API 含义是什么？",
+          "options": [
+            "用户手动逐台创建 Pod 并配置网络",
+            "用户声明期望状态，控制器持续把实际状态调整到一致",
+            "集群只能通过图形界面操作",
+            "每次部署都必须重跑完整脚本"
+          ],
+          "answerIndex": 1,
+          "explanation": "声明式意味着你提交的是目标状态，例如「3 个副本、镜像 1.1」，而不是一步步的操作命令。控制器会反复比较实际与期望状态，并自动补齐或替换资源。",
+          "optionNotes": [
+            "逐台手动创建是命令式做法，不是声明式",
+            "正确：声明期望状态，由控制器负责收敛",
+            "kubectl、API 和图形界面都可以操作集群",
+            "声明式不要求每次重跑脚本，apply 会计算差异"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "声明式",
+            "控制器"
+          ]
+        },
+        {
+          "id": "k8s-006",
+          "question": "关于同一个 Pod 内的多个容器，下列哪项描述正确？",
+          "options": [
+            "共享网络命名空间，可以通过 localhost 互相访问",
+            "各自拥有独立的公网 IP 地址",
+            "必须通过 Service 才能互相通信",
+            "不能共享任何存储卷"
+          ],
+          "answerIndex": 0,
+          "explanation": "同一 Pod 内的容器共享网络命名空间和 Pod IP，因此能用 localhost 加端口互相访问，端口不能冲突。它们也可以挂载同一个 Volume 来共享文件。",
+          "optionNotes": [
+            "正确：共享网络命名空间，localhost 可直接互访",
+            "Pod 只有一组网络地址，容器不会各拿一个公网 IP",
+            "同 Pod 内容器直接用 localhost 通信，不需要 Service",
+            "多个容器可以挂载同一个 Volume 共享数据"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "Pod",
+            "网络"
+          ]
+        },
+        {
+          "id": "k8s-007",
+          "question": "Pod 的 IP 会随重建变化，要让一组 Pod 获得稳定访问入口，应该用什么？",
+          "options": [
+            "Dockerfile",
+            "某个 Node 的主机名",
+            "Service",
+            "ConfigMap"
+          ],
+          "answerIndex": 2,
+          "explanation": "Service 通过标签选择器关联一组 Pod，并提供一个稳定的 ClusterIP 和 DNS 名称，由 kube-proxy 把流量分发到当前健康的 Pod。Pod 重建后 Service 会自动更新后端。",
+          "optionNotes": [
+            "Dockerfile 用于构建镜像，不提供服务发现",
+            "Node 主机名不随 Pod 调度变化，无法代表一组 Pod",
+            "正确：Service 提供稳定入口和负载均衡",
+            "ConfigMap 用于注入配置，不负责网络访问"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "Service",
+            "服务发现"
+          ]
+        },
+        {
+          "id": "k8s-008",
+          "question": "容器反复启动失败。下一步最应该做什么？",
+          "code": {
+            "language": "text",
+            "content": "$ kubectl get pods\nNAME                   READY   STATUS             RESTARTS\nweb-7d9f8c6b5d-2xk4p   0/1     CrashLoopBackOff   5"
           },
-          {
-            id: "k8s-06",
-            question: "既然 Pod 的 IP 会随时变化，外部访问一组 Pod 通常依靠什么？",
-            options: [
-              "Service，提供稳定的访问入口并把流量转发给 Pod",
-              "直接手写每台机器的 IP 地址",
-              "Dockerfile",
-              "关闭集群网络功能"
-            ],
-            answerIndex: 0,
-            explanation: "Pod 会随时被重建、IP 随之变化，Service 通过标签选择器找到一组 Pod，对外提供稳定的访问地址，再把流量分发过去。",
-            difficulty: "进阶"
+          "options": [
+            "删除 Pod 后不再处理，等待它自己恢复",
+            "把 Deployment 的副本数缩到 0",
+            "查看该 Pod 的日志，必要时用 --previous 看上一次崩溃输出",
+            "重启整个集群的控制平面"
+          ],
+          "answerIndex": 2,
+          "explanation": "CrashLoopBackOff 表示容器启动后反复退出，kubelet 按退避策略延迟重启。日志能说明应用为什么退出；如果当前容器已经重启，--previous 可以查看上一个实例的输出。",
+          "optionNotes": [
+            "删除后控制器仍会重建，问题不会消失",
+            "缩容只是让 Pod 消失，掩盖了根因",
+            "正确：日志是定位崩溃原因的直接证据",
+            "单个 Pod 崩溃不需要重启控制平面，代价也过高"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "CrashLoopBackOff",
+            "排错"
+          ]
+        },
+        {
+          "id": "k8s-009",
+          "question": "把镜像标签改成 1.1 后执行 kubectl apply，集群会发生什么？",
+          "code": {
+            "language": "yaml",
+            "content": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: web\nspec:\n  replicas: 3\n  selector:\n    matchLabels:\n      app: web\n  template:\n    metadata:\n      labels:\n        app: web\n    spec:\n      containers:\n      - name: web\n        image: registry.example.com/web:1.0"
           },
-          {
-            id: "k8s-07",
-            question: "Kubernetes 的「声明式 API」是什么意思？",
-            options: [
-              "用户先手动创建 Pod，再逐台配置网络",
-              "用户只声明期望状态，系统持续把实际状态调整到与之一致",
-              "只能通过图形界面操作集群",
-              "每次部署都要写完整的脚本来重新执行"
-            ],
-            answerIndex: 1,
-            explanation: "声明式的核心是：你只说「我要 3 个副本」，不用说「怎么做到」。控制平面会不断比较实际与期望状态，并自动完成调整。",
-            difficulty: "进阶"
+          "options": [
+            "创建新的 ReplicaSet，并按滚动策略逐步替换旧 Pod",
+            "直接修改现有 Pod 内的镜像，容器原地重启",
+            "因为 Deployment 不支持更新，apply 会报错",
+            "只更新镜像仓库，现有 Pod 保持不变"
+          ],
+          "answerIndex": 0,
+          "explanation": "Pod 模板中的 image 变化会被视为新的模板版本，Deployment 创建新的 ReplicaSet，再按 maxSurge 和 maxUnavailable 逐步扩新缩旧。已有 Pod 不会被原地修改。",
+          "optionNotes": [
+            "正确：模板变更触发新 ReplicaSet 和滚动更新",
+            "Pod 模板不可原地改镜像，Kubernetes 会新建 Pod",
+            "Deployment 支持更新，apply 会正常提交",
+            "提交到集群的配置会驱动 Pod 替换，不只是改仓库"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "Deployment",
+            "滚动更新"
+          ]
+        },
+        {
+          "id": "k8s-010",
+          "question": "集群内其他 Pod 访问该 Service 的 80 端口时，流量最终到达容器哪个端口？",
+          "code": {
+            "language": "yaml",
+            "content": "apiVersion: v1\nkind: Service\nmetadata:\n  name: web\nspec:\n  type: ClusterIP\n  selector:\n    app: web\n  ports:\n  - port: 80\n    targetPort: 8080"
           },
-          {
-            id: "k8s-08",
-            question: "kubectl get pods 这条命令用来做什么？",
-            options: [
-              "创建一个新的 Pod",
-              "删除集群里所有容器",
-              "把日志导出到文件",
-              "查看当前集群中 Pod 的列表和状态"
-            ],
-            answerIndex: 3,
-            explanation: "get 表示「查询」，kubectl get pods 会列出集群里的 Pod 及其运行状态，是日常排查最常用的命令之一。",
-            difficulty: "基础"
-          }
-        ]
-      },
-
-      /* ==================== Linux ==================== */
-      {
-        id: "linux",
-        title: "Linux 命令行基础",
-        tagline: "一个黑窗口，掌控整个服务器",
-        description: "服务器上没有鼠标点选，全靠命令行沟通。掌握目录导航、文件操作和权限管理这三件套，你就有了和 Linux 服务器打交道的基本功。",
-        level: "入门",
-        estimatedMinutes: 28,
-        accent: "#b25f1f",
-        icon: "linux",
-        cards: [
-          {
-            title: "目录导航",
-            summary: "一切文件都挂在一棵从根 / 出发的树上，先学会在树上游走。",
-            points: [
-              "pwd 显示当前所在目录，cd 用于切换目录",
-              "ls 列出目录内容，-l 长格式看详情，-a 能看到隐藏文件",
-              "「.」表示当前目录，「..」表示上一级目录，cd .. 就是返回上级",
-              "绝对路径从根 / 写起，相对路径从当前位置写起"
-            ]
+          "options": [
+            "80 端口",
+            "由 kube-proxy 随机选择的端口",
+            "Service 的 ClusterIP 所对应的端口",
+            "8080 端口"
+          ],
+          "answerIndex": 3,
+          "explanation": "Service 的 port 是对外暴露的服务端口，targetPort 指定后端容器监听的端口。kube-proxy 把发往 ClusterIP:80 的流量转发到 PodIP:8080。",
+          "optionNotes": [
+            "80 是 Service 端口，不是容器实际监听端口",
+            "转发目标由 targetPort 决定，不是随机端口",
+            "ClusterIP 是虚拟服务地址，不直接对应容器端口",
+            "正确：targetPort 8080 才是容器监听端口"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "Service",
+            "targetPort"
+          ]
+        },
+        {
+          "id": "k8s-011",
+          "question": "Deployment 与 StatefulSet 的主要区别是什么？",
+          "options": [
+            "Deployment 只能运行无状态应用，StatefulSet 只能运行数据库",
+            "StatefulSet 为每个 Pod 提供稳定名称和独立存储，Deployment 的 Pod 可以互换",
+            "Deployment 不支持滚动更新，StatefulSet 才支持",
+            "StatefulSet 创建的 Pod 不能通过 Service 访问"
+          ],
+          "answerIndex": 1,
+          "explanation": "StatefulSet 为每个副本分配固定序号和稳定网络标识，通常配合 PVC 模板为每个 Pod 提供独立存储，适合数据库等有状态服务。Deployment 的 Pod 没有固定身份，可以随意替换。",
+          "optionNotes": [
+            "这是常见误解：是否适合有状态服务取决于需求，不是硬性限制",
+            "正确：稳定身份和独立存储是 StatefulSet 的关键差异",
+            "两者都支持滚动更新，只是策略细节不同",
+            "StatefulSet 同样可以通过 Service 暴露，常用 Headless Service"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "Deployment",
+            "StatefulSet",
+            "对比"
+          ]
+        },
+        {
+          "id": "k8s-012",
+          "question": "kubectl rollout status 长时间卡住，新 Pod 一直是 0/1。最合理的排查顺序是什么？",
+          "options": [
+            "直接删除 Deployment 后重新创建",
+            "把 Service 类型改成 NodePort 再观察",
+            "用 describe 查看新 Pod 的事件和探针失败原因，再结合日志定位",
+            "把 replicas 改成 0，让发布立即结束"
+          ],
+          "answerIndex": 2,
+          "explanation": "滚动更新会等待新 Pod 进入 Ready 才继续替换，0/1 说明就绪探针未通过或容器未正常启动。describe 的事件能看到探针失败、拉镜像失败等原因，日志则补充应用层信息。",
+          "optionNotes": [
+            "删除重建会丢失发布现场，问题可能再次出现",
+            "Service 类型不影响 Pod 是否就绪",
+            "正确：先看事件和探针，再看应用日志",
+            "缩容只是绕过发布，不是解决问题"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "滚动更新",
+            "就绪探针"
+          ]
+        },
+        {
+          "id": "k8s-013",
+          "question": "Service 的 ClusterIP 为 10.96.0.15，集群内访问它超时，且 kubectl get endpoints web 显示为空。最可能的原因是什么？",
+          "options": [
+            "Service 没有分配到 ClusterIP",
+            "Service 的 selector 与后端 Pod 的标签不匹配",
+            "后端 Pod 没有设置 restartPolicy",
+            "必须把 Service 改成 LoadBalancer 才能访问"
+          ],
+          "answerIndex": 1,
+          "explanation": "Endpoints 为空说明 Service 没有选中任何就绪 Pod，最常见的是 selector 与 Pod 标签不一致，或 Pod 未通过就绪探针。先核对标签，再检查 Pod 的 Ready 状态。",
+          "optionNotes": [
+            "能拿到 ClusterIP 说明地址已分配，问题在后端",
+            "正确：selector 不匹配会导致没有后端 Endpoints",
+            "restartPolicy 不影响 Service 选择后端",
+            "ClusterIP 在集群内可直接访问，无需 LoadBalancer"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "Service",
+            "Endpoints",
+            "排错"
+          ]
+        },
+        {
+          "id": "k8s-014",
+          "question": "某 Pod 长时间处于 Pending。根据 describe 输出的事件，最可能的原因和正确做法是什么？",
+          "code": {
+            "language": "text",
+            "content": "Events:\n  Type     Reason            Age   From               Message\n  ----     ------            ----  ----               -------\n  Warning  FailedScheduling  40s   default-scheduler  0/3 nodes are available:\n           3 Insufficient cpu."
           },
-          {
-            title: "文件操作与搜索",
-            summary: "创建、查看、删除文件是日常操作，grep 是在文件里找内容的神器。",
-            points: [
-              "mkdir 新建目录，touch 新建空文件，cp 复制，mv 移动或重命名",
-              "rm 直接删除文件且默认不进回收站，操作前务必确认路径",
-              "cat 查看小文件全部内容，less 分页翻看大文件",
-              "grep \"关键词\" 文件名 可以搜出包含关键词的所有行"
-            ]
+          "options": [
+            "容器 requests.cpu 超出节点可分配资源；降低 requests 或扩容节点",
+            "镜像不存在；应修改镜像标签后重试",
+            "容器端口被占用；应修改 containerPort",
+            "缺少 Service；应创建 NodePort 类型的 Service"
+          ],
+          "answerIndex": 0,
+          "explanation": "调度器提示 3 个节点都 Insufficient cpu，说明没有节点能满足 Pod 的 CPU requests，所以 Pod 无法绑定到节点。应核对 requests 是否合理，降低请求或增加节点资源。",
+          "optionNotes": [
+            "正确：requests 过大导致调度失败，需调整资源或扩容",
+            "拉镜像失败会显示 ImagePullBackOff，不是 Pending",
+            "端口冲突发生在容器启动阶段，不会让 Pod 停在 Pending",
+            "Service 不参与 Pod 调度，创建它也不能解决"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "Pending",
+            "调度",
+            "资源"
+          ]
+        },
+        {
+          "id": "k8s-015",
+          "question": "livenessProbe 与 readinessProbe 的区别，下列哪项正确？",
+          "options": [
+            "liveness 失败会把 Pod 从 Service 摘除，readiness 失败会重启容器",
+            "两者失败都会立即删除 Pod 并重新调度",
+            "readiness 只在启动时执行一次，liveness 持续执行",
+            "readiness 失败会停止向该 Pod 转发流量，liveness 失败会重启容器"
+          ],
+          "answerIndex": 3,
+          "explanation": "readiness 决定 Pod 是否准备好接收流量，失败时 Endpoints 会移除该 Pod 但不重启它；liveness 判断容器是否还活着，连续失败会触发重启。两者的失败后果正好相反。",
+          "optionNotes": [
+            "说反了：摘流量是 readiness，重启是 liveness",
+            "探针失败不会删除 Pod，只会摘流量或重启容器",
+            "两者都会按 periodSeconds 周期性执行",
+            "正确：readiness 管流量，liveness 管重启"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "探针",
+            "健康检查",
+            "对比"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "linux",
+      "title": "Linux 命令行基础",
+      "tagline": "一个黑窗口，掌控整个服务器",
+      "description": "服务器上没有鼠标点选，全靠命令行沟通。掌握目录导航、文件操作、权限管理和管道组合这四件套，你就能读懂常见的命令序列，遇到 Permission denied 这类报错也知道下一步该查什么。",
+      "level": "入门",
+      "estimatedMinutes": 50,
+      "accent": "#b25f1f",
+      "icon": "linux",
+      "objectives": [
+        "能用 pwd / cd / ls 在目录树中定位并切换工作目录",
+        "能用 touch / cp / mv / rm 完成文件增删改，并用 grep 和 find 找到目标",
+        "能读懂 ls -l 的权限位，会用 chmod 修改权限并区分 chown 的分工",
+        "能读懂通配符加管道的命令组合，例如 ls *.txt | wc -l"
+      ],
+      "cards": [
+        {
+          "id": "linux-card-01",
+          "title": "目录导航",
+          "summary": "所有文件都挂在一棵从根 / 出发的树上，先学会在树上准确移动和定位。",
+          "points": [
+            "pwd 显示当前目录的绝对路径，cd 用来切换目录",
+            "cd .. 回上一级，cd - 回上一次所在的目录，cd ~ 回用户主目录",
+            "ls 列出内容：-l 长格式看权限大小时间，-a 才能看到隐藏文件",
+            "绝对路径从根 / 写起，相对路径从当前目录写起，两者起点不同",
+            "Tab 键可以自动补全路径，既省事又能减少手打错误"
+          ],
+          "example": {
+            "language": "bash",
+            "caption": "在目录树里游走",
+            "code": "pwd              # /home/user\ncd documents     # 进入子目录\nmkdir notes && cd notes\ncd ..            # 回到 documents\ncd -             # 回到 notes"
           },
-          {
-            title: "权限与超级用户",
-            summary: "Linux 是多用户系统，每个文件都有明确的「谁能读、谁能写、谁能执行」。",
-            points: [
-              "权限分三组：属主、属组、其他人；每组有 r（读）w（写）x（执行）",
-              "ls -l 输出开头的 rwxr-xr-- 就是在描述这三组权限",
-              "chmod 修改权限，例如 chmod +x script.sh 给脚本加上执行权限",
-              "sudo 以管理员身份执行单条命令，权限大、误操作代价也大，用前多想一秒"
-            ]
-          }
-        ],
-        questions: [
-          {
-            id: "linux-01",
-            question: "想知道自己当前处在哪个目录下，应该输入哪条命令？",
-            options: [
-              "ls",
-              "cd",
-              "pwd",
-              "mkdir"
-            ],
-            answerIndex: 2,
-            explanation: "pwd 的意思是 print working directory，专门用来显示当前所在的目录路径。ls 是列目录内容，cd 是切换目录。",
-            difficulty: "基础"
+          "pitfalls": [
+            "把 cd documents 写成 cd /documents，绝对路径从根出发，去的地方完全不同",
+            "ls 看不到以 . 开头的隐藏文件，误以为文件不存在",
+            "在错误的目录里执行删除或覆盖操作，命令行不会替你确认上下文"
+          ]
+        },
+        {
+          "id": "linux-card-02",
+          "title": "文件操作与搜索",
+          "summary": "创建、查看、删除文件是日常操作；grep 在内容里找行，find 按名字找文件，分工不能弄反。",
+          "points": [
+            "touch 新建空文件，mkdir 新建目录，cp 复制，mv 移动或重命名",
+            "cat 一次输出整个小文件，less 分页翻看大文件，按 q 退出",
+            "grep \"关键词\" 文件名 会输出所有包含关键词的行",
+            "find 目录 -name \"模式\" 按文件名查找文件本身，和 grep 分工不同",
+            "rm 删除的文件不进回收站；删除目录还要加 -r 参数"
+          ],
+          "example": {
+            "language": "bash",
+            "caption": "找到文件里的报错行",
+            "code": "$ cat app.log\nstart\nerror: disk full\nok\n$ grep \"error\" app.log\nerror: disk full\n$ find . -name \"*.log\"\n./app.log"
           },
-          {
-            id: "linux-02",
-            question: "想切换到 /home/user 目录，正确的命令是？",
-            options: [
-              "cd /home/user",
-              "ls /home/user",
-              "pwd /home/user",
-              "open /home/user"
-            ],
-            answerIndex: 0,
-            explanation: "cd（change directory）用于切换目录。ls 只会列出该目录的内容，并不会把工作目录切换过去。",
-            difficulty: "基础"
+          "pitfalls": [
+            "用 find 去搜文件内容、用 grep 按名字找文件，两个命令的分工正好弄反",
+            "用 cat 看几万行的大文件，屏幕瞬间刷满，应该改用 less",
+            "习惯性 rm -rf，路径稍有笔误就会造成不可恢复的删除"
+          ]
+        },
+        {
+          "id": "linux-card-03",
+          "title": "权限与超级用户",
+          "summary": "Linux 是多用户系统，每个文件都明确规定了谁能读、谁能写、谁能执行。",
+          "points": [
+            "权限分属主、属组、其他人三组，每组用 rwx 表示读、写、执行",
+            "ls -l 开头的 -rwxr-x--- 依次描述这三组权限，第一位 - 表示普通文件",
+            "chmod 修改权限，既可以用 +x 这种符号方式，也可以用 644 这种数字方式",
+            "数字规则：r=4、w=2、x=1，相加后三组各一位，chmod 644 就是 rw- r-- r--",
+            "chown 改的是文件的属主和属组，不是权限位，别和 chmod 混用",
+            "sudo 让单条命令以管理员身份执行，权限大、误操作代价也大"
+          ],
+          "example": {
+            "language": "bash",
+            "caption": "读懂并修改权限",
+            "code": "$ ls -l run.sh\n-rw-r--r-- 1 user dev 53 Jun 1 10:00 run.sh\n$ ./run.sh          # Permission denied\n$ chmod +x run.sh\n$ ls -l run.sh\n-rwxr-xr-x 1 user dev 53 Jun 1 10:00 run.sh"
           },
-          {
-            id: "linux-03",
-            question: "ls -l 和直接使用 ls 有什么区别？",
-            options: [
-              "ls -l 会删除目录里的文件",
-              "ls -l 以长格式显示文件权限、大小、修改时间等详细信息",
-              "ls -l 只显示隐藏文件",
-              "两者完全没有区别"
-            ],
-            answerIndex: 1,
-            explanation: "默认的 ls 只显示文件名列表；加上 -l 后变成「长格式」，能看到权限、属主、大小、修改时间等详细信息。",
-            difficulty: "基础"
+          "pitfalls": [
+            "脚本内容明明正确，却因为没有 x 权限而 Permission denied",
+            "想改权限却用了 chown，想改属主却用了 chmod，两个命令互相混淆",
+            "全程用 sudo 干活，一旦手滑执行了危险命令，系统可能直接受损"
+          ]
+        },
+        {
+          "id": "linux-card-04",
+          "title": "通配符与管道",
+          "summary": "通配符负责批量选中文件，管道把一条命令的输出交给下一条继续处理，组合起来威力翻倍。",
+          "points": [
+            "通配符 * 匹配任意多个字符，*.txt 代表所有以 .txt 结尾的文件",
+            "管道 | 把前一个命令的输出交给后一个命令继续处理",
+            "ls *.txt | wc -l 先列出匹配的文件名，再统计行数，得到文件数量",
+            "wc -l 统计的是送进来的行数，不是「文件个数」这种抽象概念",
+            "man 命令名 可以查看某条命令的说明书，忘了参数先问 man"
+          ],
+          "example": {
+            "language": "bash",
+            "caption": "用管道组合命令",
+            "code": "$ ls\na.txt  b.txt  c.log  notes.md\n$ ls *.txt\na.txt  b.txt\n$ ls *.txt | wc -l\n2"
           },
-          {
-            id: "linux-04",
-            question: "想在当前目录下新建一个名为 notes 的文件夹，应该用？",
-            options: [
-              "touch notes",
-              "mkdir notes",
-              "cp notes",
-              "cd notes"
-            ],
-            answerIndex: 1,
-            explanation: "mkdir（make directory）用于新建目录。touch 新建的是空文件，cd 只能进入已存在的目录。",
-            difficulty: "基础"
+          "pitfalls": [
+            "以为 wc -l 能直接数出任何东西，其实它统计的是送进来的行数",
+            "把管道 | 误写成双竖线 ||，后者是逻辑「或」，含义完全不同",
+            "在错误的目录里用 *.txt，什么也匹配不到，命令还可能报 No such file"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "linux-001",
+          "question": "想知道自己当前处在哪个目录下，应该输入哪条命令？",
+          "options": [
+            "ls",
+            "pwd",
+            "whoami",
+            "mkdir"
+          ],
+          "answerIndex": 1,
+          "explanation": "pwd 是 print working directory 的缩写，专门显示当前目录的绝对路径。ls 列出目录内容，whoami 显示当前用户，mkdir 用来新建目录。",
+          "optionNotes": [
+            "ls 列出的是目录里的内容，并不告诉你自己站在哪",
+            "正确。pwd 就是「打印工作目录」，路径一目了然",
+            "whoami 回答的是「我是谁」，显示当前登录的用户名",
+            "mkdir 用于创建新目录，和定位当前位置无关"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "pwd",
+            "目录导航"
+          ]
+        },
+        {
+          "id": "linux-002",
+          "question": "你正在 /home/user/docs/projects 目录里，想回到上一级目录 /home/user/docs，最直接的命令是？",
+          "options": [
+            "cd ..",
+            "cd .",
+            "cd /",
+            "cd docs"
+          ],
+          "answerIndex": 0,
+          "explanation": "两个点「..」代表上一级目录，cd .. 就是返回上级。单个点代表当前目录本身，cd / 则会一路跳到整棵目录树的根。",
+          "optionNotes": [
+            "正确。两个点就是上级目录的代称，cd .. 直达上级",
+            "单个点代表当前目录本身，cd . 执行完还留在原地",
+            "cd / 会回到根目录，跳得太远了",
+            "docs 是当前目录下的子目录，cd docs 反而往更深处走"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "cd",
+            "相对路径"
+          ]
+        },
+        {
+          "id": "linux-003",
+          "question": "依次执行下面四条命令后，最后一条 pwd 输出的是哪个路径？",
+          "code": {
+            "language": "bash",
+            "content": "$ cd /home/user\n$ mkdir demo\n$ cd demo\n$ pwd"
           },
-          {
-            id: "linux-05",
-            question: "想在 log.txt 里找出所有包含 error 的行，应该用哪条命令？",
-            options: [
-              "find error log.txt",
-              "grep \"error\" log.txt",
-              "cat error",
-              "rm error"
-            ],
-            answerIndex: 1,
-            explanation: "grep 用于在文件中搜索匹配的行，会把包含 error 的每一行输出。find 是按文件名查找文件的，不是搜内容。",
-            difficulty: "进阶"
+          "options": [
+            "/home/user",
+            "/home",
+            "/home/demo",
+            "/home/user/demo"
+          ],
+          "answerIndex": 3,
+          "explanation": "mkdir demo 在 /home/user 下创建了 demo 子目录，cd demo 进入的就是 /home/user/demo。pwd 显示的正是这个新路径。",
+          "optionNotes": [
+            "/home/user 是进入 demo 之前的位置，cd 已经改变了它",
+            "/home 是 user 的上一级，全程没有到过这里",
+            "/home/demo 意味着 demo 建在 /home 下，但它是建在 /home/user 下",
+            "正确。demo 建在 /home/user 里，进入后 pwd 自然显示 /home/user/demo"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "mkdir",
+            "cd"
+          ]
+        },
+        {
+          "id": "linux-004",
+          "question": "想在当前目录新建一个名为 notes.txt 的空文件，正确的命令是？",
+          "options": [
+            "mkdir notes.txt",
+            "cat notes.txt",
+            "touch notes.txt",
+            "mv notes.txt"
+          ],
+          "answerIndex": 2,
+          "explanation": "touch 的作用之一就是创建空文件。mkdir 创建的是目录，cat 是查看内容，mv 是移动或重命名，都不能用来新建空文件。",
+          "optionNotes": [
+            "mkdir 建出来的会是一个叫 notes.txt 的目录，不是文件",
+            "cat 用来查看文件内容，文件不存在时只会报错",
+            "正确。touch 一个不存在的文件名，就会创建这个空文件",
+            "mv 需要已有文件作为操作对象，无法凭空创建新文件"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "touch",
+            "文件操作"
+          ]
+        },
+        {
+          "id": "linux-005",
+          "question": "关于 rm 命令，下面哪个说法是正确的？",
+          "options": [
+            "rm 删除的文件不会进回收站，执行前务必确认路径",
+            "rm 删除的文件会先在回收站保留 30 天",
+            "rm 只能删除空文件，碰到目录就报错",
+            "rm 前面不加任何参数也能直接删除整个目录"
+          ],
+          "answerIndex": 0,
+          "explanation": "命令行的 rm 是永久删除，没有回收站兜底。删除目录还需要 -r 参数，不带参数的 rm 删不掉目录。",
+          "optionNotes": [
+            "正确。rm 直接抹掉文件，路径写错就没有后悔药",
+            "回收站是图形界面的机制，命令行 rm 并不走这一套",
+            "rm 删普通文件完全没问题，删目录才需要 -r",
+            "不带 -r 的 rm 无法删除目录，会提示 cannot remove"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "rm",
+            "安全"
+          ]
+        },
+        {
+          "id": "linux-006",
+          "question": "想在 /var/log 目录下找出所有以 .log 结尾的文件，应该用哪条命令？",
+          "options": [
+            "grep \"*.log\" /var/log",
+            "find /var/log -name \"*.log\"",
+            "cat /var/log/*.log",
+            "find \"*.log\" /var/log"
+          ],
+          "answerIndex": 1,
+          "explanation": "find 负责按文件名等条件查找文件本身，-name 用来指定文件名模式，目录要写在 -name 前面。grep 是在文件内容里搜关键词，cat 则是把内容整个打印出来。",
+          "optionNotes": [
+            "grep 搜索的是文件内容里的行，不是按文件名找文件",
+            "正确。find 负责按名字找文件，目录在前，-name 模式在后",
+            "cat 会把匹配到的日志内容全部打印，而不是列出文件",
+            "find 的目录参数要写在 -name 前面，顺序反了找不到目标"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "find",
+            "grep"
+          ]
+        },
+        {
+          "id": "linux-007",
+          "question": "grep 命令会输出哪几行？",
+          "code": {
+            "language": "bash",
+            "content": "$ cat teams.txt\ndev\ndesign\ndevops\ndata\n$ grep \"dev\" teams.txt"
           },
-          {
-            id: "linux-06",
-            question: "关于 rm 命令，下面哪个说法是正确的？",
-            options: [
-              "rm 删除的文件默认会进入回收站",
-              "rm 会永久删除文件，使用前一定要确认路径",
-              "rm 只能删除空目录",
-              "rm 必须在图形界面下才能运行"
-            ],
-            answerIndex: 1,
-            explanation: "命令行里的 rm 是直接删除，没有回收站可后悔。删错目录（尤其是 rm -rf 用错路径）后果严重，执行前务必确认自己在哪、删的是什么。",
-            difficulty: "基础"
+          "options": [
+            "只有 dev 这一行",
+            "teams.txt 里的全部四行",
+            "没有任何输出，因为没加 -i 参数",
+            "dev 和 devops 两行"
+          ],
+          "answerIndex": 3,
+          "explanation": "grep 逐行检查文件，输出所有包含关键词 dev 的行。design 和 data 不含 dev，所以只有第 1 行和第 3 行被选中。",
+          "optionNotes": [
+            "devops 这一行同样包含 dev，会被一起匹配出来",
+            "design、data 两行不含 dev，不会被输出",
+            "不加 -i 只是区分大小写，并不是决定有没有输出的开关",
+            "正确。凡是包含 dev 的行都会被打印，共两行"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "grep",
+            "命令阅读"
+          ]
+        },
+        {
+          "id": "linux-008",
+          "question": "cd - 这条命令的作用是？",
+          "options": [
+            "回到文件系统的根目录",
+            "回到当前用户的主目录",
+            "回到上一次所在的目录",
+            "回到上一级目录"
+          ],
+          "answerIndex": 2,
+          "explanation": "cd - 会在当前目录和上一次工作过的目录之间切换，非常适合在两个目录间来回跳。回到上级用 cd ..，回主目录用 cd ~。",
+          "optionNotes": [
+            "回根目录是 cd /，不是 cd -",
+            "回主目录是 cd ~ 或不带参数的 cd",
+            "正确。cd - 记住了上一个目录，直接带你回去",
+            "回上一级是 cd ..，两个点和减号很容易混"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "cd",
+            "对比"
+          ]
+        },
+        {
+          "id": "linux-009",
+          "question": "执行 ./run.sh 提示 Permission denied，用 ls -l 查看显示 -rw-r--r--。下一步最合理的做法是？",
+          "options": [
+            "执行 chmod +x run.sh 给属主加上执行权限",
+            "执行 chown +x run.sh 修改文件权限",
+            "把文件重命名为 run.bat 就能直接运行",
+            "执行 cat run.sh 确认内容后，文件就自动可以运行了"
+          ],
+          "answerIndex": 0,
+          "explanation": "报 Permission denied 且权限三组里都没有 x，说明脚本缺少执行权限。chmod 才是改权限的命令，补上 x 之后就能用 ./run.sh 运行。",
+          "optionNotes": [
+            "正确。缺的就是 x 权限，chmod +x 一补上就能运行",
+            "chown 改的是属主属组，没有改权限的功能，+x 也不是它的参数",
+            "改名字解决不了权限问题，run.bat 也照样跑不起来",
+            "cat 只是查看内容，看再多遍权限位也不会变"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "chmod",
+            "权限",
+            "排错"
+          ]
+        },
+        {
+          "id": "linux-010",
+          "question": "根据这行输出，下面哪个说法是正确的？",
+          "code": {
+            "language": "bash",
+            "content": "$ ls -l report.sh\n-rwxr-x--- 1 user dev 120 Jun 1 10:00 report.sh"
           },
-          {
-            id: "linux-07",
-            question: "Linux 权限里的 r、w、x 三个字母分别代表什么？",
-            options: [
-              "读（read）、写（write）、执行（execute）",
-              "运行、写入、复制",
-              "重命名、写入、退出",
-              "读取、唤醒、执行"
-            ],
-            answerIndex: 0,
-            explanation: "r/w/x 分别是读、写、执行三种权限。ls -l 输出里的 rwxr-xr-- 就是按「属主、属组、其他人」三组依次描述这三种权限。",
-            difficulty: "进阶"
+          "options": [
+            "系统上的所有用户都能执行这个脚本",
+            "属主 user 可以读写执行，dev 组成员可以读和执行，其他人毫无权限",
+            "其他人（others）可以读取内容，但不能执行",
+            "dev 组的成员只能查看权限信息，无法运行这个脚本"
+          ],
+          "answerIndex": 1,
+          "explanation": "权限串 rwxr-x--- 分三组：属主 rwx 全有，属组 r-x 可读可执行，其他人 --- 什么都没有。所以组内成员能运行脚本，组外用户完全碰不到。",
+          "optionNotes": [
+            "others 对应的三位是 ---，连读权限都没有",
+            "正确。rwx / r-x / --- 分别对应属主、属组、其他人",
+            "others 三位是三个减号，读权限也不存在",
+            "dev 组对应 r-x，其中的 x 表示可以执行，说法恰好相反"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "权限",
+            "ls -l"
+          ]
+        },
+        {
+          "id": "linux-011",
+          "question": "最后这条命令输出的数字是多少？",
+          "code": {
+            "language": "bash",
+            "content": "$ ls\na.txt  b.txt  c.log  notes.md\n$ ls *.txt | wc -l"
           },
-          {
-            id: "linux-08",
-            question: "clear 这条命令的作用是？",
-            options: [
-              "删除当前目录下的所有文件",
-              "清空终端屏幕上的显示",
-              "关闭终端窗口",
-              "清除用户的登录密码"
-            ],
-            answerIndex: 1,
-            explanation: "clear 只是把屏幕上已有的输出清掉，让终端变干净，不会删除任何文件，也不会影响系统状态。",
-            difficulty: "基础"
-          }
-        ]
-      },
-
-      /* ==================== Git ==================== */
-      {
-        id: "git",
-        title: "Git 版本控制",
-        tagline: "给代码装上「时光机」和「后悔药」",
-        description: "Git 记录项目的每一次改动，让你随时回退、随时分支试验。它是团队协作的地基，也是每个程序员的必备技能。",
-        level: "入门",
-        estimatedMinutes: 25,
-        accent: "#c2432b",
-        icon: "git",
-        cards: [
-          {
-            title: "仓库、提交与三个区域",
-            summary: "改动从「工作区」经「暂存区」进入「仓库」，每一步都清晰可控。",
-            points: [
-              "仓库（Repository）是 Git 管理的项目目录，保存完整的历史记录",
-              "改完文件后先 git add 放入暂存区，再 git commit 记录成一次快照",
-              "git status 查看当前哪些文件被修改、哪些已暂存",
-              "git log 可以翻看历史提交，每次提交都有唯一 ID 和说明"
-            ]
+          "options": [
+            "3",
+            "4",
+            "2",
+            "1"
+          ],
+          "answerIndex": 2,
+          "explanation": "通配符 *.txt 先被展开成 a.txt 和 b.txt，ls 输出这两行，管道把结果交给 wc -l 统计行数，得到 2。c.log 和 notes.md 不匹配模式，不会出现。",
+          "optionNotes": [
+            "3 是把 c.log 也算了进去，但它不匹配 *.txt",
+            "4 是整个目录的文件数，没有经过通配符筛选",
+            "正确。匹配到的两个文件名占两行，wc -l 数出 2",
+            "1 少算了一个文件，a.txt 和 b.txt 都匹配 *.txt"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "管道",
+            "通配符"
+          ]
+        },
+        {
+          "id": "linux-012",
+          "question": "执行 chmod 644 notes.txt 之后，这个文件的权限位会显示为？",
+          "options": [
+            "-rwxr-xr-x",
+            "-rw-rw-r--",
+            "-r--r--r--",
+            "-rw-r--r--"
+          ],
+          "answerIndex": 3,
+          "explanation": "数字权限按 r=4、w=2、x=1 相加：6 是 rw-，4 是 r--。644 依次对应属主、属组、其他人，得到 -rw-r--r--。",
+          "optionNotes": [
+            "rwxr-xr-x 对应数字 755，比 644 多出了执行权限",
+            "rw-rw-r-- 对应 664，属组多了一个写权限",
+            "r--r--r-- 对应 444，把属主的写权限也丢了",
+            "正确。6=rw-、4=r--、4=r--，拼起来正是 -rw-r--r--"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "chmod",
+            "权限"
+          ]
+        },
+        {
+          "id": "linux-013",
+          "question": "下面哪种情况才真正需要用到 sudo？",
+          "options": [
+            "要修改 /etc 目录下的系统配置文件，普通用户没有写权限",
+            "想查看自己家目录里某个文件的内容",
+            "希望某条命令执行得更快一些",
+            "当前登录的用户不是 root，就一律先加 sudo"
+          ],
+          "answerIndex": 0,
+          "explanation": "sudo 是以管理员身份执行单条命令，只在权限不足时才需要。系统目录通常只有管理员能写，而查看自己的文件、普通脚本执行都不必动用 sudo。",
+          "optionNotes": [
+            "正确。/etc 属于系统目录，普通用户写入必须借助管理员权限",
+            "读自己家目录的文件本来就是允许的，加 sudo 多此一举",
+            "sudo 只改变执行身份，不会让命令跑得更快",
+            "日常操作大多不需要管理员权限，滥用 sudo 反而放大误操作风险"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "sudo",
+            "权限"
+          ]
+        },
+        {
+          "id": "linux-014",
+          "question": "clear 这条命令的作用是？",
+          "options": [
+            "删除当前目录下的所有文件",
+            "清空指定文件的内容",
+            "清除终端屏幕上已有的显示",
+            "注销当前登录的用户"
+          ],
+          "answerIndex": 2,
+          "explanation": "clear 只是把屏幕刷新干净，方便看清新输出，不会动任何文件，也不会结束会话。文件内容和系统状态都保持原样。",
+          "optionNotes": [
+            "删文件是 rm 的工作，clear 碰不到文件系统",
+            "清空文件内容要用重定向等方式，clear 只作用于屏幕",
+            "正确。clear 只刷屏，是终端里最安全的命令之一",
+            "注销是 exit 或 logout 干的事，clear 之后命令行照常可用"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "clear",
+            "终端"
+          ]
+        },
+        {
+          "id": "linux-015",
+          "question": "想给 notes.txt 留一份备份、同时保留原文件，正确的命令是？",
+          "options": [
+            "mv notes.txt notes.txt.bak",
+            "cp notes.txt notes.txt.bak",
+            "cat notes.txt notes.txt.bak",
+            "touch notes.txt.bak"
+          ],
+          "answerIndex": 1,
+          "explanation": "cp 是复制，执行后原文件和新备份同时存在。mv 是移动或重命名，原位置的 notes.txt 会消失；touch 只能新建空文件，并不会复制内容。",
+          "optionNotes": [
+            "mv 会把原文件挪走，notes.txt 本体就不在了，不算备份",
+            "正确。cp 复制出 notes.txt.bak，原文件原封不动",
+            "cat 是查看内容，两个参数也只是依次打印，不会产生备份文件",
+            "touch 新建的是一个空文件，里面不会有 notes.txt 的内容"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "cp",
+            "mv"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "git",
+      "title": "Git 版本控制",
+      "tagline": "给代码装上「时光机」和「后悔药」",
+      "description": "Git 记录项目的每一次改动，让你随时回退、随时开分支试验，搞砸了也有后悔药。学完本主题，你能独立完成提交、分支、合并与远程协作，并看懂常见报错该往哪一步排查。",
+      "level": "入门",
+      "estimatedMinutes": 50,
+      "accent": "#c2432b",
+      "icon": "git",
+      "objectives": [
+        "理解工作区、暂存区、仓库三个区域，能说出一条改动进入历史的完整路径",
+        "能区分 merge、reset、revert 各自的适用场景与风险",
+        "能读懂 git status、git log 的输出，判断当前仓库状态",
+        "能排查合并冲突、推送被拒、误删提交这三类常见故障",
+        "能独立完成 clone、pull、push 的远程协作流程"
+      ],
+      "cards": [
+        {
+          "id": "git-card-01",
+          "title": "仓库、提交与三个区域",
+          "summary": "改动从工作区经暂存区进入仓库，每一步都可查看、可撤销，这是理解一切 Git 操作的基础。",
+          "points": [
+            "仓库（Repository）是受 Git 管理的项目目录，隐藏文件夹 .git 里保存着完整历史",
+            "工作区是正在编辑的文件，git add 把改动送入暂存区，git commit 把暂存区内容记录成一次快照",
+            "git status 随时查看哪些文件被修改、已暂存或未被跟踪，是排错的第一条命令",
+            "每次提交都有唯一哈希 ID、作者和说明，git log 可翻看完整历史",
+            "commit 只作用于本地仓库，与远程无关；要让别人看到还得执行 git push"
+          ],
+          "example": {
+            "language": "bash",
+            "caption": "三个区域之间的移动",
+            "code": "git status                  # 查看三个区域的状态\ngit add app.py              # 工作区 → 暂存区\ngit commit -m \"修复登录校验\"  # 暂存区 → 仓库\ngit log --oneline -3        # 翻看最近 3 次提交"
           },
-          {
-            title: "分支与合并",
-            summary: "分支让「平行世界」成为可能：开新功能不干扰主线，做完再合回来。",
-            points: [
-              "分支只是指向某次提交的可移动指针，创建它几乎不花成本",
-              "git branch 查看/创建分支，git checkout 或 git switch 切换分支",
-              "在独立分支上开发新功能，主线保持稳定可用",
-              "合并（merge）把分支的改动汇回主线；两边改到同一处会产生冲突，需手工解决后再提交"
-            ]
+          "pitfalls": [
+            "只改文件不 git add 就执行 commit，结果这次提交里什么都没有，还误以为 Git 坏了",
+            "提交说明随手写 111 或 123，回头查找某次改动时完全无法定位",
+            "把 commit 和 push 混为一谈，以为提交了同事就能看到，其实代码还没上传"
+          ]
+        },
+        {
+          "id": "git-card-02",
+          "title": "分支与合并",
+          "summary": "分支只是指向某次提交的可移动指针，成本低到随开随删；合并则把两条开发线汇回一起。",
+          "points": [
+            "分支是指向某次提交的指针，git branch 创建它几乎瞬间完成，不复制任何文件",
+            "git switch 或 git checkout 切换分支，工作区会变成该分支的最新内容",
+            "在独立分支上开发新功能或修 Bug，主线 main 始终保持可用",
+            "git merge 把分支改动汇回主线；两边改到同一处会产生冲突，需手工解决后 add 并提交",
+            "git log --graph 能画出分支的分叉与合并历史，排查问题看图更直观"
+          ],
+          "example": {
+            "language": "bash",
+            "caption": "开一条功能分支并合回主线",
+            "code": "git switch -c feature-login   # 创建并切换到新分支\n# ……开发、git add、git commit……\ngit switch main\ngit merge feature-login       # 把功能分支合并回主线"
           },
-          {
-            title: "远程协作",
-            summary: "把仓库放到远程（如 GitHub），团队才能克隆、推送、拉取，协同开发。",
-            points: [
-              "git clone 把远程仓库完整复制到本地",
-              "git push 把本地提交上传到远程，git pull 拉取并合并远程的最新改动",
-              "推送前先 pull，是减少冲突的好习惯",
-              "提交说明写清楚「为什么改」，是给未来同事（和未来的自己）的礼物"
-            ]
-          }
-        ],
-        questions: [
-          {
-            id: "git-01",
-            question: "git commit 这条命令的作用是？",
-            options: [
-              "把代码上传到远程仓库",
-              "删除本地未提交的修改",
-              "把暂存区的改动记录成一次版本快照",
-              "自动创建一个新分支"
-            ],
-            answerIndex: 2,
-            explanation: "commit 会把暂存区里的内容作为一次快照写进仓库历史，并附带提交说明。上传到远程要用的是 git push。",
-            difficulty: "基础"
+          "pitfalls": [
+            "改动写到一半不提交就切分支去做新任务，两件事搅在同一个工作区里",
+            "解决冲突时直接删掉 <<<<<<< 标记之间的代码，把同事的改动弄丢",
+            "功能分支长期不合回主线，分叉越来越远，冲突越积越多"
+          ]
+        },
+        {
+          "id": "git-card-03",
+          "title": "远程协作",
+          "summary": "远程仓库是团队的同步点：clone 复制、pull 拉取、push 上传，推送前先拉取能少踩坑。",
+          "points": [
+            "git clone 把远程仓库连同全部历史完整复制到本地，是加入已有项目的第一步",
+            "git push 上传本地提交，git pull 拉取远程更新并合并到当前分支",
+            "远程包含你没有的新提交时 push 会被拒绝，先 pull 合并再推送即可",
+            "git fetch 只下载远程更新但不合并，适合先看一眼再决定怎么处理",
+            "推送前先 pull、勤提小提交，是减少冲突的标准习惯"
+          ],
+          "pitfalls": [
+            "多人共改一个文件却从不 pull，本地越走越偏，最后 push 被拒、冲突一大片",
+            "push 被拒后直接 --force 强推，把同事刚推上去的提交整个抹掉",
+            "以为 pull 会弄丢自己的修改而不敢拉取，结果分叉越来越深、更难合并"
+          ]
+        },
+        {
+          "id": "git-card-04",
+          "title": "撤销与回退",
+          "summary": "Git 的每一步都有后悔药：restore 丢弃工作区改动，reset 回退分支，revert 用反向提交安全撤销。",
+          "points": [
+            "git restore 文件名 丢弃工作区中未提交的修改，撤回的内容无法恢复，使用前想清楚",
+            "git reset --hard 提交号 把分支和文件一起退回去，被甩掉的提交仍能通过 git reflog 找回",
+            "git revert 提交号 生成一个内容相反的新提交来撤销旧提交，不改写任何已有历史",
+            "共享分支（如 main）上撤销要用 revert；reset 加强推会重写团队历史",
+            "git stash 能把未完成的改动临时收起来，处理完急事再 stash pop 恢复"
+          ],
+          "example": {
+            "language": "bash",
+            "caption": "三剂后悔药，各治一种情况",
+            "code": "git restore app.py        # 丢弃工作区改动（不可恢复）\ngit revert 8d27b4e        # 生成反向提交，安全撤销\ngit reset --hard HEAD~1   # 本地回退一次提交\ngit reflog                # 误操作后在这里找回提交号"
           },
-          {
-            id: "git-02",
-            question: "想知道当前仓库里哪些文件被修改了，应该用哪条命令？",
-            options: [
-              "git status",
-              "git push",
-              "git clone",
-              "git init"
-            ],
-            answerIndex: 0,
-            explanation: "git status 会显示工作区和暂存区的状态：哪些文件改了、哪些已暂存、哪些还没被 Git 跟踪。",
-            difficulty: "基础"
+          "pitfalls": [
+            "对已 push 的共享提交用 reset --hard 再强推，同事的本地历史全部错乱",
+            "分不清 restore、reset、revert 的作用范围，该用 revert 的场合用了 reset",
+            "以为 reset --hard 后提交就永久消失，其实 reflog 里还留着找回的线索"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "git-001",
+          "question": "git commit 这条命令的作用是？",
+          "options": [
+            "把代码上传到远程仓库",
+            "删除本地未提交的修改",
+            "把暂存区的改动记录成一次版本快照",
+            "自动创建一个新分支"
+          ],
+          "answerIndex": 2,
+          "explanation": "commit 会把暂存区里的内容连同提交说明一起写入本地仓库历史，生成一次快照。上传到远程是 git push 的职责，commit 本身只影响本地。",
+          "optionNotes": [
+            "上传到远程是 git push 的工作，commit 只作用于本地仓库",
+            "commit 不会删除任何改动，丢弃修改要用 git restore",
+            "正确：commit 把暂存区内容连同说明写进本地仓库历史",
+            "commit 只是记录快照，新建分支要用 git branch 或 switch -c"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "提交",
+            "基本概念"
+          ]
+        },
+        {
+          "id": "git-002",
+          "question": "想知道当前有哪些文件改了但还没提交，应该用哪条命令？",
+          "options": [
+            "git log",
+            "git status",
+            "git push",
+            "git init"
+          ],
+          "answerIndex": 1,
+          "explanation": "git status 专门展示工作区与暂存区的状态：哪些文件改了、哪些已暂存、哪些还未被跟踪。它是每次提交前最常查看的命令。",
+          "optionNotes": [
+            "git log 看的是已提交的历史记录，看不到未提交的工作区改动",
+            "正确：status 展示工作区与暂存区的实时状态",
+            "push 负责把本地提交上传到远程，与查看改动无关",
+            "init 用于把普通目录初始化成 Git 仓库，只需执行一次"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "状态查看"
+          ]
+        },
+        {
+          "id": "git-003",
+          "question": "git add 这个命令的作用是？",
+          "options": [
+            "把文件改动放入暂存区，准备提交",
+            "自动修复所有合并冲突",
+            "把提交推送到远程仓库",
+            "回滚上一次提交"
+          ],
+          "answerIndex": 0,
+          "explanation": "git add 把指定文件的改动放进暂存区，下次 commit 只会包含暂存区里的内容。这个「先挑再存」的设计让你可以分批、有选择地提交。",
+          "optionNotes": [
+            "正确：add 把改动从工作区移入暂存区，等待提交",
+            "add 不会修改冲突，冲突标记要靠人工编辑解决",
+            "推送到远程是 git push 的职责，与 add 无关",
+            "回滚提交要用 reset 或 revert，add 只负责暂存改动"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "暂存区",
+            "基本概念"
+          ]
+        },
+        {
+          "id": "git-004",
+          "question": "在 Git 中，分支的主要用途是什么？",
+          "options": [
+            "给代码加密保护",
+            "统计项目的代码行数",
+            "压缩仓库的体积",
+            "让不同的开发线互不干扰地并行进行"
+          ],
+          "answerIndex": 3,
+          "explanation": "分支让你可以开一条独立的开发线去做新功能或修问题，主线不受影响，完成后再合并回去。团队协作和个人试验都依赖它。",
+          "optionNotes": [
+            "Git 不提供加密功能，分支与代码安全无关",
+            "统计行数需要专门工具，分支只负责标记提交位置",
+            "分支不改变仓库体积，它只是指向提交的指针",
+            "正确：分支即平行开发线，做完再合并回主线"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "分支",
+            "基本概念"
+          ]
+        },
+        {
+          "id": "git-005",
+          "question": "git push 的作用是？",
+          "options": [
+            "拉取远程的最新代码",
+            "合并两个分支",
+            "把本地的提交上传到远程仓库",
+            "查看提交历史"
+          ],
+          "answerIndex": 2,
+          "explanation": "push 把本地仓库的提交推送到远程仓库（如 GitHub），让别人能看到你的改动。拉取远程更新用的是 git pull。",
+          "optionNotes": [
+            "拉取远程更新是 git pull 的功能，方向正好相反",
+            "合并分支用 git merge，push 只负责上传提交",
+            "正确：push 把本地提交上传到远程仓库",
+            "查看历史用 git log，push 不展示任何记录"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "远程",
+            "基本概念"
+          ]
+        },
+        {
+          "id": "git-006",
+          "question": "git clone 这条命令会做什么？",
+          "options": [
+            "提交当前的所有改动",
+            "把远程仓库完整地复制一份到本地",
+            "切换到另一个分支",
+            "比较两个版本的差异"
+          ],
+          "answerIndex": 1,
+          "explanation": "git clone 会把远程仓库连同全部提交历史复制到本地，并自动建立远程连接，是加入一个已有项目时的第一步。",
+          "optionNotes": [
+            "提交用 git commit，clone 不改动任何文件",
+            "正确：clone 连历史一起完整复制远程仓库到本地",
+            "切换分支用 git switch 或 checkout，clone 不做这事",
+            "比较差异用 git diff，clone 只负责复制仓库"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "远程",
+            "基本概念"
+          ]
+        },
+        {
+          "id": "git-007",
+          "question": "你改好了一个 Bug，准备把它记入版本历史。从修改代码到进入仓库历史，正确的流程顺序是？",
+          "options": [
+            "工作区 → git commit → 暂存区 → git add → 仓库",
+            "暂存区 → git add → 工作区 → git commit → 仓库",
+            "仓库 → git add → 工作区 → git commit → 暂存区",
+            "工作区 → git add → 暂存区 → git commit → 仓库"
+          ],
+          "answerIndex": 3,
+          "explanation": "标准流程是：在工作区编辑文件，用 git add 把改动放入暂存区，再用 git commit 把暂存区内容记录进仓库历史。add 在前、commit 在后，顺序不能颠倒。",
+          "optionNotes": [
+            "顺序颠倒了：add 是把改动送入暂存区，发生在 commit 之前",
+            "方向反了：改动是从工作区流入暂存区，而不是从暂存区流回工作区",
+            "完全混乱：仓库是终点而不是起点，add 的对象是工作区改动",
+            "正确：工作区改动经 add 进入暂存区，再由 commit 写入仓库"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "暂存区",
+            "工作流"
+          ]
+        },
+        {
+          "id": "git-008",
+          "question": "你和同事同时修改了 config.py 的同一行，执行 git merge 时提示 conflict，文件里出现了 <<<<<<< 标记。正确的处理方式是？",
+          "options": [
+            "手工编辑冲突文件，保留正确内容后 git add 并提交",
+            "放弃合并并删除其中一个分支",
+            "重新执行一次 git merge，Git 第二次会自动解决冲突",
+            "把标记之间的内容全部删掉，让文件变成空文件"
+          ],
+          "answerIndex": 0,
+          "explanation": "冲突标记之间分别是两个分支的代码，Git 不会替你做业务判断，必须由人决定保留哪部分或如何融合。编辑完成后 git add 标记冲突已解决，再完成合并提交。",
+          "optionNotes": [
+            "正确：冲突必须人工裁决，解决后 add 再提交完成合并",
+            "冲突只涉及个别文件，不需要也不会靠删分支来解决",
+            "重跑 merge 结果相同，Git 无法自动替你选择业务逻辑",
+            "清空文件等于把两边的改动都丢了，会产生新的错误"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "合并",
+            "冲突",
+            "排错"
+          ]
+        },
+        {
+          "id": "git-009",
+          "question": "小张查看仓库状态后直接执行了 git commit。根据下面的输出，哪些改动会进入这次提交？",
+          "code": {
+            "language": "text",
+            "content": "$ git status\nOn branch main\nChanges to be committed:\n  modified:   app.py\n\nChanges not staged for commit:\n  modified:   README.md\n\nUntracked files:\n  notes.txt"
           },
-          {
-            id: "git-03",
-            question: "git add 这个命令的作用是？",
-            options: [
-              "把文件改动放入暂存区，准备提交",
-              "自动修复所有合并冲突",
-              "把提交推送到远程仓库",
-              "回滚上一次提交"
-            ],
-            answerIndex: 0,
-            explanation: "git add 把指定文件的改动放进暂存区，下次 commit 只会包含暂存区里的内容。这个「先挑再存」的设计让你可以分批、有选择地提交。",
-            difficulty: "基础"
+          "options": [
+            "app.py、README.md 和 notes.txt 全部",
+            "只有 app.py 的改动",
+            "只有 README.md 的改动",
+            "三者都不会，因为没有执行过 git add"
+          ],
+          "answerIndex": 1,
+          "explanation": "commit 只打包「Changes to be committed」也就是暂存区里的内容。README.md 的改动还在工作区，notes.txt 尚未被跟踪，都不会进入本次提交。",
+          "optionNotes": [
+            "只有 app.py 已暂存，另两者的状态根本不在提交范围内",
+            "正确：app.py 位于「待提交」区，是唯一会进入快照的改动",
+            "README.md 显示在「未暂存」区，还没被 add 过",
+            "app.py 已经暂存过了，commit 正常生效"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "status",
+            "暂存区"
+          ]
+        },
+        {
+          "id": "git-010",
+          "question": "小李推送自己的提交时被拒绝，看到如下提示。最恰当的下一步是？",
+          "code": {
+            "language": "text",
+            "content": "$ git push origin main\nTo github.com:team/project.git\n ! [rejected]  main -> main (fetch first)\nerror: failed to push some refs\nhint: Updates were rejected because the remote\nhint: contains work that you do not have locally."
           },
-          {
-            id: "git-04",
-            question: "在 Git 中，分支的主要用途是什么？",
-            options: [
-              "给代码加密保护",
-              "统计项目的代码行数",
-              "压缩仓库的体积",
-              "让不同的开发线互不干扰地并行进行"
-            ],
-            answerIndex: 3,
-            explanation: "分支让你可以开一条独立的开发线去做新功能或修问题，主线不受影响，完成后再合并回去。团队协作和个人试验都依赖它。",
-            difficulty: "基础"
+          "options": [
+            "执行 git push --force 强制覆盖远程",
+            "重新执行一次 git push，多试几次就能成功",
+            "执行 git init 重新初始化本地仓库",
+            "先 git pull 把远程的新提交合并下来，再 push"
+          ],
+          "answerIndex": 3,
+          "explanation": "提示说明远程有本地没有的提交，直接推送属于非快进更新所以被拒。先 pull 合并远程改动（必要时解决冲突），再推送即可，这也是多人协作的标准顺序。",
+          "optionNotes": [
+            "强推会抹掉同事刚推上去的提交，仅限确认无他人依赖时慎用",
+            "不合并远程提交，无论重试多少次都会被再次拒绝",
+            "init 只会把目录初始化成新仓库，反而会制造混乱",
+            "正确：先 pull 合并远程提交，历史接上后再正常推送"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "远程",
+            "push",
+            "排错"
+          ]
+        },
+        {
+          "id": "git-011",
+          "question": "根据下面这份分支历史图，哪种说法是正确的？",
+          "code": {
+            "language": "text",
+            "content": "$ git log --oneline --graph --all\n* e4f2a1b (feature-login) 添加登录表单\n| * 9c81d3f (main) 修复首页样式\n|/\n* d55e6f0 初始化项目"
           },
-          {
-            id: "git-05",
-            question: "git push 的作用是？",
-            options: [
-              "把本地的提交上传到远程仓库",
-              "拉取远程的最新代码",
-              "合并两个分支",
-              "查看提交历史"
-            ],
-            answerIndex: 0,
-            explanation: "push 把本地仓库的提交推送到远程仓库（如 GitHub），让别人能看到你的改动。拉取远程更新用的是 git pull。",
-            difficulty: "基础"
+          "options": [
+            "feature-login 已经包含了「修复首页样式」这个提交",
+            "两个分支没有任何共同的祖先提交",
+            "两个分支从 d55e6f0 分叉，各自有一个独立的提交",
+            "main 的改动已经合并进了 feature-login"
+          ],
+          "answerIndex": 2,
+          "explanation": "图中两条线在 d55e6f0 处汇合，说明它是两个分支的共同祖先；此后 feature-login 与 main 各自前进了一个提交，互相都不包含对方的新改动。",
+          "optionNotes": [
+            "「修复首页样式」在 main 那条线上，feature-login 未包含它",
+            "两线在 d55e6f0 汇合，它就是共同的祖先提交",
+            "正确：分叉点是 d55e6f0，两边各多出一个提交",
+            "图中没有任何合并（分叉线未重新汇合），合并尚未发生"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "log",
+            "分支",
+            "图形化历史"
+          ]
+        },
+        {
+          "id": "git-012",
+          "question": "关于 git merge 和 git rebase 的区别，下列说法正确的是？",
+          "options": [
+            "merge 会改写已有提交的哈希，rebase 不会",
+            "rebase 把当前分支的提交搬到目标分支之后形成线性历史，merge 则保留分叉并产生合并提交",
+            "两者效果完全一样，在任何场景下都可以随意互换",
+            "rebase 只能操作远程分支，merge 只能操作本地分支"
+          ],
+          "answerIndex": 1,
+          "explanation": "merge 把两条历史合到一起并生成一个合并提交，原有提交不变；rebase 把提交复制后逐个重放到目标分支顶部，历史更线性，但提交哈希会改变。对别人已拉取的共享提交做 rebase 会造成历史混乱。",
+          "optionNotes": [
+            "恰好说反了：rebase 复制提交导致哈希改变，merge 不改写原有提交",
+            "正确：rebase 重放提交形成直线历史，merge 保留分叉并生成合并提交",
+            "共享分支上 rebase 会重写他人已有的历史，两者不能随意互换",
+            "两者都既能用于本地也能用于远程分支，限制不在本地远程"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "merge",
+            "rebase",
+            "对比"
+          ]
+        },
+        {
+          "id": "git-013",
+          "question": "小王执行 reset --hard 后发现「新增支付功能」的提交不见了。根据 reflog 输出，哪组操作能把它找回来？",
+          "code": {
+            "language": "text",
+            "content": "$ git reset --hard HEAD~1\n$ git log --oneline\nf3a9c12 (HEAD -> main) 修复登录校验\n\n$ git reflog\nf3a9c12 HEAD@{0}: reset: moving to HEAD~1\n8d27b4e HEAD@{1}: commit: 新增支付功能\nf3a9c12 HEAD@{2}: commit: 修复登录校验"
           },
-          {
-            id: "git-06",
-            question: "git clone 这条命令会做什么？",
-            options: [
-              "提交当前的所有改动",
-              "切换到另一个分支",
-              "把远程仓库完整地复制一份到本地",
-              "比较两个版本的差异"
-            ],
-            answerIndex: 2,
-            explanation: "git clone 会把远程仓库连同全部历史记录复制到本地，是加入一个已有项目时的第一步。",
-            difficulty: "基础"
+          "options": [
+            "执行 git reset --hard 8d27b4e，把 main 重新指回该提交",
+            "执行 git commit --amend，把提交说明改回「新增支付功能」",
+            "执行 git push origin main，让远程把丢失的提交送回来",
+            "删除本地仓库，重新 clone 一份远程代码"
+          ],
+          "answerIndex": 0,
+          "explanation": "reset 并没有销毁提交对象，reflog 记录了 HEAD 的每一次移动，8d27b4e 正是那个「丢失」提交的哈希。把分支指针重新指回去，提交就回到历史中。",
+          "optionNotes": [
+            "正确：reflog 里 8d27b4e 就是丢失提交，reset 指回去即可恢复",
+            "amend 只能修改当前最新提交的内容说明，无法找回旧提交",
+            "push 是单向上传，远程仓库不会把提交反向送回本地",
+            "提交对象仍在本地 .git 中，clone 只会拿到远程已有的历史"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "reset",
+            "reflog",
+            "排错"
+          ]
+        },
+        {
+          "id": "git-014",
+          "question": "你把一个包含 Bug 的提交 push 到了团队共用的 main 分支，现在需要撤销它，且不能影响其他同事基于该提交的工作。下列做法正确的是？",
+          "options": [
+            "用 git revert 撤销该提交，生成一个内容相反的新提交后再正常 push",
+            "用 git reset --hard HEAD~1 抹掉该提交，再正常 push",
+            "用 git commit --amend 把这个已推送的提交改成修复后的内容",
+            "把该提交涉及的文件从工作区删除，远程会随之更新"
+          ],
+          "answerIndex": 0,
+          "explanation": "revert 通过新增一个内容相反的提交来抵消旧提交，不改动任何已有历史，因此对共享分支安全；其他同事拉取后即可同步这次撤销。reset 和 amend 都会改写已推送的历史，正常 push 会被拒绝，强推则会破坏协作。",
+          "optionNotes": [
+            "正确：revert 以新抵旧、不改历史，是共享分支上撤销的标准做法",
+            "本地回退后 push 会被拒绝，强推更会重写共享历史导致同事错乱",
+            "amend 只对本地最新提交有效，改动已推送的提交同样要强推",
+            "工作区的删除与远程历史无关，push 不会抹掉远程提交"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "revert",
+            "协作",
+            "回退"
+          ]
+        },
+        {
+          "id": "git-015",
+          "question": "你正开发一半的功能还没法提交，突然要切到 main 修复一个线上 Bug。既要保住手头改动又不污染主线，正确的操作顺序是？",
+          "options": [
+            "直接 git commit，把半成品先提交到 main 分支",
+            "手工把改动复制到记事本，checkout 之后再粘贴回来",
+            "git push 把未提交的改动先推到远程做备份",
+            "git stash 收起改动，切分支修完 Bug 回来后 git stash pop 恢复"
+          ],
+          "answerIndex": 3,
+          "explanation": "stash 会把工作区和暂存区的改动临时收起，工作区随之干净，可以安全切分支；修完 Bug 回来后 pop 能原样恢复改动。这样既不产生半成品提交，也不用手工搬运代码。",
+          "optionNotes": [
+            "半成品提交进 main 会污染主线，同事拉到的代码可能无法运行",
+            "手工搬运容易漏文件、出拼写错，Git 有现成机制没必要这么做",
+            "push 只上传已提交的内容，未提交的改动根本推不上去",
+            "正确：stash 收起、切换分支修复、回来 pop 恢复，一步不落"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "stash",
+            "分支",
+            "工作流"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "network",
+      "title": "计算机网络基础",
+      "tagline": "从一次请求出发，看懂数据怎么走到你眼前",
+      "description": "跟着「浏览器输入网址到页面出现」这一趟旅程，认识 DNS、TCP、IP 与 HTTP 各自的分工。学完你能读懂请求与响应报文，并根据状态码和报错现象判断问题出在哪一层。",
+      "level": "入门",
+      "estimatedMinutes": 50,
+      "accent": "#2f7d8c",
+      "icon": "network",
+      "objectives": [
+        "理解一次网页请求经过 DNS、TCP、HTTP 的完整流程",
+        "能区分 TCP 与 UDP、HTTP 与 HTTPS 各自的适用场景",
+        "能读懂 IP 地址、子网划分和 ping、ipconfig 等命令输出",
+        "能根据状态码和报错现象判断问题出在域名解析、连接还是服务端",
+        "能写出 HTTP 请求报文的基本结构并解释各部分作用"
+      ],
+      "cards": [
+        {
+          "id": "network-card-01",
+          "title": "一次网页请求的旅程",
+          "summary": "打开一个网页 = DNS 翻译域名 + TCP 建立连接 + HTTP 收发报文，每一环各司其职、缺一不可。",
+          "points": [
+            "浏览器先把域名交给 DNS 解析成 IP 地址，才知道把请求发给哪台服务器",
+            "TCP 通过三次握手建立可靠连接，之后 HTTP 请求和响应才在这条连接上传输",
+            "服务器用状态码回应结果：200 成功、301 跳转、404 资源不存在、500 服务器内部错误",
+            "HTTPS 在 HTTP 与 TCP 之间加了 TLS 加密层，传输内容中途无法被偷看或篡改",
+            "任何一环失败现象不同：解析失败提示找不到服务器，连接失败提示无法访问此网站"
+          ],
+          "example": {
+            "language": "text",
+            "caption": "从输入网址到看到页面",
+            "code": "1. 浏览器询问 DNS：www.example.com 的 IP 是多少？\n2. DNS 回答：93.184.216.34\n3. 浏览器与 93.184.216.34:443 完成 TCP 三次握手\n4. 发送 HTTP 请求：GET / HTTP/1.1\n5. 服务器返回：200 OK + 网页内容\n6. 浏览器解析 HTML，渲染出页面"
           },
-          {
-            id: "git-07",
-            question: "从修改代码到进入仓库历史，正确的流程顺序是？",
-            options: [
-              "工作区 → git commit → 暂存区 → git add → 仓库",
-              "工作区 → git add → 暂存区 → git commit → 仓库",
-              "暂存区 → git add → 工作区 → git commit → 仓库",
-              "仓库 → git add → 工作区 → git commit → 暂存区"
-            ],
-            answerIndex: 1,
-            explanation: "标准流程是：在工作区编辑文件，用 git add 把改动放入暂存区，再用 git commit 把暂存区内容记录进仓库历史。",
-            difficulty: "进阶"
+          "pitfalls": [
+            "以为输入网址浏览器就直接连上了服务器，其实解析不出 IP 连发给谁都不知道",
+            "看到「无法访问此网站」就断定是网线断了，没区分域名解析失败和连接失败",
+            "以为 HTTPS 只是网址多了个 s，不知道它真正提供的是加密与身份验证"
+          ]
+        },
+        {
+          "id": "network-card-02",
+          "title": "IP 地址、端口与子网",
+          "summary": "IP 定位主机，端口定位主机上的服务；子网掩码决定两台机器是否在同一网段、能否直接互通。",
+          "points": [
+            "IPv4 地址形如 192.168.1.10，/24 表示前 24 位是网络号，网络号相同才属于同一网段",
+            "常见私有网段有 192.168.0.0/16、10.0.0.0/8、172.16.0.0/12，只在局域网内有效",
+            "端口号 0–65535 用来区分同一台主机上的不同服务，如 80/443 通常是网页服务",
+            "跨网段通信必须经过网关（通常是路由器）转发",
+            "掩码 /26 表示网络位 26 位、主机位 6 位，每个子网可容纳 62 台主机"
+          ],
+          "example": {
+            "language": "text",
+            "caption": "看懂 ipconfig 输出",
+            "code": "> ipconfig\nIPv4 地址 . . . : 192.168.1.23\n子网掩码 . . . : 255.255.255.0\n默认网关 . . . : 192.168.1.1\n\n# 192.168.1.23 与 192.168.1.100 同网段可直接互通，\n# 与 192.168.2.23 不同网段，需交给网关转发"
           },
-          {
-            id: "git-08",
-            question: "合并分支时出现冲突（conflict），正确的处理方式是？",
-            options: [
-              "放弃合并并删除其中一个分支",
-              "重启电脑，Git 会自动解决冲突",
-              "必须联系 Git 的官方客服远程处理",
-              "手工编辑冲突文件，保留正确内容后 add 并提交"
-            ],
-            answerIndex: 3,
-            explanation: "Git 会用 <<<<<<< 等标记标出冲突位置，需要你打开文件、判断保留哪些内容，然后 git add 标记冲突已解决并完成提交。",
-            difficulty: "进阶"
-          }
-        ]
-      }
-    ]
-  };
+          "pitfalls": [
+            "把 IP 和端口号搞混，以为换一个端口就是换了另一台机器",
+            "两台机器配了相同网段的 IP 却填错子网掩码，结果互相 ping 不通",
+            "以为 192.168.x.x 是公网地址，拿它对外提供服务怎么都访问不到"
+          ]
+        },
+        {
+          "id": "network-card-03",
+          "title": "TCP 与 UDP、可靠的代价",
+          "summary": "TCP 先握手、再确认，稳但开销大；UDP 不握手、只管发，快但不保证送达。",
+          "points": [
+            "TCP 三次握手：客户端发 SYN，服务器回 SYN+ACK，客户端再回 ACK，连接才建立",
+            "TCP 保证数据不丢、不乱序，适合网页和文件传输；UDP 无连接、开销小，适合直播、语音、游戏",
+            "确认号 ack 的含义是「该序号之前的数据都已收到，请从这里继续」",
+            "一条 TCP 连接由「源 IP + 源端口 + 目的 IP + 目的端口」四元组唯一标识",
+            "握手阶段只交换控制信息，网页内容要等连接建立后才开始传输"
+          ],
+          "example": {
+            "language": "text",
+            "caption": "TCP 三次握手",
+            "code": "客户端 → 服务器: SYN        (seq=100)          # 能建立连接吗？\n服务器 → 客户端: SYN+ACK    (seq=500, ack=101) # 可以，你收到了吗？\n客户端 → 服务器: ACK        (ack=501)          # 收到了，开始通信\n\n# 第三次握手完成后，连接进入可传输数据的状态"
+          },
+          "pitfalls": [
+            "选 UDP 传文件图它快，结果数据悄悄丢失，文件打不开",
+            "以为三次握手完成后网页内容已经发出，握手其实只是建立连接",
+            "抓包只看到 SYN、没看到回包，却去排查应用代码，其实是防火墙丢了包"
+          ]
+        },
+        {
+          "id": "network-card-04",
+          "title": "读懂 HTTP 报文与状态码",
+          "summary": "HTTP 报文由起始行、头部和正文组成；状态码的第一位数字就指明了结果类别。",
+          "points": [
+            "请求报文以方法开头：GET 获取资源、POST 提交数据；响应报文以状态码开头",
+            "状态码分类：1xx 信息、2xx 成功、3xx 重定向、4xx 客户端错误、5xx 服务器错误",
+            "常见状态码：200 成功、301 永久跳转、403 无权限、404 资源不存在、500 服务器内部错误",
+            "Host 头告诉服务器访问的是哪个网站，同一台服务器可以托管多个域名",
+            "Location 头配合 3xx 使用，浏览器会自动向新地址重新发起请求"
+          ],
+          "example": {
+            "language": "text",
+            "caption": "一对请求与响应",
+            "code": "GET /api/user HTTP/1.1\nHost: api.example.com\n\nHTTP/1.1 301 Moved Permanently\nLocation: https://api.example.com/v2/user\n\n# 浏览器读到 301 后，会自动请求 Location 指向的新地址"
+          },
+          "pitfalls": [
+            "把 404 当成「网站挂了」，其实请求已到达服务器，只是资源不存在",
+            "以为收到 301 就结束了，不知道浏览器还会自动访问新地址",
+            "调试时只看响应正文不看状态码，把 200 包着的错误信息当成功处理"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "network-001",
+          "question": "在浏览器输入网址到看到网页，第一步通常发生的是什么？",
+          "options": [
+            "浏览器直接向网页服务器发送 HTTP 请求",
+            "先把域名通过 DNS 解析成 IP 地址",
+            "服务器把网页内容主动推送到浏览器",
+            "浏览器与服务器断开上一次的连接"
+          ],
+          "answerIndex": 1,
+          "explanation": "通信必须有目标 IP 地址，域名只是给人看的名牌。DNS 把域名翻译成 IP 之后，浏览器才知道该往哪里发请求，所以解析总是第一步。",
+          "optionNotes": [
+            "没有 IP 地址请求无处可发，必须先完成域名解析",
+            "正确：DNS 把域名翻译成 IP，是请求发出的前提",
+            "网页是浏览器主动拉取的，服务器不会主动推送内容",
+            "此时连接尚未建立，不存在要断开的旧连接"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "DNS",
+            "请求流程"
+          ]
+        },
+        {
+          "id": "network-002",
+          "question": "访问网站的某个页面时返回了 404，这说明什么？",
+          "options": [
+            "服务器宕机了，无法处理任何请求",
+            "你的电脑断网了",
+            "域名解析失败，没找到服务器",
+            "请求已到达服务器，但它找不到你要求的资源"
+          ],
+          "answerIndex": 3,
+          "explanation": "404 是服务器主动给出的响应，说明域名解析、网络连接、服务器处理都成功了，只是这个路径下没有对应资源。检查网址拼写或资源是否存在即可。",
+          "optionNotes": [
+            "宕机时服务器无法回应，拿不到整齐的 404 响应",
+            "断网时请求根本发不出去，浏览器会提示无法访问",
+            "解析失败发生在拿到 IP 之前，不会得到 HTTP 状态码",
+            "正确：404 表示请求链路全通，仅资源不存在"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "HTTP",
+            "状态码"
+          ]
+        },
+        {
+          "id": "network-003",
+          "question": "IP 地址在网络通信中的作用是什么？",
+          "options": [
+            "唯一标识网络中的一台主机，让数据包知道该送往哪里",
+            "加密传输途中的数据内容",
+            "记录网站被访问的次数",
+            "压缩要传输的数据体积"
+          ],
+          "answerIndex": 0,
+          "explanation": "IP 负责寻址和路由：每个数据包都带着源 IP 和目的 IP，路由器据此一站站转发。加密是 TLS 的职责，与 IP 无关。",
+          "optionNotes": [
+            "正确：IP 就是主机的门牌号，负责数据包的寻址",
+            "加密由 TLS/HTTPS 完成，IP 头部本身不加密内容",
+            "统计访问量是网站应用层的功能，与 IP 协议无关",
+            "压缩由应用层决定，IP 传输时并不负责压缩数据"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "IP",
+            "基本概念"
+          ]
+        },
+        {
+          "id": "network-004",
+          "question": "关于 TCP 和 UDP，下列说法正确的是？",
+          "options": [
+            "UDP 比 TCP 更可靠，因为它传输速度更快",
+            "TCP 不需要建立连接就能直接发送数据",
+            "TCP 先握手再传输、保证可靠送达；UDP 不建立连接、开销小但不保证送达",
+            "两者完全等价，网页传输用哪个都一样"
+          ],
+          "answerIndex": 2,
+          "explanation": "TCP 用握手与确认机制换取可靠和有序，代价是开销更大；UDP 省去这些机制所以延迟低，代价是可能丢包。网页和文件传输依赖 TCP，直播、语音等实时场景常用 UDP。",
+          "optionNotes": [
+            "快不等于可靠，UDP 恰恰不保证数据能否送达",
+            "不建立连接直接发数据的是 UDP，TCP 必须先握手",
+            "正确：可靠性与开销的取舍正是两者的核心区别",
+            "网页传输依赖 TCP 的可靠交付，两者不能随便互换"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "TCP",
+            "UDP",
+            "对比"
+          ]
+        },
+        {
+          "id": "network-005",
+          "question": "一台服务器上同时运行着网站和数据库两个服务，客户端是怎么找对服务的？",
+          "options": [
+            "依靠不同的 IP 地址，一个服务占用一个 IP",
+            "依靠端口号区分同一台主机上的不同服务",
+            "依靠网速快慢自动匹配合适的服务",
+            "依靠域名长度自动识别服务类型"
+          ],
+          "answerIndex": 1,
+          "explanation": "IP 只负责找到这台机器，端口号再指明交给哪个服务处理：网页常用 80/443，MySQL 默认 3306。一个 IP 配合不同端口即可同时承载多个服务。",
+          "optionNotes": [
+            "一个 IP 就能承载多个服务，无需一服务一 IP",
+            "正确：端口是主机内服务的编号，客户端据此连接指定服务",
+            "服务的选择由配置决定，与网速无关",
+            "域名与长度无关，解析成 IP 后仍要靠端口区分服务"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "端口"
+          ]
+        },
+        {
+          "id": "network-006",
+          "question": "HTTP 状态码以 4 开头（如 403、404）表示哪一类结果？",
+          "options": [
+            "客户端错误，问题出在请求方",
+            "服务器内部错误",
+            "请求成功，数据正常返回",
+            "网络电缆物理中断"
+          ],
+          "answerIndex": 0,
+          "explanation": "状态码第一位表示类别：4xx 表示请求本身有问题，例如地址不存在（404）或没有权限（403）；服务器自身的错误用 5xx 表示。",
+          "optionNotes": [
+            "正确：4xx 指向请求方的问题，需检查网址或权限",
+            "服务器内部错误是 5xx，与 4xx 分类不同",
+            "成功是 2xx（如 200），4xx 都代表出了问题",
+            "物理断网时收不到任何状态码，更谈不上分类"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "HTTP",
+            "状态码"
+          ]
+        },
+        {
+          "id": "network-007",
+          "question": "同事反馈：ping www.example.com 提示「无法解析域名」，但 ping 同网段另一台电脑的 IP 是通的。最可能的原因是？",
+          "options": [
+            "网线没插好，物理链路中断",
+            "example.com 的服务器宕机了",
+            "本机的 IP 地址配置错误",
+            "DNS 服务器不可用或本机 DNS 配置错误"
+          ],
+          "answerIndex": 3,
+          "explanation": "能 ping 通 IP 说明网线、IP 和路由都正常，卡在「把域名翻译成 IP」这一步，指向 DNS 配置或 DNS 服务器故障。换一个可用的 DNS 地址通常即可恢复。",
+          "optionNotes": [
+            "物理断网时 ping 内网 IP 也不通，与现象矛盾",
+            "还没解析到 IP，请求根本没到对方服务器那一步",
+            "IP 配置错误时内网 IP 同样 ping 不通",
+            "正确：链路正常而解析失败，优先排查 DNS 设置"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "DNS",
+            "排错"
+          ]
+        },
+        {
+          "id": "network-008",
+          "question": "下面是浏览器发出的请求报文。同一台服务器还托管着另一个网站，它靠报文中的哪部分知道该返回哪个站点的数据？",
+          "code": {
+            "language": "text",
+            "content": "GET /api/orders?page=2 HTTP/1.1\nHost: shop.example.com\nUser-Agent: Mozilla/5.0\nAccept: application/json"
+          },
+          "options": [
+            "请求方法 GET",
+            "Host 头的 shop.example.com",
+            "路径中的 page=2 参数",
+            "User-Agent 字段"
+          ],
+          "answerIndex": 1,
+          "explanation": "一台服务器可以托管多个域名（虚拟主机），Host 头告诉服务器本次请求属于哪个站点，路由到对应站点后再按路径和参数处理。",
+          "optionNotes": [
+            "GET 表示动作类型，用于区分获取还是提交，不能区分站点",
+            "正确：虚拟主机依靠 Host 头区分同一个 IP 上的不同网站",
+            "page=2 是站点内部的查询参数，不参与站点选择",
+            "User-Agent 描述客户端软件，与选择哪个网站无关"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "HTTP",
+            "报文"
+          ]
+        },
+        {
+          "id": "network-009",
+          "question": "开发机上的 hosts 文件内容如下。此时在浏览器访问 test.internal，域名解析的结果是什么？",
+          "code": {
+            "language": "text",
+            "content": "# C:\\Windows\\System32\\drivers\\etc\\hosts\n127.0.0.1      localhost\n192.168.1.50   test.internal"
+          },
+          "options": [
+            "交给 DNS 服务器查询，返回真实的公网 IP",
+            "解析失败，因为 test.internal 不是合法的公网域名",
+            "直接使用 hosts 中的 192.168.1.50，不再询问 DNS 服务器",
+            "随机解析到局域网中的某一台机器"
+          ],
+          "answerIndex": 2,
+          "explanation": "操作系统解析域名时先查本地 hosts 文件，命中就直接返回，不会再去问 DNS 服务器。把测试域名指向内网机器正是本地调试的常用手段。",
+          "optionNotes": [
+            "hosts 优先级更高，命中后根本不会发起 DNS 查询",
+            "域名是否公网合法不影响 hosts 生效，它只是本地映射表",
+            "正确：hosts 命中即返回 192.168.1.50，跳过 DNS",
+            "hosts 是确定的静态映射，不存在随机分配"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "DNS",
+            "hosts"
+          ]
+        },
+        {
+          "id": "network-010",
+          "question": "新笔记本访问内网文件服务器一直超时，它与旁边正常电脑的网络配置如下。最可能的原因是？",
+          "code": {
+            "language": "text",
+            "content": "> ipconfig   （新笔记本）\nIPv4 地址 . . . : 192.168.5.31\n子网掩码 . . . : 255.255.255.0\n默认网关 . . . : 192.168.5.1\n\n> ipconfig   （旁边正常的电脑）\nIPv4 地址 . . . : 172.16.5.45\n默认网关 . . . : 172.16.5.1"
+          },
+          "options": [
+            "内网文件服务器宕机了",
+            "笔记本没有安装网卡驱动",
+            "是文件服务器的防火墙拦住了请求",
+            "笔记本被配成了 192.168.5.x 网段，与办公网 172.16.5.x 不同网段，找不到正确的网关"
+          ],
+          "answerIndex": 3,
+          "explanation": "办公网是 172.16.5.0/24，这台笔记本却配成了 192.168.5.0/24，它去找一个不存在的网关 192.168.5.1，数据包出不了本网段，于是访问一直超时。改回 172.16.5.x 并把网关设为 172.16.5.1 即可。",
+          "optionNotes": [
+            "旁边电脑访问同一服务器正常，说明服务器本身没问题",
+            "网卡驱动缺失时 ipconfig 根本看不到 IP 地址",
+            "请求还没能离开本网段，防火墙问题轮不到出场",
+            "正确：网段配错导致网关不可达，改回 172.16.5.x 即可"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "子网",
+            "排错",
+            "IP"
+          ]
+        },
+        {
+          "id": "network-011",
+          "question": "根据这份三次握手的抓包记录，下列分析正确的是？",
+          "code": {
+            "language": "text",
+            "content": "抓包结果（1.1.1.1 为客户端，8.8.8.8 为服务器）\n#1  1.1.1.1 → 8.8.8.8   SYN        seq=100\n#2  8.8.8.8 → 1.1.1.1   SYN, ACK   seq=500, ack=101\n#3  1.1.1.1 → 8.8.8.8   ACK        ack=501"
+          },
+          "options": [
+            "#2 中 ack=101 表示服务器确认收到客户端的初始序号 100，期待下一字节从 101 开始",
+            "#3 发完握手仍未完成，还需要服务器再回一个确认包",
+            "#2 的 seq=500 说明服务器已经收到了 500 字节的网页数据",
+            "#2 实际上是两个独立的数据包，服务器先发 SYN、再单独发 ACK"
+          ],
+          "answerIndex": 0,
+          "explanation": "确认号 ack 的含义是「该序号之前的数据都已收到，请从这里继续」，101 正是对客户端初始序号 100 的确认。三次报文交换完成后连接才进入可传输状态，SYN+ACK 是同一个包里的两个标志位。",
+          "optionNotes": [
+            "正确：ack=101 确认了初始序号 100，符合确认号语义",
+            "第三次 ACK 之后连接已建立，可以直接发送数据",
+            "seq=500 是服务器自己选的初始序号，与已收数据量无关",
+            "SYN 和 ACK 是同一报文里的两个标志位，只有一个包"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "TCP",
+            "三次握手"
+          ]
+        },
+        {
+          "id": "network-012",
+          "question": "关于 HTTP/1.1 和 HTTP/2 的区别，下列说法正确的是？",
+          "options": [
+            "HTTP/2 不再需要域名解析，直接连上服务器",
+            "HTTP/1.1 支持多路复用，HTTP/2 反而不支持",
+            "HTTP/2 引入多路复用，同一连接上多个请求可并行交错传输，减少队头阻塞",
+            "HTTP/2 抛弃了状态码机制，改用全新的响应模型"
+          ],
+          "answerIndex": 2,
+          "explanation": "HTTP/2 的核心改进是多路复用：同一个 TCP 连接上可以并行交错传输多个请求和响应，缓解了 1.1 的队头阻塞，同时改用二进制分帧并压缩头部。请求方法、状态码等语义保持不变。",
+          "optionNotes": [
+            "域名解析在 HTTP/2 中照旧需要，协议本身不改变寻址方式",
+            "多路复用正是 HTTP/2 引入的特性，1.1 同一连接只能串行请求",
+            "正确：多路复用让一个连接并行跑多个请求，是 2.0 的标志性改进",
+            "状态码等语义完全保留，2.0 改变的是传输方式不是语义"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "HTTP",
+            "对比"
+          ]
+        },
+        {
+          "id": "network-013",
+          "question": "三台主机的地址配置如下（掩码均为 /26）。关于它们之间的通信，正确的判断是？",
+          "code": {
+            "language": "text",
+            "content": "主机 A:  192.168.1.65/26\n主机 B:  192.168.1.66/26\n主机 C:  192.168.1.130/26"
+          },
+          "options": [
+            "三台主机都在同一个子网里，可以直接互通",
+            "A 与 C 同子网，B 与 C 不同子网",
+            "三台主机两两不同子网，任何两台通信都要经路由器",
+            "A 与 B 同属 192.168.1.64/26 可直接互通；C 位于 192.168.1.128/26，与它们通信需经网关"
+          ],
+          "answerIndex": 3,
+          "explanation": "/26 的子网以 64 为跨度：64–127 是一段，128–191 是另一段。65 和 66 落在前一段、网络号为 192.168.1.64；130 落在后一段、网络号为 192.168.1.128，跨段流量必须交给网关转发。",
+          "optionNotes": [
+            "130 已落入下一个子网，与 65、66 不在同一段",
+            "同段的是 65 和 66，130 才是段外的那台",
+            "A 与 B 网络号相同、属同一子网，无需路由器",
+            "正确：/26 按 64 划分网段，65、66 一段，130 单独一段"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "子网",
+            "CIDR"
+          ]
+        },
+        {
+          "id": "network-014",
+          "question": "根据这两次请求的结果，浏览器访问 http://shop.example.com 时接下来会发生什么？",
+          "code": {
+            "language": "text",
+            "content": "$ curl -i http://shop.example.com\nHTTP/1.1 301 Moved Permanently\nLocation: https://shop.example.com/\n\n$ curl -i https://shop.example.com/\nHTTP/1.1 200 OK"
+          },
+          "options": [
+            "先收到 301，浏览器自动改用 https://shop.example.com/ 重新请求，最终拿到 200 的页面",
+            "浏览器直接显示 301 错误页，用户必须手动输入新网址",
+            "请求失败，因为该服务器已全面禁用 HTTP 协议",
+            "浏览器会同时向 http 和 https 两个地址发请求，谁先返回用谁"
+          ],
+          "answerIndex": 0,
+          "explanation": "301 的 Location 头指明了新地址，浏览器会自动向新地址重发请求，第二次请求返回 200，用户最终看到正常页面，全程无需人工干预。",
+          "optionNotes": [
+            "正确：301 携带 Location，浏览器自动跟进新地址并拿到 200",
+            "301 不是错误页，浏览器会按 Location 自动跳转",
+            "第一次请求成功返回了 301，说明服务器工作正常",
+            "跳转是串行的：先收到 301，再请求新地址，不会同时发两个请求"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "HTTP",
+            "重定向",
+            "排错"
+          ]
+        },
+        {
+          "id": "network-015",
+          "question": "同事访问公司后台时报 500 Internal Server Error，他断定是自己的电脑坏了。这个状态码真正说明的是什么？",
+          "options": [
+            "他输入的网址路径不存在",
+            "服务器在处理请求时内部出错了，问题通常在服务端",
+            "他的电脑中了病毒，需要重装系统",
+            "网络中断了，请求没有到达服务器"
+          ],
+          "answerIndex": 1,
+          "explanation": "5xx 表示服务器处理请求时自身出错，此时请求已经成功到达服务器；请求方的问题才用 4xx 表示，例如路径不存在应是 404。应该把现象反馈给后台服务的维护者排查。",
+          "optionNotes": [
+            "路径不存在是 404，属于 4xx 客户端错误",
+            "正确：5xx 是服务端内部错误，应联系服务维护方排查",
+            "500 与本机病毒无关，这是服务器返回的明确状态码",
+            "网络中断时收不到任何响应，更不会有状态码"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "HTTP",
+            "状态码",
+            "排错"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sql",
+      "title": "SQL 与数据库入门",
+      "tagline": "用结构化查询，把数据变成答案",
+      "description": "SQL 是访问关系型数据库的通用语言，几乎所有后端系统都离不开它。这一课从表结构讲起，带你写 SELECT、JOIN 和聚合，并理解索引与事务为什么能决定查询快不快、数据稳不稳。",
+      "level": "入门",
+      "estimatedMinutes": 50,
+      "accent": "#8a6d1f",
+      "icon": "sql",
+      "objectives": [
+        "理解：表、主键、外键与 NULL 的含义",
+        "写出：带 WHERE、ORDER BY、LIMIT 的查询",
+        "区分：INNER JOIN 与 LEFT JOIN、WHERE 与 HAVING",
+        "判断：索引失效的常见原因与事务的原子性"
+      ],
+      "cards": [
+        {
+          "id": "sql-card-01",
+          "title": "表与关系模型",
+          "summary": "关系表用行存一条记录、用列定义字段，主键保证唯一，外键把两张表连起来。",
+          "points": [
+            "一张表就是一张二维表：每一行是一条记录，每一列是一个字段（属性）",
+            "主键（PRIMARY KEY）唯一标识一行，必须唯一且不能为 NULL",
+            "外键（FOREIGN KEY）指向另一张表的主键，用来表达「这条记录属于谁」",
+            "字段要选择合适的类型，比如金额用数值类型，不要把数字存成文本再比较",
+            "NULL 表示「未知或缺失」，它不等于 0，也不等于空字符串"
+          ],
+          "example": {
+            "language": "sql",
+            "caption": "主键与外键：一张表如何引用另一张表",
+            "code": "CREATE TABLE students (\n  id INTEGER PRIMARY KEY,\n  name VARCHAR(50) NOT NULL,\n  class_id INTEGER\n);\n\nCREATE TABLE orders (\n  id INTEGER PRIMARY KEY,\n  student_id INTEGER REFERENCES students(id),\n  amount NUMERIC NOT NULL\n);"
+          },
+          "pitfalls": [
+            "用姓名或手机号当主键：信息会变且可能重复，后续修改会牵连很多表",
+            "把多个值塞进一个字段（如把「数学,英语」存成一列），查询和统计都会变得困难"
+          ]
+        },
+        {
+          "id": "sql-card-02",
+          "title": "SELECT、WHERE 与 ORDER BY",
+          "summary": "SELECT 决定取哪些列，WHERE 过滤行，ORDER BY 排序，三者按固定顺序生效。",
+          "points": [
+            "逻辑执行顺序大致是 FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY → LIMIT",
+            "WHERE 过滤的是原始行，不能直接引用 SELECT 里起的别名（多数数据库如此）",
+            "判断 NULL 要用 IS NULL 或 IS NOT NULL，不能用 = NULL",
+            "ORDER BY 默认升序，DESC 表示降序；多个排序键用逗号分隔，先按第一个排",
+            "LIMIT n 在排序之后截取前 n 行，没有 ORDER BY 时「前几行」没有稳定含义"
+          ],
+          "example": {
+            "language": "sql",
+            "caption": "筛选、排序、截取：一条查询的完整顺序",
+            "code": "SELECT name, score\nFROM students\nWHERE score >= 60\nORDER BY score DESC, name ASC\nLIMIT 3;"
+          },
+          "pitfalls": [
+            "用 WHERE name = NULL 查空值，结果永远为空，应该写 IS NULL",
+            "以为 ORDER BY 会顺便去重；去重要用 DISTINCT，而且它作用于整行组合"
+          ]
+        },
+        {
+          "id": "sql-card-03",
+          "title": "JOIN 与聚合",
+          "summary": "JOIN 按关联条件把多张表拼在一起，聚合把多行压成一组一行，分组过滤要用 HAVING。",
+          "points": [
+            "INNER JOIN 只保留两表都匹配的行；LEFT JOIN 保留左表全部行，右表缺失时补 NULL",
+            "一对多连接会放大行数，统计父表数量要用 COUNT(DISTINCT 父表主键)",
+            "GROUP BY 把指定列相同的行归为一组，SELECT 里只能出现分组列或聚合函数",
+            "COUNT(*) 数行数，COUNT(列) 只数该列非 NULL 的值",
+            "WHERE 在分组前过滤行，HAVING 在分组后过滤组"
+          ],
+          "example": {
+            "language": "sql",
+            "caption": "先分组，再对每组算聚合，最后筛选分组",
+            "code": "SELECT s.class_id, COUNT(*) AS student_count, AVG(s.score) AS avg_score\nFROM students s\nGROUP BY s.class_id\nHAVING COUNT(*) >= 3;"
+          },
+          "pitfalls": [
+            "在 LEFT JOIN 的 WHERE 里过滤右表列，会把外连接悄悄变成内连接",
+            "先连接明细表再用 COUNT(*) 统计订单数，结果会被明细行放大"
+          ]
+        },
+        {
+          "id": "sql-card-04",
+          "title": "索引与事务",
+          "summary": "索引让查找不必扫全表，事务让多条写操作要么全成功、要么全回滚。",
+          "points": [
+            "索引本质是有序的辅助结构（常见为 B-tree），用空间和写入开销换查询速度",
+            "联合索引遵循最左前缀：条件要从索引最左列开始才容易命中",
+            "在索引列上套函数或做隐式类型转换，可能让索引失效",
+            "事务用 BEGIN、COMMIT、ROLLBACK 控制，具备原子性：中间失败可整体撤销",
+            "隔离级别决定并发事务能看到什么，级别越高越安全，但并发度通常越低"
+          ],
+          "example": {
+            "language": "sql",
+            "caption": "转账：两条更新必须一起提交",
+            "code": "BEGIN;\nUPDATE accounts SET balance = balance - 100 WHERE id = 1;\nUPDATE accounts SET balance = balance + 100 WHERE id = 2;\nCOMMIT;"
+          },
+          "pitfalls": [
+            "给每一列都建索引：写入变慢、占用空间，优化器也未必选用",
+            "只执行了 BEGIN 却忘记 COMMIT，改动没有真正提交，连接断开后还可能回滚"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "sql-001",
+          "question": "设计学生表时，下面哪一列最适合作为主键？",
+          "options": [
+            "学生姓名",
+            "入学年份",
+            "学号",
+            "班级名称"
+          ],
+          "answerIndex": 2,
+          "explanation": "主键要唯一标识一行，且不能为 NULL。学号一人一号、不会重复；姓名可能重名，班级和入学年份都会对应多个人，无法唯一确定一行。",
+          "optionNotes": [
+            "姓名可能重名，无法唯一标识学生",
+            "同一年入学的学生很多，会大量重复",
+            "学号一人一号，唯一且稳定，适合做主键",
+            "一个班级有多名学生，不能唯一标识"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "表设计",
+            "主键"
+          ]
+        },
+        {
+          "id": "sql-002",
+          "question": "students 表的 score 列允许为 NULL。下面这条查询会返回什么？",
+          "code": {
+            "language": "sql",
+            "content": "SELECT name\nFROM students\nWHERE score = NULL;"
+          },
+          "options": [
+            "score 为 NULL 的所有学生",
+            "score 不为 NULL 的所有学生",
+            "一行也不返回，因为 = NULL 不成立",
+            "students 表的全部学生"
+          ],
+          "answerIndex": 2,
+          "explanation": "SQL 里的 NULL 表示「未知」，任何值与 NULL 用 = 比较，结果都是 UNKNOWN 而不是 TRUE，WHERE 只保留结果为 TRUE 的行。要查空值必须写 IS NULL。",
+          "optionNotes": [
+            "= NULL 不会匹配空值，这是最常见的误解",
+            "它同样不会匹配非空值，条件整体不成立",
+            "NULL 参与 = 比较结果为 UNKNOWN，没有行满足",
+            "WHERE 已过滤掉所有行，不会返回全部学生"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "NULL",
+            "WHERE"
+          ]
+        },
+        {
+          "id": "sql-003",
+          "question": "students 表的数据如注释所示，这条查询返回什么？",
+          "code": {
+            "language": "sql",
+            "content": "-- (name, score): 小明 90, 小红 85, 小刚 90, 小美 70\nSELECT name, score\nFROM students\nORDER BY score DESC\nLIMIT 2;"
+          },
+          "options": [
+            "2 行，小明一定排在小刚前面",
+            "3 行，两个 90 分都要算上",
+            "1 行，并列第一只保留一行",
+            "2 行，是小明和小刚，但先后顺序不确定"
+          ],
+          "answerIndex": 3,
+          "explanation": "两个最高分都是 90，LIMIT 2 会把这两行都取出来，所以结果是小明和小刚。ORDER BY 只规定按 score 降序，同分之间没有默认顺序，想知道谁在前要再加第二个排序键。",
+          "optionNotes": [
+            "同分之间没有规定顺序，不能保证小明在前",
+            "LIMIT 2 最多返回两行，不会因为并列变成三行",
+            "并列不会合并成一行，两行 90 分都会保留",
+            "两人都会被选中，但同分顺序确实不保证"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "ORDER BY",
+            "LIMIT"
+          ]
+        },
+        {
+          "id": "sql-004",
+          "question": "users 表共 5 行，其中 email 有 2 行为 NULL。下面查询的两个计数分别是多少？",
+          "code": {
+            "language": "sql",
+            "content": "SELECT COUNT(*), COUNT(email)\nFROM users;"
+          },
+          "options": [
+            "5 和 2",
+            "5 和 3",
+            "3 和 3",
+            "5 和 5"
+          ],
+          "answerIndex": 1,
+          "explanation": "COUNT(*) 统计结果行数，5 行全部计入；COUNT(email) 只统计该列非 NULL 的值，5 行里去掉 2 个 NULL 剩 3 个。",
+          "optionNotes": [
+            "COUNT(email) 不会把 NULL 算进去，2 是 NULL 的个数",
+            "5 是总行数，3 是非 NULL 的 email 数，正确",
+            "COUNT(*) 不会跳过任何行，第一个数应是 5",
+            "COUNT(email) 会跳过 NULL，不可能也是 5"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "聚合",
+            "COUNT"
+          ]
+        },
+        {
+          "id": "sql-005",
+          "question": "要查询 1 班中分数在 60 到 80 之间（含 60 和 80）的学生，哪个 WHERE 条件正确？",
+          "options": [
+            "WHERE class_id = 1 AND score BETWEEN 60 AND 80",
+            "WHERE class_id = 1 OR score BETWEEN 60 AND 80",
+            "WHERE class_id = 1 AND score > 60 OR score < 80",
+            "WHERE class_id = 1 AND score BETWEEN 80 AND 60"
+          ],
+          "answerIndex": 0,
+          "explanation": "BETWEEN 60 AND 80 等价于 score >= 60 AND score <= 80，包含两个端点；再用 AND 与班级条件组合，才能同时限定班级和分数。",
+          "optionNotes": [
+            "AND 连接两个条件，BETWEEN 含端点，正确",
+            "OR 会把其他班 60–80 分的学生也带进来",
+            "OR 优先级低于 AND，条件几乎覆盖所有行",
+            "下界 80 大于上界 60，条件永远不成立"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "WHERE",
+            "BETWEEN"
+          ]
+        },
+        {
+          "id": "sql-006",
+          "question": "orders 表在 created_at 上有索引，但下面这条查询仍然很慢，最可能的原因是什么？",
+          "code": {
+            "language": "sql",
+            "content": "SELECT id, amount\nFROM orders\nWHERE CAST(created_at AS DATE) = DATE '2026-01-01';"
+          },
+          "options": [
+            "表没有主键，数据库无法定位数据",
+            "索引列上套了 CAST 函数，普通索引无法直接使用",
+            "应该把 WHERE 改成 HAVING",
+            "缺少 ORDER BY，数据库无法利用索引排序"
+          ],
+          "answerIndex": 1,
+          "explanation": "索引按 created_at 的原始值排序，外面再套 CAST(... AS DATE) 后，数据库必须先对每行求值才能比较，通常只能全表扫描。改成 created_at >= '2026-01-01' AND created_at < '2026-01-02' 这样的范围条件，索引才有机会生效。",
+          "optionNotes": [
+            "主键影响定位单行，不是这里用不上索引的原因",
+            "对索引列做函数运算会让索引失效，正确",
+            "HAVING 用于分组后过滤，和这里的过滤无关",
+            "ORDER BY 影响排序，不是过滤慢的根本原因"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "索引",
+            "慢查询"
+          ]
+        },
+        {
+          "id": "sql-007",
+          "question": "按班级统计平均分，并且只保留平均分大于 80 的班级。过滤条件应该写在哪里？",
+          "options": [
+            "WHERE 子句，先过滤掉低分学生",
+            "HAVING 子句，因为它过滤分组后的聚合结果",
+            "ORDER BY 子句，按平均分排序即可",
+            "SELECT 列表里用 CASE WHEN 判断"
+          ],
+          "answerIndex": 1,
+          "explanation": "WHERE 在 GROUP BY 之前执行，此时还没有 AVG(score)，不能用来过滤聚合结果。HAVING 在分组之后执行，专门用于筛选分组，因此 AVG(score) > 80 要写在 HAVING 里。",
+          "optionNotes": [
+            "WHERE 执行时还没分组，无法引用 AVG(score)",
+            "HAVING 在分组后过滤，正好用于聚合结果",
+            "ORDER BY 只排序，不会删除不满足条件的组",
+            "CASE WHEN 生成列，不能直接过滤分组"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "GROUP BY",
+            "HAVING"
+          ]
+        },
+        {
+          "id": "sql-008",
+          "question": "执行 SELECT DISTINCT class_id, gender FROM students 时，DISTINCT 按什么去重？",
+          "options": [
+            "只按 class_id 去重，gender 取第一行的值",
+            "只按 gender 去重，class_id 取第一行的值",
+            "按 (class_id, gender) 组合去重，保留所有不同组合",
+            "随机保留一行，每次结果都可能不同"
+          ],
+          "answerIndex": 2,
+          "explanation": "DISTINCT 作用在 SELECT 列表的整行组合上，只有 class_id 和 gender 都相同才算重复。它不是对某一列单独去重，也不会随机丢行。",
+          "optionNotes": [
+            "两列都会参与比较，不是只看 class_id",
+            "gender 不是唯一去重依据，两列都要相同",
+            "两列都相同才算重复，整行组合去重正确",
+            "DISTINCT 结果确定，不会随机保留"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "DISTINCT",
+            "去重"
+          ]
+        },
+        {
+          "id": "sql-009",
+          "question": "订单表一个订单一行，明细表一个商品一行。统计订单数时连接两表后 COUNT(*)，结果偏大，原因是什么？",
+          "code": {
+            "language": "sql",
+            "content": "SELECT COUNT(*)\nFROM orders o\nJOIN order_items i ON i.order_id = o.id;"
+          },
+          "options": [
+            "一对多连接把每个订单复制成多行，COUNT(*) 数的是放大后的行",
+            "LEFT JOIN 会丢失没有明细的订单",
+            "orders 表的主键出现了重复值",
+            "COUNT(*) 会自动跳过值为 NULL 的订单"
+          ],
+          "answerIndex": 0,
+          "explanation": "一个订单有多条明细时，JOIN 会为每条明细生成一行，父表记录被重复计数。要统计订单数应写 COUNT(DISTINCT o.id)，或先在子查询里按订单聚合再连接。",
+          "optionNotes": [
+            "连接放大行数是根因，COUNT(*) 统计了明细行",
+            "这里用的是 INNER JOIN，且丢失行不会导致偏大",
+            "主键约束保证不重复，问题不在这里",
+            "COUNT(*) 统计所有行，不会跳过 NULL"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "JOIN",
+            "COUNT"
+          ]
+        },
+        {
+          "id": "sql-010",
+          "question": "要列出所有学生及他们选的课，没有选课的学生也要显示。应该用哪种连接？",
+          "options": [
+            "INNER JOIN，只保留两表都匹配的行",
+            "LEFT JOIN，把 students 放在左表",
+            "LEFT JOIN，把 courses 放在左表",
+            "CROSS JOIN，生成所有可能的组合"
+          ],
+          "answerIndex": 1,
+          "explanation": "LEFT JOIN 保留左表的全部行，右表没有匹配时补 NULL。把 students 放左边，没选课的学生才会以课程为 NULL 的形式保留下来。",
+          "optionNotes": [
+            "INNER JOIN 会丢掉没选课的学生，不满足需求",
+            "左表全保留，正好覆盖没选课的学生",
+            "这样保留的是全部课程，不是全部学生",
+            "CROSS JOIN 产生笛卡尔积，行数和语义都不对"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "JOIN",
+            "LEFT JOIN"
+          ]
+        },
+        {
+          "id": "sql-011",
+          "question": "执行 SELECT name FROM students WHERE class_id <> 1 后，发现 class_id 为 NULL 的学生没有出现。原因是什么？",
+          "options": [
+            "数据库把 NULL 当成空字符串，比较结果不成立",
+            "NULL 参与比较得到 UNKNOWN，WHERE 只保留结果为 TRUE 的行",
+            "SQL 不允许使用 <>，应该改成 !=",
+            "没有写 ORDER BY，NULL 行不会显示"
+          ],
+          "answerIndex": 1,
+          "explanation": "SQL 使用三值逻辑：NULL 表示未知，NULL <> 1 的结果是 UNKNOWN 而不是 TRUE，因此这些行被 WHERE 过滤掉。要把它们包含进来，需要显式写 class_id <> 1 OR class_id IS NULL。",
+          "optionNotes": [
+            "NULL 不是空字符串，两者含义不同",
+            "比较结果为 UNKNOWN，不满足 WHERE 条件",
+            "标准 SQL 同时支持 <> 和 !=，写法没问题",
+            "ORDER BY 只影响顺序，不会隐藏行"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "NULL",
+            "三值逻辑"
+          ]
+        },
+        {
+          "id": "sql-012",
+          "question": "students 表上有联合索引 (class_id, score)。下面哪条查询最可能用上这个索引？",
+          "options": [
+            "WHERE class_id = 2",
+            "WHERE score > 80",
+            "ORDER BY score",
+            "SELECT * FROM students"
+          ],
+          "answerIndex": 0,
+          "explanation": "B-tree 联合索引先按最左列 class_id 排序，条件从最左列开始才能快速定位。只用 score 无法利用这个索引的前缀，除非另外建索引或做覆盖扫描。",
+          "optionNotes": [
+            "条件命中联合索引最左列，可以使用索引",
+            "跳过了最左列 class_id，通常用不上该索引",
+            "只按 score 排序同样缺少最左列",
+            "没有过滤条件，只能全表或全索引扫描"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "索引",
+            "最左前缀"
+          ]
+        },
+        {
+          "id": "sql-013",
+          "question": "要从 users 表中找出重复的 email，并返回邮箱和出现次数，哪条查询正确？",
+          "options": [
+            "SELECT DISTINCT email FROM users;",
+            "SELECT email FROM users WHERE COUNT(*) > 1;",
+            "SELECT email, COUNT(*) FROM users GROUP BY email HAVING COUNT(*) > 1;",
+            "SELECT email, COUNT(*) FROM users;"
+          ],
+          "answerIndex": 2,
+          "explanation": "先按 email 分组，把相同邮箱聚成一组，再用 HAVING 过滤出现次数大于 1 的组。WHERE 在分组之前执行，不能直接对 COUNT(*) 做过滤。",
+          "optionNotes": [
+            "DISTINCT 只能去重，无法给出重复次数",
+            "WHERE 早于分组，不能直接使用 COUNT(*)",
+            "先 GROUP BY 再 HAVING，是标准写法",
+            "缺少分组和过滤，返回的是全表统计"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "GROUP BY",
+            "HAVING"
+          ]
+        },
+        {
+          "id": "sql-014",
+          "question": "下面查询本想保留所有学生，但没下过单的学生消失了。正确的修改方式是什么？",
+          "code": {
+            "language": "sql",
+            "content": "SELECT s.name, o.id\nFROM students s\nLEFT JOIN orders o ON o.student_id = s.id\nWHERE o.amount > 100;"
+          },
+          "options": [
+            "把 LEFT JOIN 改成 INNER JOIN，语义更明确",
+            "给 o.amount 建索引，让过滤更快",
+            "把条件改成 o.amount > 100 OR o.amount IS NULL",
+            "把 o.amount > 100 移到 ON 子句，保留 LEFT JOIN"
+          ],
+          "answerIndex": 3,
+          "explanation": "LEFT JOIN 先保留所有学生，右表缺失补 NULL，随后 WHERE 里的 NULL > 100 得到 UNKNOWN，这些行被过滤，外连接就退化成了内连接。把条件放进 ON 只影响匹配哪些订单，左表学生仍然全部保留。",
+          "optionNotes": [
+            "改成 INNER JOIN 会继续丢掉没下单的学生",
+            "索引只能加速，不能改变 NULL 行被过滤的结果",
+            "这样会保留金额为 NULL 的订单，改变筛选含义",
+            "条件移入 ON，左表行全保留，正确"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "LEFT JOIN",
+            "ON vs WHERE"
+          ]
+        },
+        {
+          "id": "sql-015",
+          "question": "从 A 账户扣 100 元、给 B 账户加 100 元，两条 UPDATE 必须一起成功或一起失败。正确做法是什么？",
+          "options": [
+            "两条 UPDATE 分别自动提交，失败后手工补一条",
+            "把两条 UPDATE 合并成一条 DELETE 语句",
+            "给余额列加索引，让更新更快",
+            "用 BEGIN 开启事务，两条 UPDATE 后 COMMIT，任一步失败则 ROLLBACK"
+          ],
+          "answerIndex": 3,
+          "explanation": "事务把多条写操作打包成一个原子单元：COMMIT 之前改动不会真正生效，中途失败可以 ROLLBACK 撤销已执行的扣款。否则第一条成功、第二条失败时，钱就会凭空消失。",
+          "optionNotes": [
+            "自动提交会让两条语句各自生效，无法整体回滚",
+            "DELETE 会删除账户记录，语义完全错误",
+            "索引只影响速度，不解决原子性问题",
+            "事务保证要么全提交、要么全回滚，正确"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "事务",
+            "原子性"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "data-structures",
+      "title": "数据结构入门",
+      "tagline": "选对结构，代码才能又快又稳",
+      "description": "数据结构决定了数据怎么存放、怎么查找，也直接决定代码的运行速度。这一课用数组、链表、栈、队列、哈希表和树，带你看懂不同选择背后的时间与空间权衡。",
+      "level": "入门",
+      "estimatedMinutes": 55,
+      "accent": "#7a4ba3",
+      "icon": "structure",
+      "objectives": [
+        "区分：数组与链表在访问、插入上的复杂度差异",
+        "判断：什么场景该用栈、队列或双端队列",
+        "理解：哈希表如何用空间换时间，以及冲突的代价",
+        "分析：二叉搜索树、BFS 与 DFS 的适用条件"
+      ],
+      "cards": [
+        {
+          "id": "data-structures-card-01",
+          "title": "数组与链表",
+          "summary": "数组用连续内存换随机访问，链表用指针换灵活插入，两者的复杂度正好互补。",
+          "points": [
+            "数组元素连续存放，按下标访问是 O(1)，但在中间插入或删除要移动元素，是 O(n)",
+            "链表节点通过指针相连，已知节点处插入或删除是 O(1)，但按下标查找要遍历，是 O(n)",
+            "数组额外空间小、缓存友好；链表每个节点多存指针，内存开销更大",
+            "Python 的 list 是动态数组，append 均摊 O(1)，insert(0, x) 是 O(n)",
+            "频繁随机访问选数组，频繁在已知位置增删选链表，两端操作选双端队列"
+          ],
+          "example": {
+            "language": "python",
+            "caption": "列表头部插入为什么要搬移元素",
+            "code": "nums = [10, 20, 30]\nnums.insert(0, 5)   # O(n)，后面元素整体后移\nprint(nums)         # [5, 10, 20, 30]"
+          },
+          "pitfalls": [
+            "以为链表插入永远是 O(1)：前提是已经拿到位置节点，查找位置本身仍是 O(n)",
+            "用 list 当队列反复 pop(0)，数据量大时整体退化为 O(n²)"
+          ]
+        },
+        {
+          "id": "data-structures-card-02",
+          "title": "栈与队列",
+          "summary": "栈后进先出，队列先进先出，选错顺序模型逻辑就会整体颠倒。",
+          "points": [
+            "栈只在同一端 push 和 pop，遵循后进先出（LIFO），适合撤销、括号匹配和函数调用",
+            "队列尾部入队、头部出队，遵循先进先出（FIFO），适合任务调度、消息缓冲和 BFS",
+            "Python 用 list.append() 与 pop() 实现栈，两端操作都是 O(1)",
+            "Python 用 collections.deque 实现队列，popleft() 是 O(1)；list.pop(0) 是 O(n)",
+            "双端队列 deque 两端都能 O(1) 增删，可以同时当栈和队列使用"
+          ],
+          "example": {
+            "language": "python",
+            "caption": "deque 实现先进先出的队列",
+            "code": "from collections import deque\n\nq = deque([\"a\", \"b\"])\nq.append(\"c\")      # 尾部入队\nprint(q.popleft()) # 头部出队，输出 a"
+          },
+          "pitfalls": [
+            "用 list.pop(0) 模拟出队，误以为它和 pop() 一样快",
+            "把栈当成队列用，导致最早进入的任务反而最后处理"
+          ]
+        },
+        {
+          "id": "data-structures-card-03",
+          "title": "哈希表",
+          "summary": "哈希表用键算出存放位置，用空间换时间，把查找从遍历变成近似一步到位。",
+          "points": [
+            "哈希函数把键映射到桶下标，理想情况下插入、查找、删除平均都是 O(1)",
+            "不同键可能算出同一个下标，这叫哈希冲突，常用链地址法或开放寻址处理",
+            "冲突严重时查找会退化，最坏是 O(n)；负载因子过高时哈希表会扩容并重排",
+            "键必须可哈希（不可变），Python 中整数、字符串、元组可以，列表和字典不行",
+            "哈希表不维护键的顺序，需要排序或范围查询时应改用有序结构"
+          ],
+          "example": {
+            "language": "python",
+            "caption": "用字典统计词频",
+            "code": "counts = {}\nfor word in [\"a\", \"b\", \"a\"]:\n    counts[word] = counts.get(word, 0) + 1\nprint(counts)  # {'a': 2, 'b': 1}"
+          },
+          "pitfalls": [
+            "用可变对象（如 list）当字典键，运行到那一行直接抛 TypeError",
+            "以为哈希表查找永远 O(1)，忽略冲突和扩容带来的最坏情况"
+          ]
+        },
+        {
+          "id": "data-structures-card-04",
+          "title": "树与复杂度",
+          "summary": "树用分层结构把查找范围不断缩小，但只有平衡时 O(log n) 才成立。",
+          "points": [
+            "二叉树每个节点最多两个子节点；二叉搜索树满足左子树 < 根 < 右子树",
+            "平衡的二叉搜索树查找、插入、删除都是 O(log n)，中序遍历得到有序序列",
+            "树退化成链表（例如按顺序插入）时，查找会退化为 O(n)",
+            "广度优先搜索（BFS）按层扩展，适合无权图最短路径；深度优先搜索（DFS）沿分支走到底",
+            "复杂度看增长趋势：O(1) < O(log n) < O(n) < O(n log n) < O(n²)"
+          ],
+          "example": {
+            "language": "python",
+            "caption": "二叉搜索树查找：每步只走一个分支",
+            "code": "# 平衡 BST 查找：每比较一次排除一半\ndef search(node, target):\n    while node:\n        if target == node.val:\n            return True\n        node = node.left if target < node.val else node.right\n    return False"
+          },
+          "pitfalls": [
+            "认为二叉搜索树查找一定是 O(log n)，忽略树可能不平衡",
+            "把 BFS 和 DFS 混用：求最少步数时用 DFS 可能得到更长的路径"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "data-structures-001",
+          "question": "数组按下标访问元素的时间复杂度是 O(1)，主要原因是什么？",
+          "options": [
+            "数组会提前把元素从小到大排好序",
+            "元素在内存中连续存放，可用首地址加偏移量直接定位",
+            "数组内部维护了一张哈希表",
+            "每次访问都会从头遍历，只是现代 CPU 很快"
+          ],
+          "answerIndex": 1,
+          "explanation": "数组元素连续存放，第 i 个元素的地址等于首地址加上 i 乘以元素大小，计算一次就能定位。排序、哈希和遍历都不是下标访问 O(1) 的原因。",
+          "optionNotes": [
+            "数组不要求有序，排序与下标访问无关",
+            "连续内存加偏移量，一次计算即可定位",
+            "哈希表是另一种结构，数组不依赖它",
+            "从头遍历是 O(n)，与 O(1) 矛盾"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "数组",
+            "复杂度"
+          ]
+        },
+        {
+          "id": "data-structures-002",
+          "question": "在单链表中查找第 k 个节点，时间复杂度是多少？",
+          "options": [
+            "O(1)",
+            "O(log n)",
+            "O(n)",
+            "O(n log n)"
+          ],
+          "answerIndex": 2,
+          "explanation": "链表节点分散在内存中，每个节点只保存指向下一个节点的指针，无法用下标直接跳转。只能从头节点开始逐个走 k 步，最坏要访问 n 个节点，所以是 O(n)。",
+          "optionNotes": [
+            "O(1) 是数组按下标访问的复杂度",
+            "链表没有折半查找的结构，达不到 O(log n)",
+            "只能从头逐个遍历，最坏访问 n 个节点",
+            "没有排序或分治过程，不会出现 n log n"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "链表",
+            "复杂度"
+          ]
+        },
+        {
+          "id": "data-structures-003",
+          "question": "文本编辑器的「撤销」功能要优先撤销最近一次操作，最适合用哪种数据结构？",
+          "options": [
+            "栈，后进先出",
+            "队列，先进先出",
+            "哈希表，按键查找",
+            "二叉搜索树，按值排序"
+          ],
+          "answerIndex": 0,
+          "explanation": "撤销遵循后进先出：最近压入的操作最先被弹出并撤销，正好对应栈的 push 和 pop。队列会先处理最早的操作，顺序正好相反。",
+          "optionNotes": [
+            "最近操作最先撤销，符合栈的 LIFO",
+            "队列会撤销最早的操作，顺序不对",
+            "哈希表擅长按键查找，不维护操作顺序",
+            "二叉搜索树按值排序，不适合撤销历史"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "栈",
+            "LIFO"
+          ]
+        },
+        {
+          "id": "data-structures-004",
+          "question": "多个打印任务需要按提交的先后顺序依次执行，应该用哪种结构排队？",
+          "options": [
+            "栈",
+            "哈希表",
+            "二叉搜索树",
+            "队列"
+          ],
+          "answerIndex": 3,
+          "explanation": "先提交的任务先打印，符合先进先出（FIFO）。队列在尾部入队、头部出队，正好按提交顺序处理；栈会变成后提交的任务先执行。",
+          "optionNotes": [
+            "栈是后进先出，会让最后提交的任务先打印",
+            "哈希表不维护顺序，无法保证先来先服务",
+            "二叉搜索树按值组织，不表达提交顺序",
+            "队列先进先出，正好符合打印顺序"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "队列",
+            "FIFO"
+          ]
+        },
+        {
+          "id": "data-structures-005",
+          "question": "下面这段代码运行结果是什么？",
+          "code": {
+            "language": "python",
+            "content": "d = {}\nd[(1, 2)] = \"ok\"\nd[[1, 2]] = \"bad\"\nprint(len(d))"
+          },
+          "options": [
+            "输出 1",
+            "抛出 TypeError，因为列表不可哈希",
+            "输出 2",
+            "输出 0"
+          ],
+          "answerIndex": 1,
+          "explanation": "字典的键必须可哈希，元组里的值都不可变，所以 (1, 2) 可以作键；列表可变、不可哈希，执行到第二行就抛出 TypeError，print 不会运行。",
+          "optionNotes": [
+            "代码在第二行就报错，不会执行到 print",
+            "列表不可哈希，赋值时立即抛出 TypeError",
+            "同样因为报错，字典不会增加到两个键",
+            "第一行已成功插入，但程序仍会因第二行中断"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "哈希表",
+            "可哈希"
+          ]
+        },
+        {
+          "id": "data-structures-006",
+          "question": "对一棵二叉搜索树做中序遍历（左-根-右），得到的序列有什么特点？",
+          "options": [
+            "按节点插入的先后顺序排列",
+            "完全随机，取决于树的形状",
+            "从小到大有序排列",
+            "从大到小有序排列"
+          ],
+          "answerIndex": 2,
+          "explanation": "二叉搜索树满足左子树所有节点小于根、右子树所有节点大于根。中序遍历先访问左子树，再访问根，最后访问右子树，因此输出从小到大有序；要得到从大到小应使用右-根-左。",
+          "optionNotes": [
+            "遍历顺序由结构决定，与插入顺序不同",
+            "中序遍历结果确定且有序，不是随机",
+            "左-根-右遍历正好得到升序序列",
+            "从大到小要用右-根-左的遍历顺序"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "二叉搜索树",
+            "遍历"
+          ]
+        },
+        {
+          "id": "data-structures-007",
+          "question": "在 Python 列表中，下面哪个操作的平均时间复杂度是 O(1)？",
+          "options": [
+            "nums.insert(0, x)",
+            "x in nums",
+            "nums.append(x)",
+            "nums.pop(0)"
+          ],
+          "answerIndex": 2,
+          "explanation": "append 在列表末尾追加元素，容量足够时直接写入，均摊复杂度是 O(1)。头部插入和 pop(0) 都要移动其余所有元素，是 O(n)；in 需要逐个比较，也是 O(n)。",
+          "optionNotes": [
+            "头部插入要整体后移元素，是 O(n)",
+            "成员判断需要线性扫描，是 O(n)",
+            "末尾追加均摊 O(1)，是正确选项",
+            "弹出头部同样要前移剩余元素，是 O(n)"
+          ],
+          "difficulty": "基础",
+          "tags": [
+            "列表",
+            "复杂度"
+          ]
+        },
+        {
+          "id": "data-structures-008",
+          "question": "执行下面的代码，输出是什么？",
+          "code": {
+            "language": "python",
+            "content": "stack = []\nfor ch in \"ab\":\n    stack.append(ch)\nstack.append(\"c\")\nprint(stack.pop(), stack[-1])"
+          },
+          "options": [
+            "b c",
+            "a c",
+            "c a",
+            "c b"
+          ],
+          "answerIndex": 3,
+          "explanation": "循环结束后栈是 ['a', 'b', 'c']。pop() 弹出栈顶 'c'，此时栈变为 ['a', 'b']，stack[-1] 是 'b'，所以输出 c b。",
+          "optionNotes": [
+            "pop 返回的是栈顶 c，不是 b",
+            "a 在栈底，pop 不会先弹出它",
+            "弹出 c 后栈顶是 b，不是 a",
+            "先弹出 c，再取新栈顶 b，正确"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "栈",
+            "输出预测"
+          ]
+        },
+        {
+          "id": "data-structures-009",
+          "question": "哈希表在大量键冲突的极端情况下，查找时间复杂度最坏会退化到多少？",
+          "options": [
+            "仍然是 O(1)",
+            "O(n)",
+            "O(log n)",
+            "O(n²)"
+          ],
+          "answerIndex": 1,
+          "explanation": "哈希表平均 O(1) 的前提是键分布均匀。若大量键落到同一个桶，桶内元素只能逐个比较，最坏要检查 n 个键，退化为 O(n)。",
+          "optionNotes": [
+            "O(1) 只是平均情况，冲突严重时不成立",
+            "所有键挤在一个桶里，需要线性比较",
+            "普通哈希桶不是平衡树，无法保证对数",
+            "查找只扫描一个桶，不会出现平方级"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "哈希表",
+            "冲突"
+          ]
+        },
+        {
+          "id": "data-structures-010",
+          "question": "用列表当队列，数据量大时 data.pop(0) 明显变慢。最合适的替代方案是什么？",
+          "options": [
+            "改用 set，利用集合去重",
+            "改用 dict，用编号当键",
+            "改用 collections.deque，从头部弹出是 O(1)",
+            "每次弹出前先把列表反转一次"
+          ],
+          "answerIndex": 2,
+          "explanation": "list.pop(0) 删除头部元素后，后面所有元素都要前移一位，单次是 O(n)，反复操作整体接近 O(n²)。deque 是双端队列，两端增删都是 O(1)，更适合实现队列。",
+          "optionNotes": [
+            "set 无序且不支持按位置弹出，不能当队列",
+            "dict 按键访问，不维护先进先出的顺序",
+            "deque 头部弹出 O(1)，正确",
+            "反转本身是 O(n)，只会让每次操作更慢"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "队列",
+            "deque"
+          ]
+        },
+        {
+          "id": "data-structures-011",
+          "question": "已经拿到某个节点的引用，需要频繁在它前面插入新节点。数组和链表相比，哪种更合适？",
+          "options": [
+            "链表，修改相邻指针即可，不需要搬移其他元素",
+            "数组，插入时会把所有元素复制一份",
+            "哈希表，插入总能保持顺序",
+            "栈，只允许在末尾操作"
+          ],
+          "answerIndex": 0,
+          "explanation": "链表在已知节点处插入只需改动前后指针，是 O(1)；数组在中间插入要先把后面的元素整体后移，是 O(n)。代价是链表按下标查找需要遍历，不能随机访问。",
+          "optionNotes": [
+            "已知节点改指针即可，不用搬移元素",
+            "数组插入要搬移元素，正是它的劣势",
+            "哈希表不维护元素顺序，也不支持按位置插入",
+            "栈只能在一端操作，无法在任意节点前插入"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "数组",
+            "链表",
+            "权衡"
+          ]
+        },
+        {
+          "id": "data-structures-012",
+          "question": "既要按 key 快速查找，又要支持按 key 范围查询（例如找出 100 到 200 之间的所有记录），哪种结构更合适？",
+          "options": [
+            "哈希表，平均查找 O(1)",
+            "栈，后进先出",
+            "队列，先进先出",
+            "平衡二叉搜索树，可以按顺序遍历区间"
+          ],
+          "answerIndex": 3,
+          "explanation": "哈希表擅长等值查找，但键的存放位置由哈希值决定，范围查询只能全表扫描。平衡二叉搜索树维护有序结构，查找和插入是 O(log n)，还能从下界开始顺序遍历整个区间。",
+          "optionNotes": [
+            "哈希表无序，范围查询要扫描所有键",
+            "栈只维护后进先出顺序，不能按 key 查找",
+            "队列只维护先进先出顺序，与 key 无关",
+            "平衡树有序且支持区间遍历，正确"
+          ],
+          "difficulty": "进阶",
+          "tags": [
+            "哈希表",
+            "二叉搜索树",
+            "权衡"
+          ]
+        },
+        {
+          "id": "data-structures-013",
+          "question": "这棵二叉搜索树中不存在 7。从根开始查找 7，需要比较多少个节点才能确定它不存在（不数最后的空指针）？",
+          "code": {
+            "language": "python",
+            "content": "root = Node(8)\nroot.left = Node(3)\nroot.right = Node(10)\nroot.left.left = Node(1)\nroot.left.right = Node(6)"
+          },
+          "options": [
+            "2 个",
+            "4 个",
+            "3 个",
+            "5 个"
+          ],
+          "answerIndex": 2,
+          "explanation": "7 小于 8，走左子树比较 3；7 大于 3，走右子树比较 6；7 大于 6，但 6 的右子为空，于是确认不存在。整个过程比较了 8、3、6 三个节点。",
+          "optionNotes": [
+            "只比较两次会停在 3，还没走到 6",
+            "走到 6 的右子为空就结束，不会再多比较",
+            "依次比较 8、3、6，共三个节点",
+            "路径只有三个节点，不会比较五个"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "二叉搜索树",
+            "查找路径"
+          ]
+        },
+        {
+          "id": "data-structures-014",
+          "question": "在无权图中求从起点到终点的最少边数，应该优先用哪种搜索？",
+          "options": [
+            "DFS，因为它会沿一条路走到底",
+            "BFS，按层扩展，第一次到达终点时的层数就是最少边数",
+            "用栈模拟 DFS，因为栈能保存路径",
+            "用哈希表记录节点，查找更快"
+          ],
+          "answerIndex": 1,
+          "explanation": "无权图的最短路径等价于最少层数。BFS 从起点逐层向外扩展，节点第一次被访问时距离一定最小；DFS 可能先钻进一条很长的分支，第一次到达终点不保证边数最少。",
+          "optionNotes": [
+            "DFS 不保证第一次到达就是最短路径",
+            "逐层扩展，首次到达即最短，正确",
+            "栈只是 DFS 的工具，不改变搜索顺序的缺陷",
+            "哈希表用于去重，不能决定扩展顺序"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "BFS",
+            "最短路径"
+          ]
+        },
+        {
+          "id": "data-structures-015",
+          "question": "下面函数返回什么？时间复杂度是多少？",
+          "code": {
+            "language": "python",
+            "content": "def two_sum(nums, target):\n    seen = {}\n    for i, x in enumerate(nums):\n        if target - x in seen:\n            return [seen[target - x], i]\n        seen[x] = i\n    return []\n\nprint(two_sum([2, 7, 11, 15], 9))"
+          },
+          "options": [
+            "[0, 1]，时间复杂度 O(n)",
+            "[1, 0]，时间复杂度 O(n)",
+            "[0, 1]，时间复杂度 O(n²)",
+            "[]，因为需要两层循环才能配对"
+          ],
+          "answerIndex": 0,
+          "explanation": "遍历到 7 时，target - 7 = 2 已经在下标 0 处，函数立刻返回 [0, 1]。每个元素只做一次字典查找和插入，总时间 O(n)，额外空间 O(n)。",
+          "optionNotes": [
+            "下标从 0 开始且只遍历一遍，正确",
+            "返回顺序是较小下标在前，不会输出 [1, 0]",
+            "哈希查找是 O(1)，整体不是平方级",
+            "单层循环配合字典即可完成配对查找"
+          ],
+          "difficulty": "挑战",
+          "tags": [
+            "哈希表",
+            "复杂度"
+          ]
+        }
+      ]
+    }
+  ]
+};
 }));

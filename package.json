@@ -1,0 +1,13 @@
+{
+  "name": "devstart",
+  "version": "1.0.0",
+  "private": true,
+  "description": "起点编程 DevStart — 零基础计算机基础学习与刷题，本地优先、内容包驱动",
+  "scripts": {
+    "test": "node --test",
+    "content:validate": "node scripts/validate-content.js",
+    "content:build": "node scripts/build-content.js",
+    "content:check": "node scripts/build-content.js --check",
+    "serve": "python -m http.server 8000 -d demo"
+  }
+}

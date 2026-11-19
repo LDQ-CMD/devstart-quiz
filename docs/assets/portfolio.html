@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>起点编程 DevStart · 作品集</title>
+<style>
+  @font-face { font-family: "NotoSC"; src: url("file:///C:/Windows/Fonts/NotoSansSC-VF.ttf"); }
+  @page { size: A4; margin: 16mm 15mm 16mm 15mm;
+    @bottom-center { content: "起点编程 DevStart · AI 应用能力作品 · " counter(page) " / " counter(pages);
+      font-family: NotoSC; font-size: 8pt; color: #8a8a8a; } }
+  * { box-sizing: border-box; }
+  body { font-family: NotoSC, "Microsoft YaHei", sans-serif; color: #2c322f; font-size: 10pt; line-height: 1.65; margin: 0; }
+  h1, h2, h3 { margin: 0; font-weight: 700; }
+  .cover { height: 250mm; display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+    background: linear-gradient(160deg,#f7f6ef 0%,#eef5ee 100%); padding: 24mm 18mm; border-radius: 6mm; }
+  .kicker { color: #2f7d5b; font-size: 11pt; letter-spacing: 3px; font-weight: 700; }
+  .cover h1 { font-size: 34pt; margin: 12mm 0 4mm; line-height: 1.25; color: #1e3b2e; }
+  .cover h1 .accent { color: #2f7d5b; }
+  .cover .sub { font-size: 14pt; color: #4c5a52; margin-bottom: 16mm; }
+  .cover .tag { display: inline-block; background: #2f7d5b; color: #fff; padding: 2mm 6mm; border-radius: 10mm;
+    font-size: 10pt; margin-bottom: 8mm; }
+  .cover .meta { color: #6b7871; font-size: 10pt; }
+  .page { page-break-after: always; }
+  h2.sec { font-size: 17pt; color: #1e3b2e; border-left: 4px solid #2f7d5b; padding-left: 4mm; margin: 0 0 6mm; }
+  h3 { font-size: 11.5pt; color: #2f7d5b; margin: 6mm 0 2mm; }
+  p { margin: 0 0 3mm; text-align: justify; }
+  ul { margin: 0 0 3mm; padding-left: 6mm; }
+  li { margin-bottom: 1.5mm; }
+  .lead { font-size: 11pt; color: #46524b; }
+  .stats { display: flex; gap: 4mm; margin: 6mm 0; }
+  .stat { flex: 1; background: #f1f7f3; border: 1px solid #d7e8dd; border-radius: 3mm; padding: 5mm 3mm; text-align: center; }
+  .stat b { display: block; font-size: 20pt; color: #2f7d5b; line-height: 1.1; }
+  .stat span { font-size: 8.5pt; color: #5d6c63; }
+  table { width: 100%; border-collapse: collapse; margin: 4mm 0; font-size: 9pt; }
+  th, td { border: 1px solid #d9e2dc; padding: 2.6mm 3mm; text-align: left; vertical-align: top; }
+  th { background: #eef5ef; color: #1e3b2e; font-weight: 700; }
+  tr:nth-child(even) td { background: #fafcf9; }
+  .shot { margin: 5mm 0; text-align: center; }
+  .shot img { width: 100%; max-height: 118mm; object-fit: contain; object-position: top;
+    border: 1px solid #d9e2dc; border-radius: 2mm; }
+  .shot .cap { font-size: 8.5pt; color: #7a857e; margin-top: 1.5mm; }
+  .note { background: #f6f8f2; border-left: 3px solid #8fae5a; padding: 3mm 4mm; font-size: 9pt; color: #4b5b4f; margin: 4mm 0; }
+  .flow { font-family: monospace; font-size: 8.5pt; background: #1e2b26; color: #d7f0df; padding: 4mm; border-radius: 2mm;
+    white-space: pre-wrap; line-height: 1.5; }
+  .pill { display: inline-block; background: #e7f2ea; color: #2f7d5b; border-radius: 8mm; padding: 1mm 3mm; font-size: 8.5pt; margin: 0 1mm 1mm 0; }
+  .kv { font-size: 9pt; }
+  .kv b { color: #2f7d5b; }
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="kicker">AI 应用能力作品</div>
+  <div class="tag">AI Builder · 产品 Demo</div>
+  <h1>起点编程<br><span class="accent">DevStart</span></h1>
+  <div class="sub">用 AI 从 0 到 1 构建的计算机基础学习刷题系统</div>
+  <div class="meta">知识卡建立概念 · 刷题即时验证 · 错题回炉巩固<br>纯静态、本地优先、内容包驱动 · 2026</div>
+</div>
+
+<div class="page">
+  <h2 class="sec">01 作品概述</h2>
+  <p class="lead">「起点编程 DevStart」面向零基础学习者，把计算机基础拆成互相独立的小课：先用一张知识卡讲清概念，再用一组题验证是否真的会，错题自动沉淀、反复回炉，形成「学一点 → 练一题 → 错题回炉」的完整闭环。产品为纯本地静态站点，双击即可运行，不上传数据、不注册账号。</p>
+  <div class="stats">
+    <div class="stat"><b>8</b><span>主题课程</span></div>
+    <div class="stat"><b>32</b><span>知识卡</span></div>
+    <div class="stat"><b>120</b><span>精选题目</span></div>
+    <div class="stat"><b>65</b><span>自动化测试</span></div>
+  </div>
+
+  <h3>解决的真实痛点</h3>
+  <ul>
+    <li><b>路径乱</b>：资料太多，不知道先学什么、学到什么程度算入门 → 用推荐顺序的 8 个小课给出清晰路线。</li>
+    <li><b>假懂</b>：看视频觉得懂了，一做题就暴露漏洞 → 每张知识卡都配对应题目，当场验证。</li>
+    <li><b>环境劝退</b>：Docker / K8s 在装环境阶段就流失 → 纯概念入门，零环境要求。</li>
+    <li><b>无反馈</b>：自学缺判分和讲解 → 每题 4 条逐选项解析，错在哪一步一目了然。</li>
+    <li><b>不复盘</b>：错题没沉淀，学完就忘 → 错题本 + 多种重练模式 + 掌握度/熟练度追踪。</li>
+  </ul>
+
+  <h3>内容体系</h3>
+  <p>首批覆盖 Python 编程基础、Docker 容器入门、Kubernetes 入门、Linux 命令行基础、Git 版本控制、计算机网络基础、SQL 与数据库入门、数据结构入门。主题从「基础」起步，延伸到进阶与挑战，题目类型含代码阅读、命令输出、场景排错与方案权衡。</p>
+  <div>
+    <span class="pill">变量与类型</span><span class="pill">容器镜像</span><span class="pill">Pod 与 Service</span>
+    <span class="pill">文件与权限</span><span class="pill">分支与合并</span><span class="pill">TCP/IP</span>
+    <span class="pill">SQL 查询</span><span class="pill">复杂度分析</span>
+  </div>
+</div>
+
+<div class="page">
+  <h2 class="sec">02 界面与学习闭环</h2>
+  <div class="shot"><img src="01-home.png" alt="首页"><div class="cap">首页：主题入口、进度概览、错题本入口与三步学习法</div></div>
+  <div class="note">从首页进入任一主题，先读 4 张知识卡（概念 + 类比 + 示例 + 新手易错），再用「快速练习 / 全部题目 / 错题重练」三种模式刷题，提交后即时判分并展示逐选项解析。</div>
+  <div class="shot"><img src="02-topic.png" alt="主题详情"><div class="cap">主题详情：学习目标、知识卡序列与侧边进度面板（含熟练度与薄弱知识点）</div></div>
+</div>
+
+<div class="page">
+  <h2 class="sec">03 刷题与反馈</h2>
+  <div class="shot"><img src="03-quiz.png" alt="答题页"><div class="cap">答题页：一次只呈现一题，支持键盘 1–4 选择、Enter 提交</div></div>
+  <div class="shot"><img src="04-feedback.png" alt="逐选项解析"><div class="cap">提交后：正确项与干扰项逐条解释，解析讲「为什么」</div></div>
+  <div class="shot"><img src="05-result.png" alt="结果页"><div class="cap">结果页：得分、分档评语、掌握度变化与错题回顾</div></div>
+</div>
+
+<div class="page">
+  <h2 class="sec">04 AI 在项目中的应用</h2>
+  <p class="lead">本项目全流程由 AI 辅助完成：AI 负责快速产出初稿与可运行代码，人负责定义目标、审校技术准确性与做取舍。AI 不是「一次性生成器」，而是贯穿规划、内容、开发、测试、文档的工作伙伴。</p>
+  <table>
+    <tr><th style="width:24%">阶段</th><th>AI 的具体工作</th><th style="width:26%">人工把关</th></tr>
+    <tr><td>产品规划</td><td>撰写产品计划书：用户画像、痛点、差异化、指标体系、MVP 边界、里程碑与风险对策</td><td>确认范围，砍掉视频/账号/沙箱等非 MVP 项</td></tr>
+    <tr><td>内容生产</td><td>生成 8 主题大纲、32 张知识卡、120 道题初稿、逐选项解析、难度标签与知识点标签</td><td>技术事实核对、题目去重、难度校准、表述润色</td></tr>
+    <tr><td>代码实现</td><td>编写原生 JS 路由、判分核心、进度核心、内容加载器、响应式 CSS 与页面视图</td><td>架构取舍（静态/零构建/本地优先）、交互走查</td></tr>
+    <tr><td>质量保障</td><td>编写 65 项自动化测试、内容校验脚本与构建脚本，覆盖题库/构建/加载/判分/进度/冒烟</td><td>补充真实浏览器走查、键盘与无障碍检查</td></tr>
+    <tr><td>文档与规范</td><td>编写内容更新指南、题库 Schema、README 与使用说明</td><td>与实际流程逐条对照修订</td></tr>
+  </table>
+  <div class="note"><b>协作方式：</b>把需求拆成清晰的小任务交给 AI，要求先给可运行版本再迭代；对生成内容坚持「初稿 → 校验 → 人工审校 → 测试」四步，避免直接信任输出。这一流程本身即是 AI 应用能力的体现。</div>
+
+  <h3>产品迭代轨迹</h3>
+  <p> Demo v0（5 主题 / 40 题）验证了学习闭环；收到「前端体验没问题，但题目深度和熟练度不够」的反馈后，正式版 v1.0 升级为 8 主题 / 120 题，新增进阶与挑战题、逐选项解析、四级熟练度、薄弱知识点与题库独立更新机制，并补齐 65 项自动化测试。</p>
+</div>
+
+<div class="page">
+  <h2 class="sec">05 技术架构与题库更新</h2>
+  <h3>技术选型</h3>
+  <ul>
+    <li><b>零依赖、零构建</b>：纯静态 HTML + CSS + 原生 JavaScript，双击 <i>index.html</i> 即可离线运行。</li>
+    <li><b>hash 路由</b>：<i>#/</i>、<i>#/topic/:id</i>、<i>#/quiz/:id</i>，支持刷新与前进/后退。</li>
+    <li><b>模块解耦</b>：UMD 双端模块 <i>quiz-core</i>（判分）、<i>progress-core</i>（进度/熟练度/组卷）、<i>content-loader</i>（加载回退），既能在浏览器运行，也能被 Node 单测直接引入。</li>
+    <li><b>本地存储</b>：进度存于 localStorage（v2 结构），旧版 v1 数据自动迁移不丢失。</li>
+    <li><b>无障碍</b>：键盘全流程、可见焦点、aria-live 反馈；正误不只靠颜色，配图标与文字。</li>
+  </ul>
+
+  <h3>题库更新机制（内容即代码）</h3>
+  <div class="flow">demo/content/packs/*.json   ← 人工维护的唯一数据源
+        │
+        ├─ validate-content.js   校验单包
+        ├─ build-content.js      全量校验 + 生成
+        ▼
+demo/content/bundle.json   ← 在线运行时加载（可独立更新）
+demo/js/data.js            ← 离线 / file:// 内置回退
+        ▼
+ContentLoader.loadContent() ← HTTP 优先，失败自动回退内置题库</div>
+  <p>题目与代码解耦：日常加题、改解析只需编辑内容包、提升 <i>manifest.json</i> 版本号并重新构建，无需改动应用代码。版本规则为「改题 minor+1、改错别字 patch+1、增删主题 major+1」，页脚展示当前版本、发布日期与更新说明。建议节奏：每 2 周修正与补题、每月扩容、每季度新增主题。</p>
+
+  <h3>质量保障</h3>
+  <p><span class="pill">65 项测试全通过</span><span class="pill">content:check 通过</span><span class="pill">全部 JS 语法检查通过</span><span class="pill">浏览器实测无报错</span><span class="pill">375px 移动端适配</span></p>
+  <p class="kv">题库校验覆盖：数量 / ID 唯一 / 每题 4 选项与 4 条逐选项解析 / 答案分布 / 难度分布 / 代码题数量 / 生成物一致性。逻辑测试覆盖：判分、进度迁移、掌握度、熟练度、薄弱知识点、组卷优先级、内容加载回退与路由冒烟。</p>
+</div>
+
+<div class="page">
+  <h2 class="sec">06 访问方式</h2>
+  <p class="kv"><b>作品 Demo（在线预览）：</b><br>https://gregarious-souffle-f241da.netlify.app<br><span style="color:#7a857e">预览密码：My-Drop-Site（Netlify Drop 站点，有效期有限）</span></p>
+  <p class="kv"><b>GitHub / 主页链接：</b><br><span id="ghlink">（请填写你的 GitHub 仓库地址，用于提交时粘贴）</span></p>
+  <p class="kv"><b>本地运行：</b><br>双击仓库中 <i>demo/index.html</i> 即可离线使用；或在仓库根目录执行 <i>npm run serve</i> 后访问 <i>http://localhost:8000/</i>。</p>
+  <div class="note">提示：在线预览地址可能因 Netlify Drop 的临时站点策略而失效。正式提交前，建议将仓库推送到 GitHub 并开启 GitHub Pages，使用永久地址替换上方预览链接。</div>
+
+  <h3>交付物清单</h3>
+  <table>
+    <tr><th>类别</th><th>内容</th></tr>
+    <tr><td>应用</td><td>demo/index.html、css/、js/（可直接部署为静态站点）</td></tr>
+    <tr><td>题库</td><td>content/packs/*.json（源文件）、bundle.json（产物）、SCHEMA.md</td></tr>
+    <tr><td>脚本</td><td>validate-content.js、build-content.js、content-lib.js</td></tr>
+    <tr><td>测试</td><td>tests/ 下 6 组、65 项自动化测试</td></tr>
+    <tr><td>文档</td><td>产品计划书、内容更新指南、README、本作品集</td></tr>
+  </table>
+</div>
+
+</body>
+</html>

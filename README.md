@@ -42,5 +42,6 @@ npm run serve            # 本地预览
 
 - [产品计划书](docs/产品计划书.md)
 - [内容更新指南](docs/内容更新指南.md)
+- [GitLab 核心知识点（SRE/DevOps 笔试面试版）](docs/GitLab核心知识点.md)
 - [题库规范](demo/content/SCHEMA.md)
 - [Demo 使用说明](demo/README.md)

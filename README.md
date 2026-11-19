@@ -4,6 +4,10 @@
 
 当前版本 **v1.0**：8 个主题、32 张知识卡、120 道题，题库内容包化，可独立更新；按正确率/连对/间隔计算四级熟练度，并定位薄弱知识点。
 
+**在线 Demo（GitHub Pages，永久）**：<https://ldq-cmd.github.io/devstart-quiz/>
+**GitHub 仓库**：<https://github.com/LDQ-CMD/devstart-quiz>
+**作品集 PDF**：`docs/起点编程DevStart-作品集.pdf`
+
 ## 快速开始
 
 ```bash

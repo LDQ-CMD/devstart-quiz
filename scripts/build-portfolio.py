@@ -236,10 +236,10 @@ ContentLoader.loadContent() ← HTTP 优先，失败自动回退内置题库"""
 
     # 06 访问
     s.append(P("06 访问方式", "sec"))
-    s.append(P("<b>作品 Demo（在线预览）：</b><br/>https://gregarious-souffle-f241da.netlify.app<br/><font color='#7a857e'>预览密码：My-Drop-Site（Netlify Drop 站点，有效期有限）</font>", "body"))
-    s.append(P("<b>GitHub / 主页链接：</b><br/>（请填写你的 GitHub 仓库地址，用于提交时粘贴）", "body"))
+    s.append(P("<b>作品链接（在线 Demo，永久）：</b><br/>https://ldq-cmd.github.io/devstart-quiz/", "body"))
+    s.append(P("<b>GitHub / 主页链接：</b><br/>https://github.com/LDQ-CMD/devstart-quiz", "body"))
     s.append(P("<b>本地运行：</b><br/>双击仓库中 demo/index.html 即可离线使用；或在仓库根目录执行 npm run serve 后访问 http://localhost:8000/。", "body"))
-    s.append(note_box("提示：在线预览地址可能因 Netlify Drop 的临时站点策略而失效。正式提交前，建议将仓库推送到 GitHub 并开启 GitHub Pages，使用永久地址替换上方预览链接。"))
+    s.append(note_box("在线 Demo 由 GitHub Pages 托管，与仓库代码同步：每次向 main 分支推送，GitHub Actions 自动重新部署 demo 目录，无需手动维护。"))
     s.append(P("交付物清单", "h3"))
     s.append(table(
         ["类别", "内容"],
